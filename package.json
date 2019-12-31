@@ -9,7 +9,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "deploy": "firebase deploy --only hosting:teachers-junior-techbots",
+    "deploy": "firebase deploy --only hosting:app-junior-techbots",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest"
   },
