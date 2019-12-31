@@ -1,6 +1,6 @@
 # junior-techbots
 
-> Show children their next available project in Coding Club and share results with parents
+> Show children their next available project in Coding Club and share results with parents. Children can also record results
 
 ## Build Setup
 
