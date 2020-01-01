@@ -17,10 +17,13 @@
     </div>
     <div v-else>
       <v-row>
-        <v-col class="text-center">
-          <h1>
-            Login as...
-          </h1>
+        <v-col class="text-center my-5">
+          <div class="display-1">
+            Welcome to Junior Techbots
+          </div>
+          <div class="sub-heading">
+            Please select the type of login
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -34,7 +37,7 @@
 
             <v-card-actions>
               <v-btn color="primary" class="mx-auto" large>
-                Student
+                Student login
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -49,7 +52,7 @@
 
             <v-card-actions>
               <v-btn color="primary" class="mx-auto" large>
-                Teacher
+                Teacher login
               </v-btn>
             </v-card-actions>
           </v-card>
