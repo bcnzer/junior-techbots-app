@@ -3,7 +3,6 @@ import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/analytics'
 import 'firebase/performance'
-import * as firebaseui from 'firebaseui'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCbobsqPSkxwZvGTH9tpfDKf_YkZxWVhYI',
@@ -26,7 +25,6 @@ if (!firebase.apps.length) {
 
 firebase.analytics()
 export const auth = firebase.auth()
-export const authui = new firebaseui.auth.AuthUI(auth)
 export const firestore = firebase.firestore()
 export const perf = firebase.performance()
 export default firebase

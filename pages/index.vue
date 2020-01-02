@@ -22,7 +22,7 @@
             Welcome to Junior Techbots
           </div>
           <div class="sub-heading">
-            Please select the type of login
+            Please select your view
           </div>
         </v-col>
       </v-row>
@@ -37,7 +37,7 @@
 
             <v-card-actions>
               <v-btn @click="student()" color="primary" class="mx-auto" large>
-                Student login
+                Student
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -52,7 +52,7 @@
 
             <v-card-actions>
               <v-btn @click="teacher()" color="primary" class="mx-auto" large>
-                Teacher login
+                Teacher
               </v-btn>
             </v-card-actions>
           </v-card>
