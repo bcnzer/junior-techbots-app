@@ -7,15 +7,8 @@
     </v-flex>
     <v-flex xs12>
       <div class="headline">
-        Teacher site for managing classes, students and the projects they will
-        work on
+        Hello!
       </div>
     </v-flex>
   </v-layout>
 </template>
-
-<script>
-export default {
-  layout: 'teacher'
-}
-</script>

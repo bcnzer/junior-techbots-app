@@ -16,6 +16,8 @@
 
 <script>
 export default {
+  layout: 'teacher',
+
   data: () => ({
     he: true
   })

@@ -101,22 +101,22 @@ export default {
         {
           icon: 'mdi-library',
           title: 'Lessons',
-          to: '/lessons'
+          to: '/teacher/lessons'
         },
         {
           icon: 'mdi-account-multiple',
           title: 'Classes',
-          to: '/classes'
+          to: '/teacher/classes'
         },
         {
           icon: 'mdi-school',
           title: 'Students',
-          to: '/students'
+          to: '/teacher/students'
         },
         {
           icon: 'mdi-star',
           title: 'Achievements',
-          to: '/achievements'
+          to: '/teacher/achievements'
         }
       ],
       miniVariant: false,

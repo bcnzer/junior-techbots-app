@@ -53,6 +53,8 @@ import firebase from 'firebase/app'
 import { firestore } from '@/services/fireinit.js'
 
 export default {
+  layout: 'teacher',
+
   data() {
     return {
       valid: false,

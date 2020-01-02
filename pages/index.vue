@@ -36,7 +36,7 @@
             ></v-img>
 
             <v-card-actions>
-              <v-btn color="primary" class="mx-auto" large>
+              <v-btn @click="student()" color="primary" class="mx-auto" large>
                 Student login
               </v-btn>
             </v-card-actions>
@@ -51,7 +51,7 @@
             ></v-img>
 
             <v-card-actions>
-              <v-btn color="primary" class="mx-auto" large>
+              <v-btn @click="teacher()" color="primary" class="mx-auto" large>
                 Teacher login
               </v-btn>
             </v-card-actions>
@@ -95,6 +95,14 @@ export default {
   },
 
   methods: {
+    teacher() {
+      this.$router.push('/teacher/org')
+    },
+
+    student() {
+      this.$router.push('/student')
+    },
+
     async addOrg() {
       if (!this.$refs.form.validate()) {
         return

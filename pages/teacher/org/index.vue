@@ -95,7 +95,7 @@ export default {
 
       localStorage.orgId = org.id
       localStorage.orgName = org.data().name
-      this.$router.push('/')
+      this.$router.push('/teacher')
     } else {
       // There's more than one so we need to ask which one the user wants to use
       // TODO - allow user to pick their org while also allowing to create a new one
