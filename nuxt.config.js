@@ -88,7 +88,7 @@ export default {
   },
 
   router: {
-    middleware: ['notloggedin']
+    middleware: ['notloggedin', 'teacher-noorg']
   },
 
   /*

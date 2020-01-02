@@ -21,7 +21,7 @@ export default {
 
   mounted() {
     const uiConfig = {
-      signInSuccessUrl: '/teacher/org',
+      signInSuccessUrl: '/',
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.EmailAuthProvider.PROVIDER_ID
