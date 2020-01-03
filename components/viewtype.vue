@@ -6,7 +6,7 @@
       <v-card-actions>
         <v-btn
           :disabled="disabled"
-          @click="student()"
+          @click="click()"
           color="primary"
           class="mx-auto"
           large
