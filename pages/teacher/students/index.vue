@@ -11,7 +11,7 @@
         <div v-if="!loading">
           <v-dialog v-model="showDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on" color="primary" dark>Open Dialog</v-btn>
+              <v-btn v-on="on" color="primary" dark>Invite Student</v-btn>
             </template>
             <v-form ref="modalInviteStudent" lazy-validation>
               <v-card>
@@ -25,18 +25,25 @@
                         <v-text-field
                           v-model="dialogEmail"
                           :rules="dialogEmailRules"
-                          label="Email*"
+                          :disabled="saving"
+                          label="Email"
                           required
                         ></v-text-field>
-                        <small>*indicates required field</small>
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn @click="inviteStudent()" color="primary">Save</v-btn>
-                  <v-btn @click="showDialog = false">Close</v-btn>
+                  <v-btn
+                    @click="inviteStudent()"
+                    :loading="saving"
+                    color="primary"
+                    >Save</v-btn
+                  >
+                  <v-btn @click="showDialog = false" :disabled="saving"
+                    >Close</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </v-form>
@@ -50,6 +57,7 @@
 
 <script>
 import firebase from 'firebase/app'
+import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
 
 export default {
@@ -61,6 +69,7 @@ export default {
       loading: false,
       sendingEmail: false,
       showDialog: false,
+      saving: false,
       dialogEmail: null,
       dialogEmailRules: [
         (v) => !!v || 'E-mail is required',
@@ -80,6 +89,7 @@ export default {
         return
       }
 
+      this.saving = true
       const studentRecord = await firestore
         .collection('students')
         .where('email', '==', this.dialogEmail)
@@ -108,10 +118,14 @@ export default {
           invitedOn: new Date(),
           invitedBy: JSON.parse(localStorage.currentUser).uid,
           email: this.dialogEmail,
-          orgName: localStorage.orgName
+          orgName: localStorage.orgName,
+          orgId: localStorage.orgId,
+          inviteId: uuidv4().substring(0, 8)
         })
 
+      this.dialogEmail = null
       this.showDialog = false
+      this.saving = false
     }
   }
 }

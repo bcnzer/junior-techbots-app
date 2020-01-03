@@ -36,7 +36,14 @@
             ></v-img>
 
             <v-card-actions>
-              <v-btn @click="student()" color="primary" class="mx-auto" large>
+              <v-btn
+                v-on="on"
+                :disabled="!enableStudentButton"
+                @click="student()"
+                color="primary"
+                class="mx-auto"
+                large
+              >
                 Student
               </v-btn>
             </v-card-actions>
@@ -72,24 +79,19 @@ export default {
   data() {
     return {
       valid: false,
-      loading: true
+      loading: true,
+      enableStudentButton: false
     }
   },
 
   async mounted() {
     const currentUserUid = JSON.parse(localStorage.currentUser).uid
-    const teacherRecord = await firestore
-      .collection('teachers')
+    const studentRecord = await firestore
+      .collection('students')
       .where('uid', '==', currentUserUid)
       .get()
-    // const studentRecord = await firestore
-    //   .collection('teachers')
-    //   .where('uid', '==', currentUserUid)
-    //   .get()
 
-    if (teacherRecord.docs.length > 0) {
-      this.teacherRecordId = teacherRecord.docs[0].id
-    }
+    this.enableStudentButton = studentRecord.docs.length > 0
 
     this.loading = false
   },
