@@ -28,40 +28,17 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="6" sm="6" md="6" lg="6" xl="6" class="mx-auto">
-          <v-card class="mx-auto py-2" max-width="300" elevation="12">
-            <v-img
-              src="bots/student-portrait.png"
-              max-width="200"
-              class="mx-auto"
-            ></v-img>
-
-            <v-card-actions>
-              <v-btn
-                :disabled="!enableStudentButton"
-                @click="student()"
-                color="primary"
-                class="mx-auto"
-                large
-              >
-                Student
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <viewtype
+            @card-clicked="student()"
+            :disabled="!enableStudentButton"
+            image="bots/student-portrait.png"
+          ></viewtype>
         </v-col>
         <v-col cols="12" xs="6" sm="6" md="6" lg="6" xl="6" class="mx-auto">
-          <v-card class="mx-auto py-2" max-width="300" elevation="12">
-            <v-img
-              src="bots/teacher-portrait.png"
-              max-width="200"
-              class="mx-auto"
-            ></v-img>
-
-            <v-card-actions>
-              <v-btn @click="teacher()" color="primary" class="mx-auto" large>
-                Teacher
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <viewtype
+            @card-clicked="teacher()"
+            image="bots/teacher-portrait.png"
+          ></viewtype>
         </v-col>
       </v-row>
     </div>
@@ -71,9 +48,14 @@
 <script>
 import firebase from 'firebase/app'
 import { firestore } from '@/services/fireinit.js'
+import viewtype from '~/components/viewtype'
 
 export default {
   layout: 'minimal',
+
+  components: {
+    viewtype
+  },
 
   data() {
     return {
