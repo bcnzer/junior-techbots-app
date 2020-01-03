@@ -11,7 +11,7 @@
           class="mx-auto"
           large
         >
-          Student
+          {{ buttonText }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -30,6 +30,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    buttonText: {
+      type: String,
+      default: null
     }
   },
 

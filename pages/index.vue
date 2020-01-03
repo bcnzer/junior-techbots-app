@@ -32,12 +32,14 @@
             @card-clicked="student()"
             :disabled="!enableStudentButton"
             image="bots/student-portrait.png"
+            button-text="student"
           ></viewtype>
         </v-col>
         <v-col cols="12" xs="6" sm="6" md="6" lg="6" xl="6" class="mx-auto">
           <viewtype
             @card-clicked="teacher()"
             image="bots/teacher-portrait.png"
+            button-text="teacher"
           ></viewtype>
         </v-col>
       </v-row>
