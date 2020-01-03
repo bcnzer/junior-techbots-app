@@ -37,7 +37,6 @@
 
             <v-card-actions>
               <v-btn
-                v-on="on"
                 :disabled="!enableStudentButton"
                 @click="student()"
                 color="primary"
