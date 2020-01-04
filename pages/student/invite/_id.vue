@@ -78,11 +78,9 @@ export default {
 
   async mounted() {
     if (this.$route.params.id) {
-      const userId = JSON.parse(localStorage.currentUser).uid
-
       const studentRecord = await firestore
         .collection('students')
-        .where('uid', '==', userId)
+        .where('email', '==', JSON.parse(localStorage.currentUser).email)
         .get()
 
       if (!studentRecord.empty) {
@@ -117,7 +115,8 @@ export default {
         .update({
           organizations: firebase.firestore.FieldValue.arrayUnion(
             this.invite.orgId
-          )
+          ),
+          displayName: JSON.parse(localStorage.currentUser).displayName
         })
 
       await firestore

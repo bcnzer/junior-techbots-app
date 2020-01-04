@@ -4,7 +4,8 @@
       <v-col cols="12" xs="12" class="mx-auto">
         <div v-if="loading">
           <v-skeleton-loader
-            type="image, paragraph, text, article, button"
+            type="button, table"
+            min-width="300"
           ></v-skeleton-loader>
         </div>
 
@@ -48,9 +49,31 @@
               </v-card>
             </v-form>
           </v-dialog>
-          <v-btn>Classes</v-btn>
         </div>
       </v-col>
+    </v-row>
+    <v-row v-if="!loading">
+      <v-col cols="12" xs="12" class="mx-auto">
+        <v-data-table
+          :headers="headers"
+          :items="students"
+          v-if="hasStudents"
+          show-group-by
+        >
+          <template v-slot:item.action="{ item }">
+            <v-icon @click="editItem(item)" small class="mr-2">
+              edit
+            </v-icon>
+            <v-icon @click="deleteItem(item)" small>
+              delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+      <div v-if="!hasStudents" class="headline mx-auto">
+        No students have joined
+      </div>
+      <snackbar />
     </v-row>
   </v-container>
 </template>
@@ -59,14 +82,19 @@
 import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
+import snackbar from '@/components/snackbar'
 
 export default {
   layout: 'teacher',
 
+  components: {
+    snackbar
+  },
+
   data() {
     return {
       valid: false,
-      loading: false,
+      loading: true,
       sendingEmail: false,
       showDialog: false,
       saving: false,
@@ -74,13 +102,37 @@ export default {
       dialogEmailRules: [
         (v) => !!v || 'E-mail is required',
         (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
-      ]
+      ],
+      showSnackbar: false,
+      headers: [
+        { text: 'Name', value: 'name' },
+        { text: 'Class', value: 'class' }
+      ],
+      students: []
     }
   },
 
-  mounted() {
-    const currentUserUid = JSON.parse(localStorage.currentUser).uid
-    console.log(currentUserUid)
+  computed: {
+    hasStudents() {
+      return this.students !== undefined && this.students.length > 0
+    }
+  },
+
+  async mounted() {
+    this.loading = true
+    await firestore
+      .collection('students')
+      .where('organizations', 'array-contains', localStorage.orgId)
+      .onSnapshot((querySnapshot) => {
+        this.students = []
+        querySnapshot.docs.forEach((doc) => {
+          this.students.push({
+            name: doc.data().displayName,
+            class: null
+          })
+        })
+        this.loading = false
+      })
   },
 
   methods: {
@@ -126,6 +178,7 @@ export default {
       this.dialogEmail = null
       this.showDialog = false
       this.saving = false
+      this.$store.commit('snackbar/setSnack', 'Invite sent')
     }
   }
 }
