@@ -47,7 +47,7 @@
                         >Save</v-btn
                       >
                       <v-btn @click="showEmailDialog = false" :disabled="saving"
-                        >Close</v-btn
+                        >Cancel</v-btn
                       >
                     </v-card-actions>
                   </v-card>
@@ -68,6 +68,7 @@
                             <v-text-field
                               v-model="dialogStudentDisplayName"
                               :disabled="saving"
+                              :rules="[(v) => !!v || 'Name is required']"
                               label="Name"
                               required
                             ></v-text-field>
@@ -86,7 +87,7 @@
                       <v-btn
                         @click="showStudentEditDialog = false"
                         :disabled="saving"
-                        >Close</v-btn
+                        >Cancel</v-btn
                       >
                     </v-card-actions>
                   </v-card>
