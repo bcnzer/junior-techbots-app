@@ -60,6 +60,9 @@
           v-if="hasStudents"
           show-group-by
         >
+          <template slot="no-data">
+            No students have joined. Invite some!
+          </template>
           <template v-slot:item.action="{ item }">
             <v-icon @click="editItem(item)" small class="mr-2">
               edit
@@ -70,9 +73,6 @@
           </template>
         </v-data-table>
       </v-col>
-      <div v-if="!hasStudents" class="headline mx-auto">
-        No students have joined
-      </div>
       <snackbar />
     </v-row>
   </v-container>
@@ -91,6 +91,10 @@ export default {
     snackbar
   },
 
+  head() {
+    return { title: 'Teacher' }
+  },
+
   data() {
     return {
       valid: false,
@@ -106,7 +110,8 @@ export default {
       showSnackbar: false,
       headers: [
         { text: 'Name', value: 'name' },
-        { text: 'Class', value: 'class' }
+        { text: 'Class', value: 'class' },
+        { text: 'Actions', value: 'action', sortable: false }
       ],
       students: []
     }

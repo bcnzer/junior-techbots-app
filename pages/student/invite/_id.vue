@@ -56,6 +56,10 @@ import { firestore } from '@/services/fireinit.js'
 export default {
   layout: 'minimal',
 
+  head() {
+    return { title: 'Invite' }
+  },
+
   data() {
     return {
       loading: true,

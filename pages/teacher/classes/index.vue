@@ -18,6 +18,10 @@
 export default {
   layout: 'teacher',
 
+  head() {
+    return { title: 'Classes' }
+  },
+
   data: () => ({
     he: true
   })

@@ -12,3 +12,13 @@
     </v-flex>
   </v-layout>
 </template>
+
+<script>
+export default {
+  layout: 'minimal',
+
+  head() {
+    return { title: 'Student' }
+  }
+}
+</script>

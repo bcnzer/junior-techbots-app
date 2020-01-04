@@ -16,6 +16,10 @@
 
 <script>
 export default {
-  layout: 'teacher'
+  layout: 'teacher',
+
+  head() {
+    return { title: 'Teacher' }
+  }
 }
 </script>

@@ -50,6 +50,10 @@ import { firestore } from '@/services/fireinit.js'
 export default {
   layout: 'minimal',
 
+  head() {
+    return { title: 'Teacher Org' }
+  },
+
   data() {
     return {
       valid: false,
