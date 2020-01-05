@@ -14,9 +14,11 @@
               <v-toolbar-title>Students</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
+
+              <student-entry-form></student-entry-form>
               <v-dialog v-model="showEmailDialog" max-width="500px">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" color="primary" dark>Invite Student</v-btn>
+                  <v-btn v-on="on">Invite Student</v-btn>
                 </template>
                 <v-form ref="modalInviteStudent" lazy-validation>
                   <v-card>
@@ -120,12 +122,14 @@ import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
+import StudentEntryForm from '@/components/teacher/StudentEntryForm'
 
 export default {
   layout: 'teacher',
 
   components: {
-    snackbar
+    snackbar,
+    StudentEntryForm
   },
 
   head() {
