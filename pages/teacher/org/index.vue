@@ -45,6 +45,7 @@
 
 <script>
 import firebase from 'firebase/app'
+import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
 
 export default {
@@ -119,8 +120,16 @@ export default {
         name: this.orgName,
         description: this.orgDescription,
         teachers: [localStorage.currentUser.uid],
-        uid: localStorage.currentUser.uid
+        uid: localStorage.currentUser.uid,
+        entryFormId: uuidv4().substring(0, 8)
       })
+
+      // Add a default class, so that there is at least one
+      await firestore
+        .collection('organizations')
+        .doc(newOrg.id)
+        .collection('classes')
+        .add({ name: 'default' })
 
       await firestore
         .collection('teachers')

@@ -26,11 +26,18 @@
           :label="entryFormSwitchLabel"
         ></v-switch>
       </div>
-      <div class="ml-5">
+      <div class="ml-5 body-1">
+        <v-avatar color="secondary" size="36">
+          <v-icon dark>mdi-alert-circle-outline</v-icon>
+        </v-avatar>
+        If there are multiple classes, the students will be able to pick the
+        class they would like to join
+      </div>
+      <div class="ml-5 mt-5">
         <div class="body-1">
           Link to entry form:
-          <v-text-field ref="entry"
-            >https://asdkjasdoaiusoiuweqwe.com/asdasd/asd2/234234</v-text-field
+          <a href="mylink"
+            >https://asdkjasdoaiusoiuweqwe.com/asdasd/asd2/234234</a
           >
           <v-btn @click="copyLink()" class="ml-3">
             Copy
@@ -39,9 +46,9 @@
       </div>
       <div class="ml-5 mr-5">
         <v-textarea
-          :value="notes"
-          label="Notes"
-          hint="Information that may be useful for potential students"
+          :value="additionalMessage"
+          label="Additional Message"
+          hint="Information that may be useful for potential students (optional)"
         ></v-textarea>
       </div>
     </v-card>
@@ -76,7 +83,7 @@ export default {
   data: () => ({
     formEnabled: true,
     dialog: false,
-    notes: null,
+    additionalMessage: null,
     message: ''
   }),
 
