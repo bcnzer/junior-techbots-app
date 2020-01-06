@@ -6,9 +6,8 @@ export const state = () => ({
 export const mutations = {
   setUser(state, newUser) {
     if (newUser == null) {
-      localStorage.currentUser = null
-      localStorage.orgId = null
-      localStorage.orgName = null
+      localStorage.removeItem('currentUser')
+      localStorage.removeItem('org')
       state.currentUserId = null
     } else {
       localStorage.currentUser = JSON.stringify({

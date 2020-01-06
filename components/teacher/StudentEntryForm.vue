@@ -36,9 +36,7 @@
       <div class="ml-5 mt-5">
         <div class="body-1">
           Link to entry form:
-          <a href="mylink"
-            >https://asdkjasdoaiusoiuweqwe.com/asdasd/asd2/234234</a
-          >
+          <a :href="entryFormUrl">{{ entryFormUrl }}</a>
           <v-btn @click="copyLink()" class="ml-3">
             Copy
           </v-btn>
@@ -70,7 +68,7 @@ export default {
       type: String,
       default: null
     },
-    url: {
+    entryFormId: {
       type: String,
       default: null
     },
@@ -90,6 +88,9 @@ export default {
   computed: {
     entryFormSwitchLabel() {
       return `Entry form ${this.formEnabled ? 'enabled' : 'disabled'}`
+    },
+    entryFormUrl() {
+      return `https://app.juniortechbots.com/student/entry/${this.entryFormId}`
     }
   },
 

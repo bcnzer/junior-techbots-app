@@ -119,7 +119,6 @@
 
 <script>
 import firebase from 'firebase/app'
-import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
 import StudentEntryForm from '@/components/teacher/StudentEntryForm'
@@ -170,7 +169,11 @@ export default {
   async mounted() {
     await firestore
       .collection('students')
-      .where('organizations', 'array-contains', localStorage.orgId)
+      .where(
+        'organizations',
+        'array-contains',
+        JSON.parse(localStorage.org).orgId
+      )
       .onSnapshot((querySnapshot) => {
         this.students = []
         querySnapshot.docs.forEach((doc) => {
@@ -221,7 +224,7 @@ export default {
         .doc(student.recordId)
         .update({
           organizations: firebase.firestore.FieldValue.arrayRemove(
-            localStorage.orgId
+            JSON.parse(localStorage.org).orgId
           )
         })
     },
@@ -243,7 +246,7 @@ export default {
         const newStudent = await firestore.collection('students').add({
           email: this.dialogEmail,
           organizations: firebase.firestore.FieldValue.arrayUnion(
-            localStorage.orgId
+            JSON.parse(localStorage.org).orgId
           )
         })
 
@@ -252,6 +255,7 @@ export default {
         studentId = studentRecord.docs[0].id
       }
 
+      const org = JSON.parse(localStorage.org)
       await firestore
         .collection('students')
         .doc(studentId)
@@ -260,9 +264,8 @@ export default {
           invitedOn: new Date(),
           invitedBy: JSON.parse(localStorage.currentUser).uid,
           email: this.dialogEmail,
-          orgName: localStorage.orgName,
-          orgId: localStorage.orgId,
-          inviteId: uuidv4().substring(0, 8)
+          orgName: org.orgName,
+          orgId: org.orgId
         })
 
       this.dialogEmail = null

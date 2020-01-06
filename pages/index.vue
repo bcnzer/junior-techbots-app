@@ -108,8 +108,10 @@ export default {
           organizations: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
         })
 
-      localStorage.orgId = newOrg.id
-      localStorage.orgName = this.orgName
+      const org = JSON.parse(localStorage.org)
+      org.orgId = newOrg.id
+      org.orgName = this.orgName
+      localStorage.org = org
       this.$router.push('/')
 
       this.savingOrg = false

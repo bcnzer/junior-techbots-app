@@ -75,6 +75,7 @@ export default {
       .where('uid', '==', currentUserUid)
       .get()
 
+    console.log('got teacher record')
     if (teacherRecord.docs.length > 0) {
       this.teacherRecordId = teacherRecord.docs[0].id
       teacherRecord = teacherRecord.docs[0].data()
@@ -98,8 +99,15 @@ export default {
         .doc(teacherRecord.organizations[0])
         .get()
 
-      localStorage.orgId = org.id
-      localStorage.orgName = org.data().name
+      console.log('closer')
+      const orgData = org.data()
+      localStorage.org = JSON.stringify({
+        id: org.id,
+        orgName: orgData.name,
+        entryFormId: orgData.entryFormId
+      })
+      console.log('aboutt o push')
+      console.log(localStorage.org)
       this.$router.push('/teacher')
     } else {
       // There's more than one so we need to ask which one the user wants to use
@@ -116,12 +124,13 @@ export default {
       }
 
       this.savingOrg = true
+      const entryId = uuidv4().substring(0, 8)
       const newOrg = await firestore.collection('organizations').add({
         name: this.orgName,
         description: this.orgDescription,
         teachers: [localStorage.currentUser.uid],
         uid: localStorage.currentUser.uid,
-        entryFormId: uuidv4().substring(0, 8)
+        entryFormId: entryId
       })
 
       // Add a default class, so that there is at least one
@@ -138,8 +147,11 @@ export default {
           organizations: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
         })
 
-      localStorage.orgId = newOrg.id
-      localStorage.orgName = this.orgName
+      localStorage.org = JSON.stringify({
+        orgId: newOrg.id,
+        orgName: this.orgName,
+        entryFormId: entryId
+      })
       this.$router.push('/')
 
       this.savingOrg = false
