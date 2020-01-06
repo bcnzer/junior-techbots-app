@@ -99,15 +99,14 @@ export default {
         .doc(teacherRecord.organizations[0])
         .get()
 
-      console.log('closer')
       const orgData = org.data()
       localStorage.org = JSON.stringify({
         id: org.id,
-        orgName: orgData.name,
-        entryFormId: orgData.entryFormId
+        name: orgData.name,
+        entryFormId: orgData.entryFormId,
+        entryFormEnabled: orgData.entryFormEnabled,
+        entryFormMessage: orgData.entryFormMessage
       })
-      console.log('aboutt o push')
-      console.log(localStorage.org)
       this.$router.push('/teacher')
     } else {
       // There's more than one so we need to ask which one the user wants to use
@@ -148,8 +147,8 @@ export default {
         })
 
       localStorage.org = JSON.stringify({
-        orgId: newOrg.id,
-        orgName: this.orgName,
+        id: newOrg.id,
+        name: this.orgName,
         entryFormId: entryId
       })
       this.$router.push('/')

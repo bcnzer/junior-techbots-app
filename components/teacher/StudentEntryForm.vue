@@ -8,7 +8,7 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" dark class="mr-2">Entry form</v-btn>
     </template>
-    <v-card>
+    <v-card :disabled="saving">
       <snackbar />
       <v-toolbar dark color="dark grey-3">
         <v-btn @click="dialog = false" icon dark>
@@ -17,7 +17,7 @@
         <v-toolbar-title>Entry Form</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn @click="dialog = false" dark text>Save</v-btn>
+          <v-btn @click="saveEntryForm" :loading="saving" dark text>Save</v-btn>
         </v-toolbar-items>
       </v-toolbar>
       <div class="ml-5 mt-5">
@@ -44,7 +44,7 @@
       </div>
       <div class="ml-5 mr-5">
         <v-textarea
-          :value="additionalMessage"
+          v-model="additionalMessage"
           label="Additional Message"
           hint="Information that may be useful for potential students (optional)"
         ></v-textarea>
@@ -68,21 +68,27 @@ export default {
       type: String,
       default: null
     },
-    entryFormId: {
-      type: String,
-      default: null
-    },
     entryFormEnabled: {
       type: Boolean,
       default: true
+    },
+    entryFormMessage: {
+      type: String,
+      default: null
+    },
+    entryFormId: {
+      type: String,
+      default: null
     }
   },
 
   data: () => ({
     formEnabled: true,
+    saving: false,
     dialog: false,
     additionalMessage: null,
-    message: ''
+    message: '',
+    url: null
   }),
 
   computed: {
@@ -96,15 +102,37 @@ export default {
 
   created() {
     this.formEnabled = this.entryFormEnabled
+    this.additionalMessage = this.entryFormMessage
   },
 
   methods: {
-    click() {
-      this.$emit('save-event-form')
-    },
     copyLink() {
-      navigator.clipboard.writeText(this.url)
+      navigator.clipboard.writeText(this.entryFormUrl)
       this.$store.commit('snackbar/setSnack', 'URL copied')
+    },
+    saveEntryForm() {
+      this.saving = true
+
+      this.$emit('save-event-form', {
+        entryFormEnabled: this.formEnabled,
+        entryFormMessage: this.additionalMessage
+      })
+
+      // const org = JSON.parse(localStorage.org)
+      // await firestore
+      //   .collection('organizations')
+      //   .doc(org.id)
+      //   .update({
+      //     entryFormEnabled: this.formEnabled,
+      //     entryFormMessage: this.additionalMessage
+      //   })
+
+      // org.entryFormEnabled = this.formEnabled
+      // org.entryFormMessage = this.additionalMessage
+      // localStorage.org = JSON.stringify(org)
+
+      this.dialog = false
+      this.saving = false
     }
   }
 }

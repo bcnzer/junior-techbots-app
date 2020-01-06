@@ -131,7 +131,7 @@ export default {
 
   computed: {
     orgName() {
-      return JSON.parse(localStorage.org).orgName
+      return JSON.parse(localStorage.org).name
     }
   }
 }

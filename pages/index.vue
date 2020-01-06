@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
 import { firestore } from '@/services/fireinit.js'
 import viewtype from '~/components/viewtype'
 
@@ -86,35 +85,6 @@ export default {
 
     student() {
       this.$router.push('/student')
-    },
-
-    async addOrg() {
-      if (!this.$refs.form.validate()) {
-        return
-      }
-
-      this.savingOrg = true
-      const newOrg = await firestore.collection('organizations').add({
-        name: this.orgName,
-        description: this.orgDescription,
-        teachers: [localStorage.currentUser.uid],
-        uid: localStorage.currentUser.uid
-      })
-
-      await firestore
-        .collection('teachers')
-        .doc(this.teacherRecordId)
-        .update({
-          organizations: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
-        })
-
-      const org = JSON.parse(localStorage.org)
-      org.orgId = newOrg.id
-      org.orgName = this.orgName
-      localStorage.org = org
-      this.$router.push('/')
-
-      this.savingOrg = false
     }
   }
 }

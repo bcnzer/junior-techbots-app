@@ -15,7 +15,12 @@
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
 
-              <student-entry-form></student-entry-form>
+              <student-entry-form
+                :entry-form-id="entryFormId"
+                :entry-form-enabled="entryFormEnabled"
+                :additional-message="entryFormMessage"
+                v-on:save-event-form="saveEntryFormDetails($event)"
+              ></student-entry-form>
               <v-dialog v-model="showEmailDialog" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on">Invite Student</v-btn>
@@ -156,7 +161,8 @@ export default {
       students: [],
       showStudentEditDialog: false,
       dialogStudentDisplayName: null,
-      dialogCurrentStudent: null
+      dialogCurrentStudent: null,
+      entryFormMessage: null
     }
   },
 
@@ -167,13 +173,14 @@ export default {
   },
 
   async mounted() {
+    const org = JSON.parse(localStorage.org)
+    this.entryFormEnabled = org.entryFormEnabled
+    this.entryFormMessage = org.entryFormMessage
+    this.entryFormId = org.entryFormId
+
     await firestore
       .collection('students')
-      .where(
-        'organizations',
-        'array-contains',
-        JSON.parse(localStorage.org).orgId
-      )
+      .where('organizations', 'array-contains', JSON.parse(localStorage.org).id)
       .onSnapshot((querySnapshot) => {
         this.students = []
         querySnapshot.docs.forEach((doc) => {
@@ -190,6 +197,21 @@ export default {
   },
 
   methods: {
+    async saveEntryFormDetails(event) {
+      console.log(event)
+      const org = JSON.parse(localStorage.org)
+      await firestore
+        .collection('organizations')
+        .doc(org.id)
+        .update({
+          entryFormEnabled: event.entryFormEnabled,
+          entryFormMessage: event.entryFormMessage
+        })
+
+      org.entryFormEnabled = event.entryFormEnabled
+      org.entryFormMessage = event.entryFormMessage
+      localStorage.org = JSON.stringify(org)
+    },
     showEditStudent(student) {
       this.dialogCurrentStudent = student // used later when we update
       this.dialogStudentDisplayName = student.name
@@ -224,7 +246,7 @@ export default {
         .doc(student.recordId)
         .update({
           organizations: firebase.firestore.FieldValue.arrayRemove(
-            JSON.parse(localStorage.org).orgId
+            JSON.parse(localStorage.org).id
           )
         })
     },
@@ -246,7 +268,7 @@ export default {
         const newStudent = await firestore.collection('students').add({
           email: this.dialogEmail,
           organizations: firebase.firestore.FieldValue.arrayUnion(
-            JSON.parse(localStorage.org).orgId
+            JSON.parse(localStorage.org).id
           )
         })
 
@@ -264,8 +286,8 @@ export default {
           invitedOn: new Date(),
           invitedBy: JSON.parse(localStorage.currentUser).uid,
           email: this.dialogEmail,
-          orgName: org.orgName,
-          orgId: org.orgId
+          orgName: org.name,
+          orgId: org.id
         })
 
       this.dialogEmail = null
