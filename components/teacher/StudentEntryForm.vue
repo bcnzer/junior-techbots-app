@@ -118,19 +118,6 @@ export default {
         entryFormMessage: this.additionalMessage
       })
 
-      // const org = JSON.parse(localStorage.org)
-      // await firestore
-      //   .collection('organizations')
-      //   .doc(org.id)
-      //   .update({
-      //     entryFormEnabled: this.formEnabled,
-      //     entryFormMessage: this.additionalMessage
-      //   })
-
-      // org.entryFormEnabled = this.formEnabled
-      // org.entryFormMessage = this.additionalMessage
-      // localStorage.org = JSON.stringify(org)
-
       this.dialog = false
       this.saving = false
     }
