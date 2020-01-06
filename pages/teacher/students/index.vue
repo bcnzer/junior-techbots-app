@@ -18,8 +18,8 @@
               <student-entry-form
                 :entry-form-id="entryFormId"
                 :entry-form-enabled="entryFormEnabled"
-                :additional-message="entryFormMessage"
-                v-on:save-event-form="saveEntryFormDetails($event)"
+                :entry-form-message="entryFormMessage"
+                v-on:save-event-form="onSaveEntryFormDetails"
               ></student-entry-form>
               <v-dialog v-model="showEmailDialog" max-width="500px">
                 <template v-slot:activator="{ on }">
@@ -172,7 +172,7 @@ export default {
     }
   },
 
-  async mounted() {
+  async created() {
     const org = JSON.parse(localStorage.org)
     this.entryFormEnabled = org.entryFormEnabled
     this.entryFormMessage = org.entryFormMessage
@@ -197,7 +197,7 @@ export default {
   },
 
   methods: {
-    async saveEntryFormDetails(event) {
+    async onSaveEntryFormDetails(event) {
       console.log(event)
       const org = JSON.parse(localStorage.org)
       await firestore
@@ -211,6 +211,9 @@ export default {
       org.entryFormEnabled = event.entryFormEnabled
       org.entryFormMessage = event.entryFormMessage
       localStorage.org = JSON.stringify(org)
+
+      this.entryFormEnabled = event.entryFormEnabled
+      this.entryFormMessage = event.entryFormMessage
     },
     showEditStudent(student) {
       this.dialogCurrentStudent = student // used later when we update

@@ -22,7 +22,7 @@
       </v-toolbar>
       <div class="ml-5 mt-5">
         <v-switch
-          v-model="formEnabled"
+          v-model="isFormEnabled"
           :label="entryFormSwitchLabel"
         ></v-switch>
       </div>
@@ -44,7 +44,7 @@
       </div>
       <div class="ml-5 mr-5">
         <v-textarea
-          v-model="additionalMessage"
+          v-model="formMessage"
           label="Additional Message"
           hint="Information that may be useful for potential students (optional)"
         ></v-textarea>
@@ -97,12 +97,23 @@ export default {
     },
     entryFormUrl() {
       return `https://app.juniortechbots.com/student/entry/${this.entryFormId}`
+    },
+    isFormEnabled: {
+      get() {
+        return this.entryFormEnabled
+      },
+      set(value) {
+        this.formEnabled = value
+      }
+    },
+    formMessage: {
+      get() {
+        return this.entryFormMessage
+      },
+      set(value) {
+        this.additionalMessage = value
+      }
     }
-  },
-
-  created() {
-    this.formEnabled = this.entryFormEnabled
-    this.additionalMessage = this.entryFormMessage
   },
 
   methods: {
