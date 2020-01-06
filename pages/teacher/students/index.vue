@@ -198,7 +198,6 @@ export default {
 
   methods: {
     async onSaveEntryFormDetails(event) {
-      console.log(event)
       const org = JSON.parse(localStorage.org)
       await firestore
         .collection('organizations')
