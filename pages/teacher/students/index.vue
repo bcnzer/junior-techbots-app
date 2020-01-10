@@ -8,7 +8,7 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
-        <v-data-table :headers="headers" :items="students" v-if="hasStudents">
+        <v-data-table :headers="headers" :items="students">
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Students</v-toolbar-title>
@@ -163,12 +163,6 @@ export default {
       dialogStudentDisplayName: null,
       dialogCurrentStudent: null,
       entryFormMessage: null
-    }
-  },
-
-  computed: {
-    hasStudents() {
-      return this.students !== undefined && this.students.length > 0
     }
   },
 
