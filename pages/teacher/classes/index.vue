@@ -12,7 +12,6 @@
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Classes</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
 
               <v-btn @click="showAddEdit = true">Add Class</v-btn>
