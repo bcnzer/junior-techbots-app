@@ -132,12 +132,12 @@ export default {
         entryFormId: entryId
       })
 
-      // Add a default class, so that there is at least one
-      await firestore
-        .collection('organizations')
-        .doc(newOrg.id)
-        .collection('classes')
-        .add({ name: 'default' })
+      // // Add a default class, so that there is at least one
+      // await firestore
+      //   .collection('organizations')
+      //   .doc(newOrg.id)
+      //   .collection('classes')
+      //   .add({ name: 'default' })
 
       await firestore
         .collection('teachers')
