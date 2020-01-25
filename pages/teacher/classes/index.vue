@@ -8,6 +8,9 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
+        <v-alert v-if="classes.length > 0" type="warning">
+          You must have at least one class defined
+        </v-alert>
         <v-data-table :headers="headers" :items="classes">
           <template v-slot:top>
             <v-toolbar flat color="white">
