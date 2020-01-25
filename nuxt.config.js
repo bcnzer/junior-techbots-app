@@ -70,7 +70,7 @@ export default {
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
-          warning: colors.amber.base,
+          warning: colors.amber.darken2,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
         },
@@ -79,7 +79,7 @@ export default {
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
-          warning: colors.amber.base,
+          warning: colors.amber.darken2,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
         }
@@ -98,6 +98,20 @@ export default {
     /*
      ** You can extend webpack config here
      */
+    babel: {
+      presets({ isServer }) {
+        return [
+          [
+            require.resolve('@nuxt/babel-preset-app'),
+            // require.resolve('@nuxt/babel-preset-app-edge'), // For nuxt-edge users
+            {
+              buildTarget: isServer ? 'server' : 'client',
+              corejs: { version: 3 }
+            }
+          ]
+        ]
+      }
+    },
     extend(config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
