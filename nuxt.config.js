@@ -30,7 +30,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@plugins/firebase'],
+  plugins: [
+    '@plugins/firebase',
+    { src: '~/plugins/vue-confetti.js', mode: 'client' }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
