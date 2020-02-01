@@ -26,7 +26,6 @@
                 @onSave="addEditClass"
                 @onClose="closeAddEditClass"
               ></add-edit-class>
-              <!-- <v-btn @click="showDi = true">Add Class</v-btn> -->
             </v-toolbar>
           </template>
 

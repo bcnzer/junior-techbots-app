@@ -8,6 +8,7 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
+        <nuxt-link to="/teacher/lessons/add">Add lesson</nuxt-link>
         <v-card>
           <v-card-title>
             Lessons
@@ -19,16 +20,18 @@
               single-line
               hide-details
             ></v-text-field>
+            <v-btn @click="showAddEdit = true" class="mt-3 ml-2"
+              >Add Lesson</v-btn
+            >
           </v-card-title>
-          <v-data-table
-            :headers="headers"
-            :items="lessons"
-            :search="search"
-            :expanded.sync="expanded"
-            show-expand
-          >
-            <template v-slot:expanded-item="{ headers }">
-              <td :colspan="headers.length">Peek-a-boo!</td>
+          <v-data-table :headers="headers" :items="lessons" :search="search">
+            <template v-slot:item.action="{ item }">
+              <v-icon @click="showEditClass(item)" small class="mr-3">
+                mdi-pencil
+              </v-icon>
+              <v-icon @click="showConfirmationToDelete(item)" small>
+                mdi-delete
+              </v-icon>
             </template></v-data-table
           >
         </v-card>
@@ -48,7 +51,6 @@ export default {
 
   data() {
     return {
-      expanded: [],
       loading: true,
       search: null,
       lessons: [],
@@ -57,7 +59,7 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },
         { text: 'Description', value: 'description' },
-        { text: '', value: 'data-table-expand' }
+        { text: 'Actions', value: 'action', sortable: false }
       ]
     }
   },
