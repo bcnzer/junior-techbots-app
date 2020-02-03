@@ -64,7 +64,7 @@
 </template>
 
 <script>
-// import { firestore } from '@/services/fireinit.js'
+import { firestore } from '@/services/fireinit.js'
 export default {
   name: 'Lesson',
 
@@ -77,8 +77,9 @@ export default {
 
   data() {
     return {
-      loading: false,
+      loading: true,
       saving: false,
+      currentLessonId: null,
       name: null,
       description: null,
       url: null,
@@ -102,24 +103,59 @@ export default {
     }
   },
 
-  created() {
+  async created() {
     this.orgId = JSON.parse(localStorage.org).id
-    console.log(this.lessonId)
 
-    // this.lesson = await firestore
-    //   .collection('organizations')
-    //   .doc(this.orgId)
-    //   .collection('lessons')
-    //   .doc(lessonId)
-    //   .get()
+    if (this.lessonId) {
+      this.currentLessonId = this.lessonId
+      const lesson = await firestore
+        .collection('organizations')
+        .doc(this.orgId)
+        .collection('lessons')
+        .doc(this.lessonId)
+        .get()
 
-    // this.loading = false
+      this.name = lesson.name
+      this.description = lesson.description
+      this.url = lesson.url
+      this.urlPreview = lesson.url
+      this.messageForParents = lesson.messageForParents
+      this.furtherResources = lesson.furtherResources
+      this.achievements = lesson.achievements
+    }
+
+    this.loading = false
   },
 
   methods: {
-    saveLesson() {
+    async saveLesson() {
       if (!this.$refs.formLesson.validate()) {
-        // dsd
+        const collection = firestore
+          .collection('organizations')
+          .doc(this.orgId)
+          .collection('lessons')
+
+        if (!this.currentLessonId) {
+          const newLesson = await collection.add({
+            name: this.name,
+            description: this.description,
+            url: this.url,
+            messageForParents: this.messageForParents,
+            furtherResources: this.furtherResources,
+            achievements: this.achievements
+          })
+
+          this.currentLessonId = newLesson.id
+        } else {
+          await collection.doc(this.lessonId).update({
+            name: this.name,
+            description: this.description,
+            url: this.url,
+            messageForParents: this.messageForParents,
+            furtherResources: this.furtherResources,
+            achievements: this.achievements
+          })
+        }
       }
     }
   }
