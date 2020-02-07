@@ -74,7 +74,7 @@ export default {
 
   computed: {
     actionType() {
-      return !this.internalName && !this.internalDescription ? 'Add' : 'Edit'
+      return !this.id ? 'Add' : 'Edit'
     },
     name: {
       get() {
@@ -102,12 +102,16 @@ export default {
       // Note that closing of the dialog is done by the component that called
       // the dialog so they must listen to both events below
       this.saving = false
-      if (save) {
-        this.$emit('onSave', {
-          id: this.id,
-          name: this.internalName,
-          description: this.internalDescription
-        })
+      if (save && (!this.internalName || !this.internalDescription)) {
+        const updatedClass = { id: this.id }
+        if (this.internalName) {
+          updatedClass.name = this.internalName
+        }
+        if (this.internalDescription) {
+          updatedClass.description = this.internalDescription
+        }
+        console.log(updatedClass)
+        this.$emit('onSave', updatedClass)
       } else {
         this.$emit('onClose')
       }

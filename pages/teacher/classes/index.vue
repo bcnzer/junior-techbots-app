@@ -132,30 +132,30 @@ export default {
   methods: {
     closeAddEditClass() {
       // All we're doing is closing the window as the person pressed cancel
+      this.dialogAddEditClassId = null
+      this.dialogAddEditName = null
+      this.dialogAddEditDescription = null
       this.showAddEdit = false
     },
     async addEditClass(addedClass) {
       this.showAddEdit = false
 
-      if (!addedClass.id) {
+      const id = addedClass.id
+      delete addedClass.id
+
+      if (!id) {
         await firestore
           .collection('organizations')
           .doc(this.orgId)
           .collection('classes')
-          .add({
-            name: addedClass.name,
-            description: addedClass.description
-          })
+          .add(addedClass)
       } else {
         await firestore
           .collection('organizations')
           .doc(this.orgId)
           .collection('classes')
-          .doc(addedClass.id)
-          .update({
-            name: addedClass.name,
-            description: addedClass.description
-          })
+          .doc(id)
+          .update(addedClass)
       }
 
       this.dialogAddEditClassId = null
@@ -163,7 +163,7 @@ export default {
       this.dialogAddEditDescription = null
       this.$store.commit(
         'snackbar/setSnack',
-        `Class ${addedClass.id == null ? 'added' : 'updated'}`
+        `Class ${id == null ? 'added' : 'updated'}`
       )
     },
     async onConfirmation() {
