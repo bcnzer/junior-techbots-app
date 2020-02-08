@@ -10,7 +10,6 @@
       <v-form ref="formLesson" lazy-validation>
         <v-row>
           <v-col cols="12" xs="12" sm="9" class="mx-auto">
-            <div>{{ lessonId }}</div>
             <v-text-field
               v-model="name"
               :rules="[(v) => !!v || 'Name is required']"
@@ -32,12 +31,32 @@
               label="URL"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" xs="12" sm="3" class="mx-auto">
+          <v-col cols="12" xs="12" sm="3" class="mx-auto my-auto">
             <v-img
               src="../../bots/robots small.png"
               style="opacity: 25%"
               max-width="256"
             ></v-img>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="6" class="mx-auto">
+            <v-combobox
+              v-model="category"
+              :items="defaultCategories"
+              :disabled="saving"
+              label="Category"
+            ></v-combobox>
+          </v-col>
+          <v-col cols="12" xs="12" sm="6" class="mx-auto">
+            <v-combobox
+              v-model="achievements"
+              :items="allAchievements"
+              :disabled="saving"
+              label="Achievements"
+              multiple
+              chips
+            ></v-combobox>
           </v-col>
         </v-row>
         <v-row>
@@ -56,7 +75,13 @@
         </v-row>
         <v-row>
           <v-spacer></v-spacer>
-          <v-btn @click="saveLesson" color="primary">Save</v-btn>
+          <v-btn
+            @click="saveLesson"
+            :disabled="saving"
+            :loading="saving"
+            color="primary"
+            >Save</v-btn
+          >
         </v-row>
       </v-form>
     </div>
@@ -85,7 +110,10 @@ export default {
       url: null,
       messageForParents: null,
       furtherResources: null,
+      category: null,
+      defaultCategories: ['Scratch', 'Python'],
       achievements: null,
+      allAchievements: [],
       urlRule: [
         (v) => {
           if (
@@ -115,13 +143,16 @@ export default {
         .doc(this.lessonId)
         .get()
 
-      this.name = lesson.name
-      this.description = lesson.description
-      this.url = lesson.url
-      this.urlPreview = lesson.url
-      this.messageForParents = lesson.messageForParents
-      this.furtherResources = lesson.furtherResources
-      this.achievements = lesson.achievements
+      const lessonData = lesson.data()
+
+      this.name = lessonData.name
+      this.description = lessonData.description
+      this.url = lessonData.url
+      this.urlPreview = lessonData.url
+      this.messageForParents = lessonData.messageForParents
+      this.furtherResources = lessonData.furtherResources
+      this.category = lessonData.category
+      this.achievements = lessonData.achievements
     }
 
     this.loading = false
@@ -129,33 +160,32 @@ export default {
 
   methods: {
     async saveLesson() {
-      if (!this.$refs.formLesson.validate()) {
+      if (this.$refs.formLesson.validate()) {
+        this.saving = true
         const collection = firestore
           .collection('organizations')
           .doc(this.orgId)
           .collection('lessons')
 
-        if (!this.currentLessonId) {
-          const newLesson = await collection.add({
-            name: this.name,
-            description: this.description,
-            url: this.url,
-            messageForParents: this.messageForParents,
-            furtherResources: this.furtherResources,
-            achievements: this.achievements
-          })
+        const lesson = {
+          name: this.name,
+          description: this.description,
+          url: this.url,
+          category: this.category,
+          achievements: this.achievements,
+          messageForParents: this.messageForParents,
+          furtherResources: this.furtherResources
+        }
 
+        if (!this.currentLessonId) {
+          const newLesson = await collection.add(lesson)
           this.currentLessonId = newLesson.id
         } else {
-          await collection.doc(this.lessonId).update({
-            name: this.name,
-            description: this.description,
-            url: this.url,
-            messageForParents: this.messageForParents,
-            furtherResources: this.furtherResources,
-            achievements: this.achievements
-          })
+          await collection.doc(this.lessonId).update(lesson)
         }
+
+        this.saving = false
+        this.$router.push('/teacher/lessons')
       }
     }
   }

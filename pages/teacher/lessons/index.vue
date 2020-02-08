@@ -8,7 +8,6 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
-        <nuxt-link to="/teacher/lessons/add">Add lesson</nuxt-link>
         <v-card>
           <v-card-title>
             Lessons
@@ -20,13 +19,16 @@
               single-line
               hide-details
             ></v-text-field>
-            <v-btn @click="showAddEdit = true" class="mt-3 ml-2"
+            <v-btn
+              @click="showAddEdit = true"
+              class="mt-3 ml-2"
+              to="/teacher/lessons/add"
               >Add Lesson</v-btn
             >
           </v-card-title>
           <v-data-table :headers="headers" :items="lessons" :search="search">
             <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditClass(item)" small class="mr-3">
+              <v-icon @click="editLesson(item)" small class="mr-3">
                 mdi-pencil
               </v-icon>
               <v-icon @click="showConfirmationToDelete(item)" small>
@@ -81,6 +83,12 @@ export default {
         })
         this.loading = false
       })
+  },
+
+  methods: {
+    editLesson(item) {
+      this.$router.push(`/teacher/lessons/${item.id}`)
+    }
   }
 }
 </script>

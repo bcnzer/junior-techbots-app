@@ -9,7 +9,7 @@ export default {
   layout: 'teacher',
 
   head() {
-    return { title: 'New Lesson' }
+    return { title: 'Lesson' }
   },
 
   components: {
