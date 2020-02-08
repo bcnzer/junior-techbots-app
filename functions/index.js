@@ -35,6 +35,7 @@ const runtimeOpts = {
   memory: '1GB'
 }
 
+// NOTE - the docs to the Cloud Storage API https://googleapis.dev/nodejs/storage/latest/File.html#exists
 exports.websiteScreenshots = functions
   .runWith(runtimeOpts)
   .firestore.document('organizations/{organizationId}/lessons/{lessonId}')
@@ -46,14 +47,23 @@ exports.websiteScreenshots = functions
     if (change.before.exists && !change.after.exists) {
       // The whole document was deleted
       console.log('The document was deleted so delete the thumbnail')
-      await bucket.file(`screenshots/${originalLesson.id}`).delete()
+      const fileToDelete = bucket.file(`screenshots/${originalLesson.id}.png`)
+      fileToDelete.exists().then(function(data) {
+        fileToDelete.delete()
+      })
     } else if (!originalLesson.url && !updatedLesson.url) {
       // It's still empty so do nothing
       console.log('No changes to URL so doing nothing')
     } else if (originalLesson.url && !updatedLesson.url) {
       // User deleted the URL - deleting the image
       console.log(`Deleting file ${originalLesson.url}`)
-      await bucket.file(`screenshots/${context.params.lessonId}.png`).delete()
+
+      const fileToDelete = bucket.file(
+        `screenshots/${context.params.lessonId}.png`
+      )
+      fileToDelete.exists().then(function(data) {
+        fileToDelete.delete()
+      })
       change.after.ref.set({ url_thumbnail: null }, { merge: true })
     } else if (!originalLesson.url && updatedLesson.url) {
       // User added a URL to an existing lesson, when previously there was none, so let's process it
@@ -66,7 +76,13 @@ exports.websiteScreenshots = functions
       console.log(
         `Deleting file ${originalLesson.url} and creating a new thumbnail`
       )
-      await bucket.file(`screenshots/${context.params.lessonId}.png`).delete()
+
+      const fileToDelete = bucket.file(
+        `screenshots/${context.params.lessonId}.png`
+      )
+      fileToDelete.exists().then(function(data) {
+        fileToDelete.delete()
+      })
 
       await saveScreenshot(context.params.lessonId, updatedLesson.url)
     } else {
