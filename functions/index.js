@@ -99,7 +99,7 @@ async function saveScreenshot(id, url) {
   const page = await browser.newPage()
 
   // Screenshot size
-  await page.setViewport({ width: 1024, height: 576 })
+  await page.setViewport({ width: 1024, height: 768 })
 
   // Go to your website
   console.log(`Going to ${url}`)
