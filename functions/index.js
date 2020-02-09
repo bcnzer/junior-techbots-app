@@ -48,9 +48,11 @@ exports.websiteScreenshots = functions
       // The whole document was deleted
       console.log('The document was deleted so delete the thumbnail')
       const fileToDelete = bucket.file(`screenshots/${originalLesson.id}.png`)
-      fileToDelete.exists().then(function(data) {
+
+      const info = await fileToDelete.exists()
+      if (info.exists) {
         fileToDelete.delete()
-      })
+      }
     } else if (!originalLesson.url && !updatedLesson.url) {
       // It's still empty so do nothing
       console.log('No changes to URL so doing nothing')
@@ -61,9 +63,10 @@ exports.websiteScreenshots = functions
       const fileToDelete = bucket.file(
         `screenshots/${context.params.lessonId}.png`
       )
-      fileToDelete.exists().then(function(data) {
+      const info = await fileToDelete.exists()
+      if (info.exists) {
         fileToDelete.delete()
-      })
+      }
       change.after.ref.set({ url_thumbnail: null }, { merge: true })
     } else if (!originalLesson.url && updatedLesson.url) {
       // User added a URL to an existing lesson, when previously there was none, so let's process it
@@ -80,9 +83,10 @@ exports.websiteScreenshots = functions
       const fileToDelete = bucket.file(
         `screenshots/${context.params.lessonId}.png`
       )
-      fileToDelete.exists().then(function(data) {
+      const info = await fileToDelete.exists()
+      if (info.exists) {
         fileToDelete.delete()
-      })
+      }
 
       await saveScreenshot(context.params.lessonId, updatedLesson.url)
     } else {
