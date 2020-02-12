@@ -3,6 +3,7 @@ import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/analytics'
 import 'firebase/performance'
+import 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCbobsqPSkxwZvGTH9tpfDKf_YkZxWVhYI',
@@ -27,4 +28,5 @@ firebase.analytics()
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
 export const perf = firebase.performance()
+export const storage = firebase.storage()
 export default firebase

@@ -33,10 +33,20 @@
           </v-col>
           <v-col cols="12" xs="12" sm="3" class="mx-auto my-auto">
             <v-img
+              v-if="!imageSrc"
+              @click="openImage"
               src="../../bots/robots small.png"
-              style="opacity: 25%"
+              alt="Image preview of the website"
               max-width="256"
-            ></v-img>
+            >
+            </v-img>
+            <v-img
+              v-else
+              :src="imageSrc"
+              lazy-src="../../bots/robots small.png"
+              max-width="256"
+            >
+            </v-img>
           </v-col>
         </v-row>
         <v-row>
@@ -89,7 +99,7 @@
 </template>
 
 <script>
-import { firestore } from '@/services/fireinit.js'
+import { firestore, storage } from '@/services/fireinit.js'
 export default {
   name: 'Lesson',
 
@@ -114,6 +124,8 @@ export default {
       defaultCategories: ['Scratch', 'Python'],
       achievements: null,
       allAchievements: [],
+      imageSrc: null,
+      imageSrcLarge: null,
       urlRule: [
         (v) => {
           if (
@@ -133,6 +145,42 @@ export default {
 
   async created() {
     this.orgId = JSON.parse(localStorage.org).id
+    // const listRef = storage
+    //   .ref(`screenshots/${this.lessonId}x.png`)
+    //   .getDownloadURL()
+    //   .then((response) => {
+    //     console.log('found it')
+    //     console.log(response)
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //     console.log('nope nope nope')
+    //   })
+    // console.info(listRef)
+
+    // This one exists
+    const listResult1 = await storage.ref(`lessons/${this.lessonId}`).listAll()
+    console.log(listResult1)
+
+    // How I could check for file existance
+    if (listResult1.items.length > 0) {
+      // Exists!
+      this.imageSrc = await storage
+        .ref(`lessons/${this.lessonId}/screenshot_256x192.png`)
+        .getDownloadURL()
+
+      this.imageSrcLarge = await storage
+        .ref(`lessons/${this.lessonId}/screenshot.png`)
+        .getDownloadURL()
+    }
+    // try {
+    //   const result = await listRef.getDownloadURL()
+    //   console.log('Found it')
+    //   console.log(result)
+    // } catch (error) {
+    //   // Doesn't exist
+    //   console.error('nope nope nope')
+    // }
 
     if (this.lessonId) {
       this.currentLessonId = this.lessonId
