@@ -150,6 +150,7 @@ export default {
   data() {
     return {
       valid: false,
+      search: null,
       loading: true,
       sendingEmail: false,
       showEmailDialog: false,
