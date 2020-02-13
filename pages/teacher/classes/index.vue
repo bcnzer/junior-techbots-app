@@ -11,37 +11,35 @@
         <v-alert v-if="classes.length == 0" type="warning">
           You must have at least one class defined
         </v-alert>
-        <v-data-table :headers="headers" :items="classes">
-          <template v-slot:top>
-            <v-toolbar flat color="white">
-              <v-toolbar-title>Classes</v-toolbar-title>
-              <v-spacer></v-spacer>
+        <v-card>
+          <v-card-title>
+            Classes
+            <v-spacer></v-spacer>
+            <v-btn @click="showAddEdit = true">Add Class</v-btn>
+            <add-edit-class
+              :show="showAddEdit"
+              :id="dialogAddEditClassId"
+              :class-name="dialogAddEditName"
+              :class-description="dialogAddEditDescription"
+              @onSave="addEditClass"
+              @onClose="closeAddEditClass"
+            ></add-edit-class>
+          </v-card-title>
+          <v-data-table :headers="headers" :items="classes">
+            <template slot="no-data">
+              No classes exist. You must have at least one class
+            </template>
 
-              <v-btn @click="showAddEdit = true">Add Class</v-btn>
-              <add-edit-class
-                :show="showAddEdit"
-                :id="dialogAddEditClassId"
-                :class-name="dialogAddEditName"
-                :class-description="dialogAddEditDescription"
-                @onSave="addEditClass"
-                @onClose="closeAddEditClass"
-              ></add-edit-class>
-            </v-toolbar>
-          </template>
-
-          <template slot="no-data">
-            No classes exist. You must have at least one class
-          </template>
-
-          <template v-slot:item.action="{ item }">
-            <v-icon @click="showEditClass(item)" small class="mr-3">
-              mdi-pencil
-            </v-icon>
-            <v-icon @click="showConfirmationToDelete(item)" small>
-              mdi-delete
-            </v-icon>
-          </template>
-        </v-data-table>
+            <template v-slot:item.action="{ item }">
+              <v-icon @click="showEditClass(item)" small class="mr-3">
+                mdi-pencil
+              </v-icon>
+              <v-icon @click="showConfirmationToDelete(item)" small>
+                mdi-delete
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
       </v-col>
       <snackbar />
       <confirmation-dialog
