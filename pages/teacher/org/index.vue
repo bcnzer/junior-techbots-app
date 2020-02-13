@@ -44,9 +44,9 @@
 </template>
 
 <script>
+import { firestore } from '@/services/fireinit.js'
 import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
-import { firestore } from '@/services/fireinit.js'
 
 export default {
   layout: 'minimal',

@@ -129,11 +129,11 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import uuidv4 from 'uuid/v4'
 import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
 import StudentEntryForm from '@/components/teacher/StudentEntryForm'
+import uuidv4 from 'uuid/v4'
+import firebase from 'firebase/app'
 
 export default {
   layout: 'teacher',

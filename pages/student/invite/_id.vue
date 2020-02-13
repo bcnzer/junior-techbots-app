@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
 import { firestore } from '@/services/fireinit.js'
+import firebase from 'firebase/app'
 
 export default {
   layout: 'minimal',
@@ -113,6 +113,8 @@ export default {
       this.saving = true
       this.waitingYes = true
 
+      const userInfo = JSON.parse(localStorage.currentUser)
+
       await firestore
         .collection('students')
         .doc(this.studentId)
@@ -120,7 +122,8 @@ export default {
           organizations: firebase.firestore.FieldValue.arrayUnion(
             this.invite.orgId
           ),
-          displayName: JSON.parse(localStorage.currentUser).displayName
+          photoURL: userInfo.photoURL,
+          displayName: userInfo.displayName
         })
 
       await firestore
