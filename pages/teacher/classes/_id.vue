@@ -9,8 +9,10 @@
     <div v-if="!loading">
       <v-row>
         <v-col cols="12" xs="12" class="mx-auto">
-          <div class="title">Class name</div>
-          <div class="subtitle-1">Class description</div>
+          <div class="title">{{ className }}</div>
+          <div v-if="classDescription" class="subtitle-1">
+            {{ classDescription }}
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -23,7 +25,9 @@
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
                 <v-card flat>
-                  <v-card-text>students and classes</v-card-text>
+                  <v-card-text
+                    >Next project: not defined. Setup one up now!</v-card-text
+                  >
                 </v-card>
               </v-tab-item>
               <v-tab-item key="schedule">
@@ -52,27 +56,66 @@ export default {
   data() {
     return {
       valid: false,
-      search: null,
-      loading: false,
-      saving: false,
-      tab: null
+      loading: true,
+      tab: null,
+      className: null,
+      classDescription: null,
+      allStudents: [],
+      studentsInClass: [],
+      allLessons: [],
+      schedule: []
     }
   },
 
   async created() {
     this.orgId = JSON.parse(localStorage.org).id
 
-    const currentClass = await firestore
+    // Get all the possible lessons
+    const readLessons = await firestore
+      .collection('organizations')
+      .doc(this.orgId)
+      .collection('lessons')
+      .get()
+
+    if (!readLessons.empty) {
+      readLessons.docs.forEach((lesson) => {
+        const lessonWithId = lesson.data()
+        lessonWithId.id = lesson.id
+        this.allLessons.push(lessonWithId)
+      })
+    }
+
+    // Get all the students
+    const readStudents = await firestore
+      .collection('organizations')
+      .doc(this.orgId)
+      .collection('lessons')
+      .get()
+
+    if (!readStudents.empty) {
+      readStudents.docs.forEach((student) => {
+        const studentWithId = student.data()
+        studentWithId.id = student.id
+        this.allStudents.push(studentWithId)
+      })
+    }
+    console.log(this.allStudents)
+
+    // Finally get info about this specific class
+    const readClass = await firestore
       .collection('organizations')
       .doc(this.orgId)
       .collection('classes')
       .doc(this.$route.params.id)
       .get()
 
-    if (!currentClass.empty) {
-      const data = currentClass.data()
-      console.log(data)
+    if (!readClass.empty) {
+      const currentClass = readClass.data()
+      this.className = currentClass.name
+      this.classDescription = currentClass.description
     }
+
+    this.loading = false
   }
 }
 </script>
