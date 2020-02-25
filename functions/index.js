@@ -8,6 +8,71 @@ const SENDGRID_API_KEY = functions.config().sendgrid.key
 
 sendGridEmail.setApiKey(SENDGRID_API_KEY)
 
+exports.updateLessonInClassSchedule = functions.firestore
+  .document('organizations/{organizationId}/lessons/{lessonId}')
+  .onWrite(async function(change, context) {
+    const originalLesson = change.before.data()
+    const updatedLesson = change.after.data()
+
+    if (!originalLesson) {
+      // Nothing to do here
+      console.log('New lesson so ignore')
+    } else if (!updatedLesson) {
+      // TODO - how will I handle deletes? Maybe I won't and can just leave them alone
+      console.log('Deleted lesson')
+    } else {
+      console.log('Updated lesson')
+      const classesSnapshot = await admin
+        .firestore()
+        .collection('organizations')
+        .doc(context.params.organizationId)
+        .collection('classes')
+        .get()
+      classesSnapshot.forEach(async (doc) => {
+        const currentClass = doc.data()
+        if (currentClass.lessons) {
+          for (let index = 0; index < currentClass.lessons.length; index++) {
+            if (
+              currentClass.lessons[index].lessonId === context.params.lessonId
+            ) {
+              console.log('found record to update')
+              console.log('removing array item')
+              await admin
+                .firestore()
+                .collection('organizations')
+                .doc(context.params.organizationId)
+                .collection('classes')
+                .doc(doc.id)
+                .update({
+                  lessons: admin.firestore.FieldValue.arrayRemove(
+                    currentClass.lessons[index]
+                  )
+                })
+
+              console.log('adding array item')
+              currentClass.lessons[index].name = updatedLesson.name
+              currentClass.lessons[index].description =
+                updatedLesson.description
+              await admin
+                .firestore()
+                .collection('organizations')
+                .doc(context.params.organizationId)
+                .collection('classes')
+                .doc(doc.id)
+                .update({
+                  lessons: admin.firestore.FieldValue.arrayUnion(
+                    currentClass.lessons[index]
+                  )
+                })
+            }
+          }
+        }
+      })
+
+      console.log(context.params.organizationId)
+    }
+  })
+
 exports.inviteStudentEmail = functions.firestore
   .document('students/{studentId}/invites/{inviteId}')
   .onCreate((event, context) => {
