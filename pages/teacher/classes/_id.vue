@@ -19,15 +19,40 @@
         <v-col cols="12" xs="12" class="mx-auto">
           <v-card>
             <v-tabs v-model="tab">
-              <v-tab key="details">Details</v-tab>
-              <v-tab key="schedule">Schedule</v-tab>
+              <v-tab key="details">Students</v-tab>
+              <v-tab key="schedule">Lessons & Schedule</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
                 <v-card flat>
-                  <v-card-text
-                    >Next project: not defined. Setup one up now!</v-card-text
-                  >
+                  <v-card-text>
+                    <div class="text-right">
+                      <v-btn class="mx-right">Add Student</v-btn>
+                    </div>
+                    <v-list three-line>
+                      <template v-for="(student, index) in allStudents">
+                        <v-divider
+                          v-if="showDivider(index, allStudents.length)"
+                          :key="index"
+                        ></v-divider>
+
+                        <v-list-item :key="student.id" @click="">
+                          <v-list-item-avatar>
+                            <v-img :src="student.photoURL"></v-img>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-html="student.displayName"
+                            ></v-list-item-title>
+                            <v-list-item-subtitle
+                              v-html="student.email"
+                            ></v-list-item-subtitle>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-list>
+                  </v-card-text>
                 </v-card>
               </v-tab-item>
               <v-tab-item key="schedule">
@@ -87,9 +112,8 @@ export default {
 
     // Get all the students
     const readStudents = await firestore
-      .collection('organizations')
-      .doc(this.orgId)
-      .collection('lessons')
+      .collection('students')
+      .where('organizations', 'array-contains', this.orgId)
       .get()
 
     if (!readStudents.empty) {
@@ -116,6 +140,14 @@ export default {
     }
 
     this.loading = false
+  },
+
+  methods: {
+    showDivider(index, length) {
+      if (index <= 0) return false
+      if (index < length) return true
+      return false
+    }
   }
 }
 </script>

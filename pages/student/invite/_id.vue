@@ -114,6 +114,7 @@ export default {
       this.waitingYes = true
 
       const userInfo = JSON.parse(localStorage.currentUser)
+      console.log(userInfo)
 
       await firestore
         .collection('students')
