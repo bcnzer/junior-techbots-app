@@ -2,7 +2,22 @@
   <v-container>
     <v-row v-if="loading">
       <v-col cols="12" xs="12" class="mx-auto">
-        <v-skeleton-loader type="table" min-width="300"></v-skeleton-loader>
+        <v-skeleton-loader
+          type="table-heading"
+          min-width="300"
+        ></v-skeleton-loader>
+        <v-skeleton-loader
+          type="list-item-avatar-three-line"
+          min-width="300"
+        ></v-skeleton-loader>
+        <v-skeleton-loader
+          type="list-item-avatar-three-line"
+          min-width="300"
+        ></v-skeleton-loader>
+        <v-skeleton-loader
+          type="list-item-avatar-three-line"
+          min-width="300"
+        ></v-skeleton-loader>
       </v-col>
     </v-row>
 
@@ -29,6 +44,7 @@
                     <div class="text-right">
                       <v-btn class="mx-right">Add Student</v-btn>
                     </div>
+
                     <v-list three-line>
                       <template v-for="(student, index) in allStudents">
                         <v-divider
@@ -49,6 +65,21 @@
                               v-html="student.email"
                             ></v-list-item-subtitle>
                           </v-list-item-content>
+
+                          <v-list-item-action>
+                            <v-btn text icon>
+                              <v-icon>
+                                mdi-pencil
+                              </v-icon>
+                            </v-btn>
+                          </v-list-item-action>
+                          <v-list-item-action>
+                            <v-btn text icon>
+                              <v-icon>
+                                mdi-delete
+                              </v-icon>
+                            </v-btn>
+                          </v-list-item-action>
                         </v-list-item>
                       </template>
                     </v-list>
