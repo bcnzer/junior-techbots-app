@@ -35,60 +35,25 @@
           <v-card>
             <v-tabs v-model="tab">
               <v-tab key="details">Students</v-tab>
-              <v-tab key="schedule">Lessons & Schedule</v-tab>
+              <v-tab key="projectQueue">Project Queue</v-tab>
+              <v-tab key="schedule">schedule</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
                 <v-card flat>
                   <v-card-text>
-                    <div class="text-right">
-                      <v-btn class="mx-right">Add Student</v-btn>
-                    </div>
-
-                    <v-list three-line>
-                      <template v-for="(student, index) in allStudents">
-                        <v-divider
-                          v-if="showDivider(index, allStudents.length)"
-                          :key="index"
-                        ></v-divider>
-
-                        <v-list-item :key="student.id" @click="">
-                          <v-list-item-avatar>
-                            <v-img :src="student.photoURL"></v-img>
-                          </v-list-item-avatar>
-
-                          <v-list-item-content>
-                            <v-list-item-title
-                              v-html="student.displayName"
-                            ></v-list-item-title>
-                            <v-list-item-subtitle
-                              v-html="student.email"
-                            ></v-list-item-subtitle>
-                          </v-list-item-content>
-
-                          <v-list-item-action>
-                            <v-btn text icon>
-                              <v-icon>
-                                mdi-pencil
-                              </v-icon>
-                            </v-btn>
-                          </v-list-item-action>
-                          <v-list-item-action>
-                            <v-btn text icon>
-                              <v-icon>
-                                mdi-delete
-                              </v-icon>
-                            </v-btn>
-                          </v-list-item-action>
-                        </v-list-item>
-                      </template>
-                    </v-list>
+                    <class-students :students="allStudents"></class-students>
                   </v-card-text>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item key="projectQueue">
+                <v-card flat>
+                  <v-card-text>schedule</v-card-text>
                 </v-card>
               </v-tab-item>
               <v-tab-item key="schedule">
                 <v-card flat>
-                  <v-card-text>schedule</v-card-text>
+                  <!-- insert calendar cmponent here -->
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -101,12 +66,17 @@
 
 <script>
 import { firestore } from '@/services/fireinit.js'
+import ClassStudents from '~/components/teacher/classes/ClassStudents'
 
 export default {
   layout: 'teacher',
 
   head() {
     return { title: 'Class' }
+  },
+
+  components: {
+    ClassStudents
   },
 
   data() {
@@ -119,7 +89,49 @@ export default {
       allStudents: [],
       studentsInClass: [],
       allLessons: [],
-      schedule: []
+      schedule: [],
+      focus: '',
+      calendarType: 'month',
+      calendarTypes: ['month', 'week', 'day', '4day'],
+      calendarValue: '',
+      calendarEvents: [],
+      typeToLabel: {
+        month: 'Month',
+        week: 'Week',
+        day: 'Day',
+        '4day': '4 Days'
+      }
+    }
+  },
+
+  computed: {
+    title() {
+      const { start, end } = this
+      if (!start || !end) {
+        return ''
+      }
+
+      const startMonth = this.monthFormatter(start)
+      const endMonth = this.monthFormatter(end)
+      const suffixMonth = startMonth === endMonth ? '' : endMonth
+
+      const startYear = start.year
+      const endYear = end.year
+      const suffixYear = startYear === endYear ? '' : endYear
+
+      const startDay = start.day + this.nth(start.day)
+      const endDay = end.day + this.nth(end.day)
+
+      switch (this.type) {
+        case 'month':
+          return `${startMonth} ${startYear}`
+        case 'week':
+        case '4day':
+          return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+        case 'day':
+          return `${startMonth} ${startDay} ${startYear}`
+      }
+      return ''
     }
   },
 
@@ -154,7 +166,6 @@ export default {
         this.allStudents.push(studentWithId)
       })
     }
-    console.log(this.allStudents)
 
     // Finally get info about this specific class
     const readClass = await firestore
@@ -165,15 +176,31 @@ export default {
       .get()
 
     if (!readClass.empty) {
-      const currentClass = readClass.data()
-      this.className = currentClass.name
-      this.classDescription = currentClass.description
+      // const currentClass = readClass.data()
+      // this.className = currentClass.name
+      // this.classDescription = currentClass.description
     }
 
     this.loading = false
   },
 
   methods: {
+    viewDay({ date }) {
+      this.focus = date
+      this.type = 'day'
+    },
+    getEventColor(event) {
+      return event.color
+    },
+    setToday() {
+      this.focus = this.today
+    },
+    prev() {
+      this.$refs.calendar.prev()
+    },
+    next() {
+      this.$refs.calendar.next()
+    },
     showDivider(index, length) {
       if (index <= 0) return false
       if (index < length) return true
