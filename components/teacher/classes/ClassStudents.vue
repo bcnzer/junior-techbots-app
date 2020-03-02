@@ -59,7 +59,7 @@
               <template v-for="student in students">
                 <v-list-item :key="student.id" @click="">
                   <v-list-item-action>
-                    <v-checkbox></v-checkbox>
+                    <v-checkbox v-model="student.selected"></v-checkbox>
                   </v-list-item-action>
                   <v-list-item-avatar class="mr-5">
                     <v-img :src="student.photoURL"></v-img>

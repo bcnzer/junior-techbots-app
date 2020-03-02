@@ -42,7 +42,9 @@
               <v-tab-item key="details">
                 <v-card flat>
                   <v-card-text>
-                    <class-students :students="allStudents"></class-students>
+                    <class-students
+                      :students="allStudentsInOrg"
+                    ></class-students>
                   </v-card-text>
                 </v-card>
               </v-tab-item>
@@ -85,8 +87,9 @@ export default {
       loading: true,
       tab: null,
       className: null,
+      currentOrg: null,
       classDescription: null,
-      allStudents: [],
+      allStudentsInOrg: [],
       studentsInClass: [],
       allLessons: [],
       schedule: [],
@@ -153,7 +156,7 @@ export default {
       })
     }
 
-    // Get all the students
+    // Get all the students in the organization - everyone possible
     const readStudents = await firestore
       .collection('students')
       .where('organizations', 'array-contains', this.orgId)
@@ -163,7 +166,7 @@ export default {
       readStudents.docs.forEach((student) => {
         const studentWithId = student.data()
         studentWithId.id = student.id
-        this.allStudents.push(studentWithId)
+        this.allStudentsInOrg.push(studentWithId)
       })
     }
 
@@ -176,9 +179,17 @@ export default {
       .get()
 
     if (!readClass.empty) {
-      // const currentClass = readClass.data()
-      // this.className = currentClass.name
-      // this.classDescription = currentClass.description
+      const currentClass = readClass.data()
+      if (currentClass) {
+        this.className = currentClass.name
+        this.classDescription = currentClass.description
+
+        // Go through and mark all the selected students
+        this.allStudentsInOrg.forEach((student) => {
+          student.selected = currentClass.students.includes(student.id)
+        })
+        console.log(this.allStudentsInOrg)
+      }
     }
 
     this.loading = false

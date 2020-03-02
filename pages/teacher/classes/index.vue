@@ -182,10 +182,11 @@ export default {
       this.showConfirmationDialog = false
     },
     showEditClass(item) {
-      this.dialogAddEditClassId = item.id
-      this.dialogAddEditName = item.name
-      this.dialogAddEditDescription = item.description
-      this.showAddEdit = true
+      this.$router.push(`/teacher/classes/${item.id}`)
+      // this.dialogAddEditClassId = item.id
+      // this.dialogAddEditName = item.name
+      // this.dialogAddEditDescription = item.description
+      // this.showAddEdit = true
     },
     showConfirmationToDelete(item) {
       this.classToRemoveId = item.id
