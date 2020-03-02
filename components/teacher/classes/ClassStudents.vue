@@ -39,7 +39,7 @@
       </template>
     </v-list>
 
-    <v-dialog v-model="showDialog" max-width="750px">
+    <v-dialog v-model="showDialog" scrollable max-width="750px">
       <v-form ref="modalStudents" lazy-validation>
         <v-card>
           <v-card-title>
@@ -53,29 +53,31 @@
               hide-details
             ></v-text-field>
           </v-card-title>
-          <v-list two-line>
-            <v-divider></v-divider>
-            <template v-for="student in students">
-              <v-list-item :key="student.id" @click="">
-                <v-list-item-action>
-                  <v-checkbox></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-avatar class="mr-5">
-                  <v-img :src="student.photoURL"></v-img>
-                </v-list-item-avatar>
-
-                <v-list-item-content>
-                  <v-list-item-title
-                    v-html="student.displayName"
-                  ></v-list-item-title>
-                  <v-list-item-subtitle
-                    v-html="student.email"
-                  ></v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
+          <v-card-text>
+            <v-list two-line>
               <v-divider></v-divider>
-            </template>
-          </v-list>
+              <template v-for="student in students">
+                <v-list-item :key="student.id" @click="">
+                  <v-list-item-action>
+                    <v-checkbox></v-checkbox>
+                  </v-list-item-action>
+                  <v-list-item-avatar class="mr-5">
+                    <v-img :src="student.photoURL"></v-img>
+                  </v-list-item-avatar>
+
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-html="student.displayName"
+                    ></v-list-item-title>
+                    <v-list-item-subtitle
+                      v-html="student.email"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
+              </template>
+            </v-list>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="btnClick(true)" :loading="saving" color="primary"
