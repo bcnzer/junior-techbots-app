@@ -44,6 +44,7 @@
                   <v-card-text>
                     <class-students
                       :students="allStudentsInOrg"
+                      v-on:save-selected-students="onSaveSelectedStudents"
                     ></class-students>
                   </v-card-text>
                 </v-card>
@@ -188,7 +189,6 @@ export default {
         this.allStudentsInOrg.forEach((student) => {
           student.selected = currentClass.students.includes(student.id)
         })
-        console.log(this.allStudentsInOrg)
       }
     }
 
@@ -196,6 +196,9 @@ export default {
   },
 
   methods: {
+    onSaveSelectedStudents(students) {
+      this.allStudentsInOrg = students
+    },
     viewDay({ date }) {
       this.focus = date
       this.type = 'day'

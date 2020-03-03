@@ -110,7 +110,6 @@ export default {
         if (this.internalDescription) {
           updatedClass.description = this.internalDescription
         }
-        console.log(updatedClass)
         this.$emit('onSave', updatedClass)
       } else {
         this.$emit('onClose')

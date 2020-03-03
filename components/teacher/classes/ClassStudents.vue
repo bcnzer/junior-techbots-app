@@ -39,7 +39,7 @@
       </template>
     </v-list>
 
-    <v-dialog v-model="showDialog" scrollable max-width="750px">
+    <v-dialog v-model="showDialog" persistent scrollable max-width="750px">
       <v-form ref="modalStudents" lazy-validation>
         <v-card>
           <v-card-title>
@@ -141,31 +141,13 @@ export default {
     showStudentDialog() {
       // Clone the array. That way each time you open the dialog we won't display
       // the previously selected students
+      this.search = null
       this.dialogStudents = JSON.parse(JSON.stringify(this.students))
       this.showDialog = true
     },
     saveSelectedStudents() {
-      // if (save && !this.$refs.modalAddEditClass.validate()) {
-      //   return
-      // }
-      // // Note that closing of the dialog is done by the component that called
-      // // the dialog so they must listen to both events below
-      // this.saving = false
-      // if (save && (!this.internalName || !this.internalDescription)) {
-      //   const updatedClass = { id: this.id }
-      //   if (this.internalName) {
-      //     updatedClass.name = this.internalName
-      //   }
-      //   if (this.internalDescription) {
-      //     updatedClass.description = this.internalDescription
-      //   }
-      //   console.log(updatedClass)
-      //   this.$emit('onSave', updatedClass)
-      // } else {
-      //   this.$emit('onClose')
-      // }
-      // this.internalName = null
-      // this.internalDescription = null
+      this.$emit('save-selected-students', this.dialogStudents)
+      this.showDialog = false
     }
   }
 }

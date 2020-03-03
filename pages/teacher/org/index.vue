@@ -75,7 +75,6 @@ export default {
       .where('uid', '==', currentUserUid)
       .get()
 
-    console.log('got teacher record')
     if (teacherRecord.docs.length > 0) {
       this.teacherRecordId = teacherRecord.docs[0].id
       teacherRecord = teacherRecord.docs[0].data()
