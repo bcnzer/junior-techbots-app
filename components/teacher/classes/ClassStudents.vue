@@ -1,17 +1,17 @@
 <template>
   <div>
-    <v-btn @click="showDialog = true" class="mx-right"
+    <v-btn @click="showStudentDialog()" class="mx-right"
       >Add Students to Class</v-btn
     >
 
     <v-list two-line>
-      <template v-for="(student, index) in students">
+      <template v-for="(student, index) in selectedStudents">
         <v-divider
           v-if="showDivider(index, students.length)"
           :key="index"
         ></v-divider>
 
-        <v-list-item :key="student.id" @click="">
+        <v-list-item :key="student.id">
           <v-list-item-avatar>
             <v-img :src="student.photoURL"></v-img>
           </v-list-item-avatar>
@@ -56,8 +56,8 @@
           <v-card-text>
             <v-list two-line>
               <v-divider></v-divider>
-              <template v-for="student in students">
-                <v-list-item :key="student.id" @click="">
+              <template v-for="student in dialogStudents">
+                <v-list-item :key="student.id" v-show="showStudent(student)">
                   <v-list-item-action>
                     <v-checkbox v-model="student.selected"></v-checkbox>
                   </v-list-item-action>
@@ -80,10 +80,13 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="btnClick(true)" :loading="saving" color="primary"
+            <v-btn
+              @click="saveSelectedStudents()"
+              :loading="saving"
+              color="primary"
               >Save</v-btn
             >
-            <v-btn @click="btnClick(false)" :disabled="saving">Cancel</v-btn>
+            <v-btn @click="showDialog = false" :disabled="saving">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -106,23 +109,42 @@ export default {
     return {
       search: null,
       showDialog: false,
-      saving: false
+      saving: false,
+      dialogStudents: []
     }
   },
 
   computed: {
-    actionType() {
-      return !this.id ? 'Add' : 'Edit'
+    selectedStudents() {
+      return this.students.filter((student) => {
+        return student.selected === true
+      })
     }
   },
 
   methods: {
+    showStudent(student) {
+      // Based on the search, show the student... or not
+      if (!this.search) return true
+
+      const searchLowercase = this.search.toLowerCase()
+      return (
+        student.displayName.toLowerCase().includes(searchLowercase) ||
+        student.email.toLowerCase().includes(searchLowercase)
+      )
+    },
     showDivider(index, length) {
       if (index <= 0) return false
       if (index < length) return true
       return false
     },
-    btnClick(save) {
+    showStudentDialog() {
+      // Clone the array. That way each time you open the dialog we won't display
+      // the previously selected students
+      this.dialogStudents = JSON.parse(JSON.stringify(this.students))
+      this.showDialog = true
+    },
+    saveSelectedStudents() {
       // if (save && !this.$refs.modalAddEditClass.validate()) {
       //   return
       // }
