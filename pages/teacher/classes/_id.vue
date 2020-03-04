@@ -196,8 +196,20 @@ export default {
   },
 
   methods: {
-    onSaveSelectedStudents(students) {
+    async onSaveSelectedStudents(students) {
       this.allStudentsInOrg = students
+      const selectedStudents = students
+        .filter((currentStudent) => currentStudent.selected)
+        .map((selectedStudent) => selectedStudent.id)
+
+      await firestore
+        .collection('organizations')
+        .doc(this.orgId)
+        .collection('classes')
+        .doc(this.$route.params.id)
+        .update({
+          students: selectedStudents
+        })
     },
     viewDay({ date }) {
       this.focus = date
