@@ -35,7 +35,7 @@
           <v-card>
             <v-tabs v-model="tab">
               <v-tab key="details">Students</v-tab>
-              <v-tab key="projectQueue">Project Queue</v-tab>
+              <v-tab key="lessonQueue">Lesson Queue</v-tab>
               <v-tab key="schedule">schedule</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
@@ -49,9 +49,14 @@
                   </v-card-text>
                 </v-card>
               </v-tab-item>
-              <v-tab-item key="projectQueue">
+              <v-tab-item key="lessonQueue">
                 <v-card flat>
-                  <v-card-text>schedule</v-card-text>
+                  <v-card-text>
+                    <lesson-queue
+                      :lessons="allLessonsInOrg"
+                      v-on:save-selected-lessons="onSaveSelectedLessons"
+                    ></lesson-queue>
+                  </v-card-text>
                 </v-card>
               </v-tab-item>
               <v-tab-item key="schedule">
@@ -70,6 +75,7 @@
 <script>
 import { firestore } from '@/services/fireinit.js'
 import ClassStudents from '~/components/teacher/classes/ClassStudents'
+import LessonQueue from '~/components/teacher/classes/LessonQueue'
 
 export default {
   layout: 'teacher',
@@ -79,7 +85,8 @@ export default {
   },
 
   components: {
-    ClassStudents
+    ClassStudents,
+    LessonQueue
   },
 
   data() {
@@ -92,7 +99,7 @@ export default {
       classDescription: null,
       allStudentsInOrg: [],
       studentsInClass: [],
-      allLessons: [],
+      allLessonsInOrg: [],
       schedule: [],
       focus: '',
       calendarType: 'month',
@@ -153,7 +160,7 @@ export default {
       readLessons.docs.forEach((lesson) => {
         const lessonWithId = lesson.data()
         lessonWithId.id = lesson.id
-        this.allLessons.push(lessonWithId)
+        this.allLessonsInOrg.push(lessonWithId)
       })
     }
 
@@ -186,9 +193,17 @@ export default {
         this.classDescription = currentClass.description
 
         // Go through and mark all the selected students
-        this.allStudentsInOrg.forEach((student) => {
-          student.selected = currentClass.students.includes(student.id)
-        })
+        if (currentClass.students) {
+          this.allStudentsInOrg.forEach((student) => {
+            student.selected = currentClass.students.includes(student.id)
+          })
+        }
+
+        if (currentClass.lessons) {
+          this.allLessonsInOrg.forEach((lesson) => {
+            lesson.selected = currentClass.lessons.includes(lesson.id)
+          })
+        }
       }
     }
 
@@ -196,6 +211,9 @@ export default {
   },
 
   methods: {
+    onSaveSelectedLessons(lessons) {
+      // TODO
+    },
     async onSaveSelectedStudents(students) {
       this.allStudentsInOrg = students
       const selectedStudents = students
