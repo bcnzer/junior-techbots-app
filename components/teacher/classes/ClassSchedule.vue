@@ -50,6 +50,7 @@
           @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
+          @mousedown:day="onMouseDown"
           color="primary"
         ></v-calendar>
         <v-menu
@@ -107,8 +108,57 @@ export default {
         week: 'Week',
         day: 'Day',
         '4day': '4 Days'
-      }
+      },
+      start: null,
+      end: null,
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false,
+      events: [],
+      focus: '',
+      today: null
     }
+  },
+
+  computed: {
+    title() {
+      const { start, end } = this
+      if (!start || !end) {
+        return ''
+      }
+
+      const startMonth = this.monthFormatter(start)
+      const endMonth = this.monthFormatter(end)
+      const suffixMonth = startMonth === endMonth ? '' : endMonth
+
+      const startYear = start.year
+      const endYear = end.year
+      const suffixYear = startYear === endYear ? '' : endYear
+
+      const startDay = start.day + this.nth(start.day)
+      const endDay = end.day + this.nth(end.day)
+
+      switch (this.type) {
+        case 'month':
+          return `${startMonth} ${startYear}`
+        case 'week':
+        case '4day':
+          return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+        case 'day':
+          return `${startMonth} ${startDay} ${startYear}`
+      }
+      return ''
+    },
+    monthFormatter() {
+      return this.$refs.calendar.getFormatter({
+        timeZone: 'UTC',
+        month: 'long'
+      })
+    }
+  },
+
+  mounted() {
+    this.$refs.calendar.checkChange()
   },
 
   methods: {
@@ -136,6 +186,20 @@ export default {
     },
     updateRange() {
       // TODO
+    },
+    getEventColor(event) {
+      // TODO
+      return 'blue'
+    },
+    setToday() {
+      this.focus = this.today
+    },
+    viewDay({ date }) {
+      this.focus = date
+      this.type = 'day'
+    },
+    onMouseDown(event) {
+      console.log(event)
     }
   }
 }

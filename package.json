@@ -16,8 +16,8 @@
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-0",
     "@nuxtjs/robots": "^2.4.2",
-    "@nuxtjs/sentry": "^3.0.1",
-    "firebase": "^7.7.0",
+    "@nuxtjs/sentry": "^3.3.1",
+    "firebase": "^7.10.0",
     "nuxt": "^2.11.0",
     "uuid": "^3.3.3",
     "vue-confetti": "^2.0.7"
@@ -26,7 +26,7 @@
     "@babel/runtime-corejs3": "^7.8.4",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
-    "@nuxtjs/vuetify": "^1.0.0",
+    "@nuxtjs/vuetify": "^1.11.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",

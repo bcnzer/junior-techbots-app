@@ -35,8 +35,8 @@
           <v-card>
             <v-tabs v-model="tab">
               <v-tab key="details">Students</v-tab>
-              <v-tab key="lessonQueue">Lesson Queue</v-tab>
               <v-tab key="schedule">schedule</v-tab>
+              <v-tab key="lessonQueue">Lesson Queue</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
@@ -49,6 +49,11 @@
                   </v-card-text>
                 </v-card>
               </v-tab-item>
+              <v-tab-item key="schedule">
+                <v-card flat>
+                  <class-schedule></class-schedule>
+                </v-card>
+              </v-tab-item>
               <v-tab-item key="lessonQueue">
                 <v-card flat>
                   <v-card-text>
@@ -57,11 +62,6 @@
                       v-on:save-selected-lessons="onSaveSelectedLessons"
                     ></lesson-queue>
                   </v-card-text>
-                </v-card>
-              </v-tab-item>
-              <v-tab-item key="schedule">
-                <v-card flat>
-                  <class-schedule></class-schedule>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
