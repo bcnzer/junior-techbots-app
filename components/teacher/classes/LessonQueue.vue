@@ -2,32 +2,61 @@
   <div>
     <v-btn @click="showLessonDialog()" class="mx-right">Add Lessons</v-btn>
 
-    <div class="title my-3">{{ selectedLessons.length }} lessons</div>
-    <v-timeline dense>
-      <v-timeline-item
-        v-for="(lesson, index) in selectedLessons"
-        :key="index"
-        small
-        right
-      >
-        <template v-slot:opposite>
-          <span
-            :class="`headline font-weight-bold blue--text`"
-            v-text="lesson.name"
-          ></span>
-        </template>
-        <div class="py-4">
-          <h2 :class="`headline font-weight-light mb-4 blue--text`">
-            {{ lesson.name }}
-          </h2>
-          <div>{{ lesson.description }}</div>
-        </div>
-      </v-timeline-item>
-    </v-timeline>
+    <v-checkbox label="View completed lessons"></v-checkbox>
+
+    <v-list two-line>
+      <template v-for="(lesson, index) in selectedLessons">
+        <v-divider :key="lesson.id"></v-divider>
+
+        <v-list-item>
+          <v-list-item-icon>
+            <v-img
+              v-if="lesson.imageSrc != '../../bots/robots small.png'"
+              :src="lesson.imageSrc"
+              lazy-src="../../bots/robots small.png"
+              style="max-width: 128px"
+            ></v-img>
+            <v-img
+              v-if="lesson.imageSrc == '../../bots/robots small.png'"
+              :src="lesson.imageSrc"
+              style="max-width: 128px; filter: blur(2px)"
+            ></v-img>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <h2 class="mb-2">Est date: 20 Mar 2020</h2>
+            <h3>{{ lesson.name }}</h3>
+            <div>{{ lesson.description }}</div>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn text icon>
+              <v-icon>
+                mdi-arrow-up-bold
+              </v-icon>
+            </v-btn>
+          </v-list-item-action>
+          <v-list-item-action>
+            <v-btn text icon>
+              <v-icon>
+                mdi-arrow-down-bold
+              </v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+
+        <v-divider
+          v-if="index == selectedLessons.length - 1"
+          :key="index"
+        ></v-divider>
+      </template>
+    </v-list>
   </div>
 </template>
 
 <script>
+import { storage } from '@/services/fireinit.js'
+
 export default {
   name: 'LessonQueue',
 
@@ -56,6 +85,17 @@ export default {
   },
 
   methods: {
+    async getImageUrl(lessonId) {
+      try {
+        const imageSrc = await storage
+          .ref(`lessons/${lessonId}/screenshot_256x192.png`)
+          .getDownloadURL()
+
+        return imageSrc
+      } catch (error) {
+        return null
+      }
+    },
     showStudent(student) {
       // Based on the search, show the student... or not
       if (!this.search) return true
@@ -65,11 +105,6 @@ export default {
         student.displayName.toLowerCase().includes(searchLowercase) ||
         student.email.toLowerCase().includes(searchLowercase)
       )
-    },
-    showDivider(index, length) {
-      if (index <= 0) return false
-      if (index < length) return true
-      return false
     },
     showStudentDialog() {
       // Clone the array. That way each time you open the dialog we won't display

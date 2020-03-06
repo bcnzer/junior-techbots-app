@@ -192,6 +192,7 @@ async function saveScreenshot(id, url) {
   const filePath = `lessons/${id}/screenshot.png`
   console.log(`Creating file at ${filePath}`)
   const file = bucket.file(filePath)
+  console.log(file)
 
   // Save the image
   console.log(`Saving file`)

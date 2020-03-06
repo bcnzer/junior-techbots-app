@@ -61,7 +61,7 @@
               </v-tab-item>
               <v-tab-item key="schedule">
                 <v-card flat>
-                  <!-- insert calendar cmponent here -->
+                  <class-schedule></class-schedule>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -73,9 +73,10 @@
 </template>
 
 <script>
-import { firestore } from '@/services/fireinit.js'
+import { firestore, storage } from '@/services/fireinit.js'
 import ClassStudents from '~/components/teacher/classes/ClassStudents'
 import LessonQueue from '~/components/teacher/classes/LessonQueue'
+import ClassSchedule from '~/components/teacher/classes/ClassSchedule'
 
 export default {
   layout: 'teacher',
@@ -86,7 +87,8 @@ export default {
 
   components: {
     ClassStudents,
-    LessonQueue
+    LessonQueue,
+    ClassSchedule
   },
 
   data() {
@@ -161,6 +163,21 @@ export default {
         const lessonWithId = lesson.data()
         lessonWithId.id = lesson.id
         this.allLessonsInOrg.push(lessonWithId)
+      })
+
+      // Now fetch their images
+      this.allLessonsInOrg.forEach(async (lesson) => {
+        let imageSrc
+        try {
+          imageSrc = await storage
+            .ref(`lessons/${lesson.id}/screenshot_256x192.png`)
+            .getDownloadURL()
+          console.log(imageSrc)
+        } catch (error) {
+          // By keeping it undefined the fuzzy, lazy loaded image is used
+          imageSrc = '../../bots/robots small.png'
+        }
+        lesson.imageSrc = imageSrc
       })
     }
 

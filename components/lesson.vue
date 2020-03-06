@@ -173,13 +173,27 @@ export default {
       const lessonData = lesson.data()
 
       this.name = lessonData.name
-      this.description = lessonData.description
-      this.url = lessonData.url
-      this.urlPreview = lessonData.url
-      this.messageForParents = lessonData.messageForParents
-      this.furtherResources = lessonData.furtherResources
-      this.category = lessonData.category
-      this.achievements = lessonData.achievements
+      if (lessonData.description) {
+        this.description = lessonData.description
+      }
+      if (lessonData.url) {
+        this.url = lessonData.url
+      }
+      if (lessonData.url) {
+        this.urlPreview = lessonData.url
+      }
+      if (lessonData.url) {
+        this.messageForParents = lessonData.messageForParents
+      }
+      if (lessonData.url) {
+        this.furtherResources = lessonData.furtherResources
+      }
+      if (lessonData.url) {
+        this.category = lessonData.category
+      }
+      if (lessonData.url) {
+        this.achievements = lessonData.achievements
+      }
     }
 
     this.loading = false
@@ -203,6 +217,7 @@ export default {
           messageForParents: this.messageForParents,
           furtherResources: this.furtherResources
         }
+        console.log(lesson)
 
         if (!this.currentLessonId) {
           const newLesson = await collection.add(lesson)
