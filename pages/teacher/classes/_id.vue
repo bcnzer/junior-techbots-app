@@ -35,8 +35,7 @@
           <v-card>
             <v-tabs v-model="tab">
               <v-tab key="details">Students</v-tab>
-              <v-tab key="schedule">schedule</v-tab>
-              <v-tab key="lessonQueue">Lesson Queue</v-tab>
+              <v-tab key="schedule">Lesson Schedule</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
@@ -75,7 +74,6 @@
 <script>
 import { firestore, storage } from '@/services/fireinit.js'
 import ClassStudents from '~/components/teacher/classes/ClassStudents'
-import LessonQueue from '~/components/teacher/classes/LessonQueue'
 import ClassSchedule from '~/components/teacher/classes/ClassSchedule'
 
 export default {
@@ -87,7 +85,6 @@ export default {
 
   components: {
     ClassStudents,
-    LessonQueue,
     ClassSchedule
   },
 

@@ -51,39 +51,74 @@
           @click:date="viewDay"
           @change="updateRange"
           @mousedown:day="onMouseDown"
+          @mousedown:interval="onMouseDown"
+          @mousedown:time="onMouseDown"
           color="primary"
         ></v-calendar>
-        <v-menu
-          v-model="selectedOpen"
-          :close-on-content-click="false"
-          :activator="selectedElement"
-          offset-x
-        >
-          <v-card color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </v-toolbar>
+      </v-sheet>
+
+      <v-dialog v-model="showDialog" scrollable max-width="750px">
+        <v-form ref="modalStudents" lazy-validation>
+          <v-card>
+            <v-card-title>
+              Scheduled Lesson
+            </v-card-title>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <v-container>
+                <v-row>
+                  <v-combobox
+                    v-model="selectedLesson"
+                    :items="lessons"
+                    :disabled="saving"
+                    label="Lesson"
+                  ></v-combobox>
+                </v-row>
+                <v-row>
+                  <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :return-value.sync="date"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="date"
+                        v-on="on"
+                        label="Picker in menu"
+                        readonly
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn @click="menu = false" text color="primary"
+                        >Cancel</v-btn
+                      >
+                      <v-btn @click="$refs.menu.save(date)" text color="primary"
+                        >OK</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
+                </v-row>
+              </v-container>
             </v-card-text>
             <v-card-actions>
-              <v-btn @click="selectedOpen = false" text color="secondary">
-                Cancel
-              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn @click="showDialog = false" :disabled="saving"
+                >Cancel</v-btn
+              >
+              <v-btn
+                @click="saveScheduledClass()"
+                :loading="saving"
+                color="primary"
+                >Save</v-btn
+              >
             </v-card-actions>
           </v-card>
-        </v-menu>
-      </v-sheet>
+        </v-form>
+      </v-dialog>
     </v-col>
   </v-row>
 </template>
@@ -96,11 +131,16 @@ export default {
     schedule: {
       type: Array,
       default: () => []
+    },
+    availableLessons: {
+      type: Array,
+      default: () => []
     }
   },
 
   data() {
     return {
+      saving: null,
       showDialog: false,
       type: 'month',
       typeToLabel: {
@@ -162,7 +202,13 @@ export default {
   },
 
   methods: {
+    saveScheduledClass() {
+      // TODO
+      this.showDialog = false
+    },
     showEvent({ nativeEvent, event }) {
+      console.log('showEvent')
+      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -184,8 +230,36 @@ export default {
     next() {
       this.$refs.calendar.next()
     },
-    updateRange() {
-      // TODO
+    updateRange({ start, end }) {
+      //   events.push({
+      //     name: this.names[this.rnd(0, this.names.length - 1)],
+      //     start: this.formatDate(first, !allDay),
+      //     end: this.formatDate(second, !allDay),
+      //     color: this.colors[this.rnd(0, this.colors.length - 1)]
+      //   })
+
+      this.events.push({
+        name: 'Hello world',
+        start: this.formatDate(new Date(`2020-03-08T11:00:00`), false),
+        end: this.formatDate(new Date(`2020-03-08T11:00:00`), false),
+        color: 'blue'
+      })
+      this.start = start
+      this.end = end
+    },
+    nth(d) {
+      return d > 3 && d < 21
+        ? 'th'
+        : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+    },
+    rnd(a, b) {
+      return Math.floor((b - a + 1) * Math.random()) + a
+    },
+    formatDate(a, withTime) {
+      return withTime
+        ? `${a.getFullYear()}-${a.getMonth() +
+            1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
+        : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
     },
     getEventColor(event) {
       // TODO
@@ -199,6 +273,8 @@ export default {
       this.type = 'day'
     },
     onMouseDown(event) {
+      this.showDialog = true
+      console.log('onMouseDown')
       console.log(event)
     }
   }
