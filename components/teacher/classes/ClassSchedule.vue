@@ -14,6 +14,9 @@
           </v-btn>
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-btn @click="addLesson" outlined class="mr-4" color="grey darken-2">
+            Add Lesson
+          </v-btn>
           <v-menu bottom right>
             <template v-slot:activator="{ on }">
               <v-btn v-on="on" outlined color="grey darken-2">
@@ -47,17 +50,17 @@
           :now="today"
           :type="type"
           @click:event="showEvent"
+          @click.time="clickTime"
           @click:more="viewDay"
           @click:date="viewDay"
+          @click:day="clickDay"
+          @click:interval="clickInterval"
           @change="updateRange"
-          @mousedown:day="onMouseDown"
-          @mousedown:interval="onMouseDown"
-          @mousedown:time="onMouseDown"
           color="primary"
         ></v-calendar>
       </v-sheet>
 
-      <v-dialog v-model="showDialog" scrollable max-width="750px">
+      <v-dialog v-model="showDialog" scrollable max-width="500px">
         <v-form ref="modalStudents" lazy-validation>
           <v-card>
             <v-card-title>
@@ -75,31 +78,140 @@
                 </v-row>
                 <v-row>
                   <v-menu
-                    ref="menu"
-                    v-model="menu"
+                    ref="startDateMenu"
+                    v-model="startDateMenu"
                     :close-on-content-click="false"
-                    :return-value.sync="date"
+                    :return-value.sync="startDate"
                     transition="scale-transition"
                     offset-y
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        v-model="date"
+                        v-model="startDate"
                         v-on="on"
-                        label="Picker in menu"
+                        label="Start Date"
+                        prepend-icon="mdi-calendar"
+                        class="mr-1"
                         readonly
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="date" no-title scrollable>
+                    <v-date-picker v-model="startDate" no-title scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn @click="menu = false" text color="primary"
+                      <v-btn @click="startDateMenu = false" text color="primary"
                         >Cancel</v-btn
                       >
-                      <v-btn @click="$refs.menu.save(date)" text color="primary"
+                      <v-btn
+                        @click="$refs.startDateMenu.save(startDate)"
+                        text
+                        color="primary"
                         >OK</v-btn
                       >
                     </v-date-picker>
+                  </v-menu>
+                  <v-menu
+                    ref="startTimeMenu"
+                    v-model="startTimeMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="startTime"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="startTime"
+                        v-on="on"
+                        label="Start Time"
+                        class="ml-1"
+                        readonly
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker
+                      v-model="startTime"
+                      :ampm-in-title="true"
+                      full-width
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn @click="startTimeMenu = false" text color="primary"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        @click="$refs.startTimeMenu.save(startTime)"
+                        text
+                        color="primary"
+                        >OK</v-btn
+                      >
+                    </v-time-picker>
+                  </v-menu>
+                </v-row>
+                <v-row>
+                  <v-menu
+                    ref="endDateMenu"
+                    v-model="endDateMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="startDate"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="endDate"
+                        v-on="on"
+                        label="End Date"
+                        prepend-icon="mdi-calendar"
+                        class="mr-1"
+                        readonly
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="endDate" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn @click="endDateMenu = false" text color="primary"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        @click="$refs.endDateMenu.save(endDate)"
+                        text
+                        color="primary"
+                        >OK</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
+                  <v-menu
+                    ref="endTimeMenu"
+                    v-model="endTimeMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="startTime"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="endTime"
+                        v-on="on"
+                        label="Start Time"
+                        class="ml-1"
+                        readonly
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker
+                      v-model="endTime"
+                      :ampm-in-title="true"
+                      full-width
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn @click="endTimeMenu = false" text color="primary"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        @click="$refs.endTimeMenu.save(endTime)"
+                        text
+                        color="primary"
+                        >OK</v-btn
+                      >
+                    </v-time-picker>
                   </v-menu>
                 </v-row>
               </v-container>
@@ -132,7 +244,7 @@ export default {
       type: Array,
       default: () => []
     },
-    availableLessons: {
+    lessons: {
       type: Array,
       default: () => []
     }
@@ -156,7 +268,14 @@ export default {
       selectedOpen: false,
       events: [],
       focus: '',
-      today: null
+      today: null,
+      startDateMenu: null,
+      startDate: null,
+      startTimeMenu: null,
+      startTime: null,
+      endDateMenu: null,
+      endDate: null,
+      selectedLesson: null
     }
   },
 
@@ -202,6 +321,9 @@ export default {
   },
 
   methods: {
+    addLesson() {
+      this.showDialog = true
+    },
     saveScheduledClass() {
       // TODO
       this.showDialog = false
@@ -209,6 +331,7 @@ export default {
     showEvent({ nativeEvent, event }) {
       console.log('showEvent')
       console.log(event)
+      this.showDialog = true
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -229,6 +352,9 @@ export default {
     },
     next() {
       this.$refs.calendar.next()
+    },
+    clickDay() {
+      console.log('click day')
     },
     updateRange({ start, end }) {
       //   events.push({
@@ -271,11 +397,19 @@ export default {
     viewDay({ date }) {
       this.focus = date
       this.type = 'day'
+      console.log('view day')
     },
     onMouseDown(event) {
-      this.showDialog = true
       console.log('onMouseDown')
       console.log(event)
+
+      this.showDialog = true
+    },
+    clickInterval() {
+      console.log('clickInterval')
+    },
+    clickTime() {
+      console.log('clickTime')
     }
   }
 }
