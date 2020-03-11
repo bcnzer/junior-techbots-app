@@ -60,7 +60,7 @@
         ></v-calendar>
       </v-sheet>
 
-      <v-dialog v-model="showDialog" scrollable max-width="500px">
+      <v-dialog v-model="showDialog" scrollable max-width="600px">
         <v-form ref="modalStudents" lazy-validation>
           <v-card>
             <v-card-title>
@@ -96,17 +96,12 @@
                         readonly
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="startDate" no-title scrollable>
-                      <v-spacer></v-spacer>
-                      <v-btn @click="startDateMenu = false" text color="primary"
-                        >Cancel</v-btn
-                      >
-                      <v-btn
-                        @click="$refs.startDateMenu.save(startDate)"
-                        text
-                        color="primary"
-                        >OK</v-btn
-                      >
+                    <v-date-picker
+                      v-model="startDate"
+                      @click:minute="$refs.startDateMenu.save(startDate)"
+                      no-title
+                      scrollable
+                    >
                     </v-date-picker>
                   </v-menu>
                   <v-menu
@@ -123,7 +118,7 @@
                         v-model="startTime"
                         v-on="on"
                         label="Start Time"
-                        class="ml-1"
+                        class="mx-1"
                         readonly
                       ></v-text-field>
                     </template>
@@ -191,7 +186,7 @@
                       <v-text-field
                         v-model="endTime"
                         v-on="on"
-                        label="Start Time"
+                        label="End Time"
                         class="ml-1"
                         readonly
                       ></v-text-field>
@@ -271,10 +266,12 @@ export default {
       today: null,
       startDateMenu: null,
       startDate: null,
-      startTimeMenu: null,
-      startTime: null,
       endDateMenu: null,
       endDate: null,
+      startTimeMenu: null,
+      startTime: null,
+      endTimeMenu: null,
+      endTime: null,
       selectedLesson: null
     }
   },
