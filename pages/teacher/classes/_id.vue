@@ -24,7 +24,10 @@
     <div v-if="!loading">
       <v-row>
         <v-col cols="12" xs="12" class="mx-auto">
-          <div class="title">{{ className }}</div>
+          <div class="title">
+            <nuxt-link to="/teacher/classes">Classes</nuxt-link> >
+            {{ className }}
+          </div>
           <div v-if="classDescription" class="subtitle-1">
             {{ classDescription }}
           </div>

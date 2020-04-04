@@ -209,6 +209,8 @@
                     </v-time-picker>
                   </v-menu>
                 </v-row>
+
+                <v-textarea label="Notes" value=""></v-textarea>
               </v-container>
             </v-card-text>
             <v-card-actions>
