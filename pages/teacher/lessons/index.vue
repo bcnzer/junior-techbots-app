@@ -21,21 +21,23 @@
             ></v-text-field>
             <v-btn
               @click="showAddEdit = true"
-              class="mt-3 ml-2"
+              class="primary mt-3 ml-2"
               to="/teacher/lessons/add"
               >Add Lesson</v-btn
             >
           </v-card-title>
-          <v-data-table :headers="headers" :items="lessons" :search="search">
+          <v-data-table
+            :headers="headers"
+            :items="lessons"
+            :search="search"
+            @click:row="editLesson"
+          >
             <template v-slot:item.action="{ item }">
               <v-icon @click="editLesson(item)" small class="mr-3">
                 mdi-pencil
               </v-icon>
-              <v-icon @click="showConfirmationToDelete(item)" small>
-                mdi-delete
-              </v-icon>
-            </template></v-data-table
-          >
+            </template>
+          </v-data-table>
         </v-card>
       </v-col>
     </v-row>
@@ -61,7 +63,7 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },
         { text: 'Description', value: 'description' },
-        { text: 'Actions', value: 'action', sortable: false }
+        { text: 'Edit', value: 'action', sortable: false }
       ]
     }
   },

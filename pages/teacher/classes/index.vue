@@ -25,18 +25,13 @@
               @onClose="closeAddEditClass"
             ></add-edit-class>
           </v-card-title>
-          <v-data-table :headers="headers" :items="classes">
+          <v-data-table
+            :headers="headers"
+            :items="classes"
+            @click:row="showEditClass"
+          >
             <template slot="no-data">
               No classes exist. You must have at least one class
-            </template>
-
-            <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditClass(item)" small class="mr-3">
-                mdi-pencil
-              </v-icon>
-              <v-icon @click="showConfirmationToDelete(item)" small>
-                mdi-delete
-              </v-icon>
             </template>
           </v-data-table>
         </v-card>
@@ -95,8 +90,7 @@ export default {
       showSnackbar: false,
       headers: [
         { text: 'Name', value: 'name' },
-        { text: 'Description', value: 'description' },
-        { text: 'Actions', value: 'action', sortable: false }
+        { text: 'Description', value: 'description' }
       ],
       classes: []
     }
@@ -182,6 +176,7 @@ export default {
       this.showConfirmationDialog = false
     },
     showEditClass(item) {
+      console.log(item)
       this.$router.push(`/teacher/classes/${item.id}`)
       // this.dialogAddEditClassId = item.id
       // this.dialogAddEditName = item.name

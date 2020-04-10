@@ -1,36 +1,50 @@
 <template>
   <v-container>
-    <v-row v-if="loading">
-      <v-col cols="12" xs="12" class="mx-auto">
-        <v-skeleton-loader
-          type="table-heading"
-          min-width="300"
-        ></v-skeleton-loader>
-        <v-skeleton-loader
-          type="list-item-avatar-three-line"
-          min-width="300"
-        ></v-skeleton-loader>
-        <v-skeleton-loader
-          type="list-item-avatar-three-line"
-          min-width="300"
-        ></v-skeleton-loader>
-        <v-skeleton-loader
-          type="list-item-avatar-three-line"
-          min-width="300"
-        ></v-skeleton-loader>
-      </v-col>
-    </v-row>
+    <v-col v-if="loading" cols="12" xs="12" class="mx-auto">
+      <v-skeleton-loader
+        type="table-heading"
+        min-width="300"
+      ></v-skeleton-loader>
+      <v-skeleton-loader
+        type="list-item-avatar-three-line"
+        min-width="300"
+      ></v-skeleton-loader>
+      <v-skeleton-loader
+        type="list-item-avatar-three-line"
+        min-width="300"
+      ></v-skeleton-loader>
+      <v-skeleton-loader
+        type="list-item-avatar-three-line"
+        min-width="300"
+      ></v-skeleton-loader>
+    </v-col>
 
     <div v-if="!loading">
-      <v-row>
-        <v-col cols="12" xs="12" class="mx-auto">
+      <v-row v-if="!showEditName">
+        <v-col>
           <div class="title">
             <nuxt-link to="/teacher/classes">Classes</nuxt-link> >
             {{ className }}
+            <v-btn @click="showEditName = true" class="ml-3" icon>
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
           </div>
           <div v-if="classDescription" class="subtitle-1">
             {{ classDescription }}
           </div>
+        </v-col>
+      </v-row>
+      <v-row v-if="showEditName">
+        <v-col>
+          <v-text-field v-model="className" label="Class name"></v-text-field>
+          <v-text-field
+            v-model="classDescription"
+            label="Class description"
+          ></v-text-field>
+        </v-col>
+        <v-col class="mt-3">
+          <v-btn class="primary">Save</v-btn>
+          <v-btn @click="showEditName = false" class="ml-1">Cancel</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -113,7 +127,8 @@ export default {
         week: 'Week',
         day: 'Day',
         '4day': '4 Days'
-      }
+      },
+      showEditName: false
     }
   },
 
