@@ -1,6 +1,8 @@
 <template>
   <div>
-    <v-btn @click="showStudentDialog()" class="mx-right">Add Students</v-btn>
+    <v-btn @click="showStudentDialog()" class="primary mx-right"
+      >Add Students</v-btn
+    >
 
     <v-list two-line>
       <template v-for="(student, index) in selectedStudents">
