@@ -80,11 +80,14 @@ export default {
       teacherRecord = teacherRecord.docs[0].data()
     } else {
       // They are new so immediately create a teacher record
-      teacherRecord = await firestore.collection('teachers').add({
+      const newTeacherRecord = {
         uid: currentUserUid
-      })
+      }
+      teacherRecord = await firestore
+        .collection('teachers')
+        .add(newTeacherRecord)
       this.teacherRecordId = teacherRecord.id
-      teacherRecord = teacherRecord.docs[0].data()
+      teacherRecord = newTeacherRecord
     }
 
     if (teacherRecord.organizations === undefined) {
