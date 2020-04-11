@@ -2,5 +2,17 @@
   "projects": {
     "default": "junior-techbots",
     "staging": "junior-techbots-staging"
+  },
+  "targets": {
+    "junior-techbots-staging": {
+      "hosting": {
+        "staging": [
+          "junior-techbots-staging"
+        ],
+        "prod": [
+          "app-junior-techbots"
+        ]
+      }
+    }
   }
 }
