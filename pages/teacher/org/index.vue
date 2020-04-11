@@ -9,7 +9,11 @@
         </div>
 
         <div v-if="!loading && createOrg">
-          <v-img src="bot-hi.png" width="256" class="mx-auto"></v-img>
+          <v-img
+            src="/bots/robots small.png"
+            width="330"
+            class="mx-auto"
+          ></v-img>
           <div class="display-1 mt-5">
             Enter the name of your org, school or club
           </div>
@@ -126,20 +130,14 @@ export default {
 
       this.savingOrg = true
       const entryId = uuidv4().substring(0, 8)
+      const currentUserUid = JSON.parse(localStorage.currentUser).uid
       const newOrg = await firestore.collection('organizations').add({
         name: this.orgName,
         description: this.orgDescription,
-        teachers: [localStorage.currentUser.uid],
-        uid: localStorage.currentUser.uid,
+        teachers: [currentUserUid],
+        uid: currentUserUid,
         entryFormId: entryId
       })
-
-      // // Add a default class, so that there is at least one
-      // await firestore
-      //   .collection('organizations')
-      //   .doc(newOrg.id)
-      //   .collection('classes')
-      //   .add({ name: 'default' })
 
       await firestore
         .collection('teachers')
