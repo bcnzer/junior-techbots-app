@@ -1,0 +1,39 @@
+// PROD
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	function uidCheck() {
+    	// Will confirm they're authenticated at all and have a UID
+    	return request.auth != null && request.auth.uid != null
+    }
+    
+  	match /teachers/{teacher_id} {
+    	allow read, write: if uidCheck() && request.auth.uid == resource.data.uid
+    	allow create: if uidCheck()
+    }
+    
+  	match /students/{student_id} {
+    	allow read, write: if uidCheck() // && request.auth.uid == resource.data.uid
+    	allow create: if uidCheck()
+    }
+    
+  	match /students/{student_id}/invites/{invite_id} {
+    	allow read, write: if uidCheck() // && request.auth.uid == resource.data.uid
+    	allow create: if uidCheck()
+    }
+    
+  	match /organizations/{org_id}/{anyOrgClass=**} {
+    	allow read, write, create: if uidCheck() && request.auth.uid in get(/databases/$(database)/documents/organizations/$(org_id)).data.teachers;
+    	// allow create: if uidCheck()
+    }
+    
+  	// match /organizations/{org_id}/classes/{class_id} {
+  	// allow read, write: if uidCheck()
+  	// allow create: if uidCheck()
+  	// }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "junior-techbots"
+    "default": "junior-techbots",
+    "staging": "junior-techbots-staging"
   }
 }

@@ -11,7 +11,9 @@
     "generate": "nuxt generate",
     "deploy": "firebase deploy --only hosting:app-junior-techbots",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest",
+    "rules:prod": "firebase use default && firebase deploy --only firestore:rules",
+    "rules:staging": "firebase use staging && firebase deploy --only firestore:rules"
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-0",
