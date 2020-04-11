@@ -9,12 +9,18 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "deploy": "firebase use default && firebase deploy --only hosting:prod",
-    "deploy:staging": "firebase use staging && firebase deploy --only hosting:staging",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest",
-    "rules:prod": "firebase use default && firebase deploy --only firestore:rules",
-    "rules:staging": "firebase use staging && firebase deploy --only firestore:rules"
+    "deploy:prod": "firebase use default && firebase deploy",
+    "deploy:prod:hosting": "firebase use default && firebase deploy --only hosting",
+    "deploy:prod:functions": "firebase use default && firebase deploy --only functions",
+    "deploy:prod:rules": "firebase use default && firebase deploy --only firestore:rules",
+    "deploy:staging": "firebase use staging && firebase deploy",
+    "deploy:staging:hosting": "firebase use staging && firebase deploy --only hosting",
+    "deploy:staging:functions": "firebase use staging && firebase deploy --only functions",
+    "deploy:staging:rules": "firebase use staging && firebase deploy --only firestore:rules",
+    "firestore:export": "gcloud config set project junior-techbots-staging && gcloud firestore export gs://junior-techbots-staging-firestore-backup",
+    "firestore:import": "gcloud config set project junior-techbots-staging && gcloud firestore import gs://junior-techbots-staging-firestore-backup/2020-04-11T22:15:18_23337/"
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-0",
