@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mx-3">
     <v-row v-if="loading">
       <v-col cols="12" xs="12" class="mx-auto">
         <v-skeleton-loader type="card" min-width="300"></v-skeleton-loader>
@@ -91,6 +91,7 @@
             :disabled="saving"
             :loading="saving"
             color="primary"
+            class="mr-2"
             >Save</v-btn
           >
         </v-row>

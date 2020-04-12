@@ -84,6 +84,10 @@ export default {
       .get()
 
     this.classCreated = classes.docs.length > 0
+    if (this.classCreated) {
+      // This screen serves only as a welcome screen to first-time users
+      this.$router.push('/teacher/classes')
+    }
     localStorage.classCreated = this.classCreated
 
     this.loading = false
