@@ -4,13 +4,17 @@
     "staging": "junior-techbots-staging"
   },
   "targets": {
+    "junior-techbots": {
+      "hosting": {
+        "default": [
+          "app-junior-techbots"
+        ]
+      }
+    },
     "junior-techbots-staging": {
       "hosting": {
         "staging": [
           "junior-techbots-staging"
-        ],
-        "prod": [
-          "app-junior-techbots"
         ]
       }
     }
