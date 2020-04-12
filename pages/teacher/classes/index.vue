@@ -116,6 +116,7 @@ export default {
           const record = doc.data()
           record.id = doc.id
           this.classes.push(record)
+          console.log('got some records')
         })
         this.loading = false
       })

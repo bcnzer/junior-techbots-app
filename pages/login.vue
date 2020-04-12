@@ -34,8 +34,6 @@ export default {
         .auth()
         .signInWithPopup(this.provider)
         .then((result) => {
-          // store the user ore wathever
-          console.log(result)
           this.$router.push('/')
         })
         .catch((error) => {
