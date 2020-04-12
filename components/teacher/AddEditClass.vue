@@ -102,7 +102,7 @@ export default {
       // Note that closing of the dialog is done by the component that called
       // the dialog so they must listen to both events below
       this.saving = false
-      if (save && (!this.internalName || !this.internalDescription)) {
+      if (save && this.internalName) {
         const updatedClass = { id: this.id }
         if (this.internalName) {
           updatedClass.name = this.internalName

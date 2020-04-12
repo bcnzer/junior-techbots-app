@@ -10,7 +10,7 @@
     >
       <v-layout column fill-height>
         <v-list>
-          <v-list-item to="/teacher">
+          <v-list-item key="teacher" to="/teacher">
             <v-list-item-action>
               <img
                 src="~/static/logo32x32.png"
