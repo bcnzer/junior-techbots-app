@@ -96,7 +96,9 @@ export default {
       return `Entry form ${this.formEnabled ? 'enabled' : 'disabled'}`
     },
     entryFormUrl() {
-      return `https://app.juniortechbots.com/student/entry/${this.entryFormId}`
+      return `${new URL(window.location.href).origin}/student/entry/${
+        this.entryFormId
+      }`
     },
     isFormEnabled: {
       get() {
