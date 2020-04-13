@@ -294,7 +294,8 @@ export default {
           invitedBy: JSON.parse(localStorage.currentUser).uid,
           email: this.dialogEmail,
           orgName: org.name,
-          orgId: org.id
+          orgId: org.id,
+          domainUrl: new URL(window.location.href).origin
         })
 
       this.dialogEmail = null

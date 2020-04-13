@@ -17,7 +17,7 @@ exports.inviteStudentEmail = functions.firestore
         orgName: invite.orgName,
         orgId: invite.orgId,
         studentId: invite.inviteId,
-        domain: invite.domain
+        domainUrl: invite.domainUrl
       }
     }
 
