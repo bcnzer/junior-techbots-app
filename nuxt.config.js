@@ -32,7 +32,8 @@ export default {
    */
   plugins: [
     '@plugins/firebase',
-    { src: '~/plugins/vue-confetti.js', mode: 'client' }
+    { src: '~/plugins/vue-confetti.js', mode: 'client' },
+    { src: '~/plugins/hotjar.js', mode: 'client' }
   ],
   /*
    ** Nuxt.js dev-modules
