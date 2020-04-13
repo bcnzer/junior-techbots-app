@@ -16,7 +16,8 @@ exports.inviteStudentEmail = functions.firestore
       dynamic_template_data: {
         orgName: invite.orgName,
         orgId: invite.orgId,
-        studentId: invite.inviteId
+        studentId: invite.inviteId,
+        domain: invite.domain
       }
     }
 
