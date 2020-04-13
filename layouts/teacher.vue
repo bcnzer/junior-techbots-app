@@ -122,8 +122,7 @@ export default {
       miniVariant: false,
       title: 'Junior Techbots',
       bottomItems: [
-        { icon: 'mdi-settings', title: 'Settings', to: '/settings' },
-        { icon: 'mdi-message-alert', title: 'Send Feedback', to: '/feedback' },
+        { icon: 'mdi-cog-outline', title: 'Settings', to: '/settings' },
         { icon: 'mdi-help-circle', title: 'Help', to: '/help' }
       ]
     }
