@@ -34,7 +34,11 @@ export default {
         .auth()
         .signInWithPopup(this.provider)
         .then((result) => {
-          this.$router.push('/')
+          if (this.$route.query.invite) {
+            this.$router.push(`/student/invite/${this.$route.query.invite}`)
+          } else {
+            this.$router.push('/')
+          }
         })
         .catch((error) => {
           this.$sentry.captureException(error)

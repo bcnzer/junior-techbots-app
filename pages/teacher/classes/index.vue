@@ -15,7 +15,7 @@
           <v-card-title>
             Classes
             <v-spacer></v-spacer>
-            <v-btn @click="showAddEdit = true">Add Class</v-btn>
+            <v-btn @click="showAddEdit = true" class="primary">Add Class</v-btn>
             <add-edit-class
               :show="showAddEdit"
               :id="dialogAddEditClassId"
@@ -32,6 +32,12 @@
           >
             <template slot="no-data">
               No classes exist. You must have at least one class
+            </template>
+
+            <template v-slot:item.action="{ item }">
+              <v-icon @click="showEditClass(item)" class="mr-3">
+                mdi-pencil
+              </v-icon>
             </template>
           </v-data-table>
         </v-card>
@@ -90,7 +96,8 @@ export default {
       showSnackbar: false,
       headers: [
         { text: 'Name', value: 'name' },
-        { text: 'Description', value: 'description' }
+        { text: 'Description', value: 'description' },
+        { text: '', value: 'edit' }
       ],
       classes: []
     }
