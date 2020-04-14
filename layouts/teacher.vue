@@ -74,6 +74,9 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="orgName" />
       <v-spacer />
+      <v-btn v-if="showWarning" depressed small color="warning"
+        >testing mode - usage is being recorded</v-btn
+      >
       <user-avatar />
     </v-app-bar>
 
@@ -131,6 +134,9 @@ export default {
   computed: {
     orgName() {
       return JSON.parse(localStorage.org).name
+    },
+    showWarning() {
+      return new URL(window.location.href).host === 'staging.juniortechbots.com'
     }
   }
 }
