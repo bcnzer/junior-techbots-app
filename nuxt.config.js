@@ -50,10 +50,8 @@ export default {
   },
 
   sentry: {
-    dsn: 'https://b5a8ce236dad45b7a9a9d887d6d942ea@sentry.io/1857363', // Enter your project's DSN here
-    config: {
-      disabled: true
-    } // Additional config
+    dsn:
+      'https://8d1c167b650447afb4d2700faa824a84@o151383.ingest.sentry.io/5199810'
   },
 
   /*
