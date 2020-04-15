@@ -4,7 +4,11 @@
       >Add Students</v-btn
     >
 
-    <v-list two-line>
+    <div v-if="selectedStudents.length <= 0" class="body-1 mt-4 ml-1">
+      No students have been assigned to this class. Add some! 😊
+    </div>
+
+    <v-list v-else two-line>
       <template v-for="(student, index) in selectedStudents">
         <v-divider
           v-if="showDivider(index, students.length)"
@@ -22,18 +26,21 @@
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn text icon>
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-          </v-list-item-action>
-          <v-list-item-action>
-            <v-btn text icon>
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
+            <v-tooltip left>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  @click="removeSelectedStudent(index)"
+                  text
+                  icon
+                >
+                  <v-icon>
+                    mdi-account-remove
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Remove student</span>
+            </v-tooltip>
           </v-list-item-action>
         </v-list-item>
       </template>
@@ -137,6 +144,10 @@ export default {
       if (index <= 0) return false
       if (index < length) return true
       return false
+    },
+    removeSelectedStudent(index) {
+      this.dialogStudents.splice(index, 1)
+      this.$emit('save-selected-students', this.dialogStudents)
     },
     showStudentDialog() {
       // Clone the array. That way each time you open the dialog we won't display
