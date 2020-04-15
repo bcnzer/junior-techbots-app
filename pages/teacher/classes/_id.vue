@@ -22,31 +22,34 @@
     <div v-if="!loading">
       <v-row v-if="!showEditName">
         <v-col>
-          <div class="title">
-            <nuxt-link to="/teacher/classes">Classes</nuxt-link> >
-            {{ className }}
-            <v-btn @click="showEditName = true" class="ml-3" icon>
+          <v-row>
+            <div class="ml-3 headline">
+              {{ className }}
+            </div>
+            <v-btn
+              @click="onShowEditClassName()"
+              x-small
+              class="mt-1 ml-3"
+              icon
+            >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-          </div>
+          </v-row>
           <div v-if="classDescription" class="subtitle-1">
             {{ classDescription }}
           </div>
         </v-col>
       </v-row>
-      <v-row v-if="showEditName">
-        <v-col>
-          <v-text-field v-model="className" label="Class name"></v-text-field>
-          <v-text-field
-            v-model="classDescription"
-            label="Class description"
-          ></v-text-field>
-        </v-col>
-        <v-col class="mt-3">
-          <v-btn class="primary">Save</v-btn>
-          <v-btn @click="showEditName = false" class="ml-1">Cancel</v-btn>
-        </v-col>
-      </v-row>
+
+      <change-class-name
+        v-if="showEditName"
+        @onSave="onClassEditSave"
+        @onClose="onClassEditClose"
+        :class-name="editClassName"
+        :class-description="editClassDescription"
+        :saving="savingClassName"
+      ></change-class-name>
+
       <v-row>
         <v-col cols="12" xs="12" class="mx-auto">
           <v-card>
@@ -54,6 +57,7 @@
               <v-tab key="details">Students</v-tab>
               <v-tab key="schedule">Lesson Schedule</v-tab>
             </v-tabs>
+
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
                 <v-card flat>
@@ -65,11 +69,13 @@
                   </v-card-text>
                 </v-card>
               </v-tab-item>
+
               <v-tab-item key="schedule">
                 <v-card flat>
                   <class-schedule></class-schedule>
                 </v-card>
               </v-tab-item>
+
               <v-tab-item key="lessonQueue">
                 <v-card flat>
                   <v-card-text>
@@ -92,6 +98,7 @@
 import { firestore, storage } from '@/services/fireinit.js'
 import ClassStudents from '~/components/teacher/classes/ClassStudents'
 import ClassSchedule from '~/components/teacher/classes/ClassSchedule'
+import ChangeClassName from '~/components/teacher/classes/ChangeClassName'
 
 export default {
   layout: 'teacher',
@@ -102,7 +109,8 @@ export default {
 
   components: {
     ClassStudents,
-    ClassSchedule
+    ClassSchedule,
+    ChangeClassName
   },
 
   data() {
@@ -110,9 +118,12 @@ export default {
       valid: false,
       loading: true,
       tab: null,
-      className: null,
       currentOrg: null,
+      className: null,
       classDescription: null,
+      editClassName: null,
+      editClassDescription: null,
+      savingClassName: false,
       allStudentsInOrg: [],
       studentsInClass: [],
       allLessonsInOrg: [],
@@ -243,6 +254,39 @@ export default {
   },
 
   methods: {
+    onShowEditClassName() {
+      this.editClassName = this.className
+      this.editClassDescription = this.classDescription
+      this.showEditName = true
+    },
+    async onClassEditSave(editedClass) {
+      if (
+        this.className !== editedClass.name ||
+        this.classDescription !== editedClass.description
+      ) {
+        this.className = editedClass.name
+        this.classDescription = editedClass.description
+        this.savingClassName = true
+
+        await firestore
+          .collection('organizations')
+          .doc(this.orgId)
+          .collection('classes')
+          .doc(this.$route.params.id)
+          .update({
+            name: this.className,
+            description: this.classDescription
+          })
+      }
+
+      this.showEditName = false
+      this.savingClassName = false
+    },
+    onClassEditClose() {
+      this.editClassName = this.className
+      this.editClassDescription = this.classDescription
+      this.showEditName = false
+    },
     onSaveSelectedLessons(lessons) {
       // TODO
     },
