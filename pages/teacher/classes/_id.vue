@@ -52,7 +52,7 @@
 
       <v-row>
         <v-col cols="12" xs="12" class="mx-auto">
-          <v-card>
+          <v-card :disabled="showEditName">
             <v-tabs v-model="tab">
               <v-tab key="details">Students</v-tab>
               <v-tab key="schedule">Lesson Schedule</v-tab>

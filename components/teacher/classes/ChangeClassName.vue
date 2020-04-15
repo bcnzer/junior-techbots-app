@@ -1,7 +1,7 @@
 <template>
   <v-form ref="modalAddEditClass" lazy-validation>
     <v-row>
-      <v-col>
+      <v-col cols="12" xs="12" sm="6">
         <v-text-field
           v-model="name"
           :rules="[(v) => !!v || 'Name is required']"
@@ -14,7 +14,7 @@
           label="Class description"
         ></v-text-field>
       </v-col>
-      <v-col class="mt-3">
+      <v-col cols="12" xs="12" sm="6" class="my-bottom">
         <v-btn
           @click="btnClick(true)"
           :loading="saving"
