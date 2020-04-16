@@ -1,104 +1,112 @@
 <template>
-  <div>
-    <v-btn @click="showStudentDialog()" class="primary mx-right"
-      >Add Students</v-btn
-    >
+  <v-row class="fill-height mt-2 ml-1">
+    <v-col>
+      <v-btn @click="showStudentDialog()" class="primary mx-right"
+        >Add Students</v-btn
+      >
 
-    <div v-if="selectedStudents.length <= 0" class="body-1 mt-4 ml-1">
-      No students have been assigned to this class. Add some! 😊
-    </div>
+      <div v-if="selectedStudents.length <= 0" class="body-1 mt-4 mb-2">
+        No lessons have been scheduled to this class. Add some! 😊
+      </div>
 
-    <v-list v-else two-line>
-      <template v-for="(student, index) in selectedStudents">
-        <v-divider
-          v-if="showDivider(index, students.length)"
-          :key="index"
-        ></v-divider>
+      <v-list v-else two-line>
+        <template v-for="(student, index) in selectedStudents">
+          <v-divider
+            v-if="showDivider(index, students.length)"
+            :key="index"
+          ></v-divider>
 
-        <v-list-item :key="student.id">
-          <v-list-item-avatar>
-            <v-img :src="student.photoURL"></v-img>
-          </v-list-item-avatar>
+          <v-list-item :key="student.id">
+            <v-list-item-avatar>
+              <v-img :src="student.photoURL"></v-img>
+            </v-list-item-avatar>
 
-          <v-list-item-content>
-            <v-list-item-title v-html="student.displayName"></v-list-item-title>
-            <v-list-item-subtitle v-html="student.email"></v-list-item-subtitle>
-          </v-list-item-content>
+            <v-list-item-content>
+              <v-list-item-title
+                v-html="student.displayName"
+              ></v-list-item-title>
+              <v-list-item-subtitle
+                v-html="student.email"
+              ></v-list-item-subtitle>
+            </v-list-item-content>
 
-          <v-list-item-action>
-            <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  v-on="on"
-                  @click="removeSelectedStudent(index)"
-                  text
-                  icon
-                >
-                  <v-icon>
-                    mdi-account-remove
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Remove student</span>
-            </v-tooltip>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
-    </v-list>
+            <v-list-item-action>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    @click="removeSelectedStudent(index)"
+                    text
+                    icon
+                  >
+                    <v-icon>
+                      mdi-account-remove
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Remove student</span>
+              </v-tooltip>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+      </v-list>
 
-    <v-dialog v-model="showDialog" persistent scrollable max-width="750px">
-      <v-form ref="modalStudents" lazy-validation>
-        <v-card>
-          <v-card-title>
-            Students
-            <v-spacer></v-spacer>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-card-title>
-          <v-card-text>
-            <v-list two-line>
-              <v-divider></v-divider>
-              <template v-for="student in dialogStudents">
-                <v-list-item :key="student.id" v-show="showStudent(student)">
-                  <v-list-item-action>
-                    <v-checkbox v-model="student.selected"></v-checkbox>
-                  </v-list-item-action>
-                  <v-list-item-avatar class="mr-5">
-                    <v-img :src="student.photoURL"></v-img>
-                  </v-list-item-avatar>
-
-                  <v-list-item-content>
-                    <v-list-item-title
-                      v-html="student.displayName"
-                    ></v-list-item-title>
-                    <v-list-item-subtitle
-                      v-html="student.email"
-                    ></v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
+      <v-dialog v-model="showDialog" persistent scrollable max-width="750px">
+        <v-form ref="modalStudents" lazy-validation>
+          <v-card>
+            <v-card-title>
+              Students
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-card-text>
+              <v-list two-line>
                 <v-divider></v-divider>
-              </template>
-            </v-list>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              @click="saveSelectedStudents()"
-              :loading="saving"
-              color="primary"
-              >Save</v-btn
-            >
-            <v-btn @click="showDialog = false" :disabled="saving">Cancel</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-form>
-    </v-dialog>
-  </div>
+                <template v-for="student in dialogStudents">
+                  <v-list-item :key="student.id" v-show="showStudent(student)">
+                    <v-list-item-action>
+                      <v-checkbox v-model="student.selected"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-avatar class="mr-5">
+                      <v-img :src="student.photoURL"></v-img>
+                    </v-list-item-avatar>
+
+                    <v-list-item-content>
+                      <v-list-item-title
+                        v-html="student.displayName"
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="student.email"
+                      ></v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                </template>
+              </v-list>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                @click="saveSelectedStudents()"
+                :loading="saving"
+                color="primary"
+                >Save</v-btn
+              >
+              <v-btn @click="showDialog = false" :disabled="saving"
+                >Cancel</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-dialog>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

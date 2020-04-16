@@ -61,12 +61,10 @@
             <v-tabs-items v-model="tab">
               <v-tab-item key="details">
                 <v-card flat>
-                  <v-card-text>
-                    <class-students
-                      :students="allStudentsInOrg"
-                      v-on:save-selected-students="onSaveSelectedStudents"
-                    ></class-students>
-                  </v-card-text>
+                  <class-students
+                    :students="allStudentsInOrg"
+                    v-on:save-selected-students="onSaveSelectedStudents"
+                  ></class-students>
                 </v-card>
               </v-tab-item>
 
@@ -78,12 +76,10 @@
 
               <v-tab-item key="lessonQueue">
                 <v-card flat>
-                  <v-card-text>
-                    <lesson-queue
-                      :lessons="allLessonsInOrg"
-                      v-on:save-selected-lessons="onSaveSelectedLessons"
-                    ></lesson-queue>
-                  </v-card-text>
+                  <lesson-queue
+                    :lessons="allLessonsInOrg"
+                    v-on:save-selected-lessons="onSaveSelectedLessons"
+                  ></lesson-queue>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
