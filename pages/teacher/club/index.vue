@@ -18,7 +18,7 @@
             Enter the name of your org, school or club
           </div>
           <div class="body-1 my-2">
-            You will be able to create multiple groups under this organization
+            You will be able to create multiple groups under this club
           </div>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
@@ -94,15 +94,15 @@ export default {
       teacherRecord = newTeacherRecord
     }
 
-    if (teacherRecord.organizations === undefined) {
+    if (teacherRecord.clubs === undefined) {
       // User account exists but they don't have an org so ask them to create one
       this.createOrg = true
       this.loading = false
-    } else if (teacherRecord.organizations.length === 1) {
+    } else if (teacherRecord.clubs.length === 1) {
       // Just one so just use that one and move on
       const org = await firestore
-        .collection('organizations')
-        .doc(teacherRecord.organizations[0])
+        .collection('clubs')
+        .doc(teacherRecord.clubs[0])
         .get()
 
       const orgData = org.data()
@@ -131,7 +131,7 @@ export default {
       this.savingOrg = true
       const entryId = uuidv4().substring(0, 8)
       const currentUserUid = JSON.parse(localStorage.currentUser).uid
-      const newOrg = await firestore.collection('organizations').add({
+      const newOrg = await firestore.collection('clubs').add({
         name: this.orgName,
         description: this.orgDescription,
         teachers: [currentUserUid],
@@ -143,7 +143,7 @@ export default {
         .collection('teachers')
         .doc(this.teacherRecordId)
         .update({
-          organizations: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
+          clubs: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
         })
 
       localStorage.org = JSON.stringify({

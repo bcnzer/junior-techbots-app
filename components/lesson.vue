@@ -146,7 +146,7 @@ export default {
   },
 
   async created() {
-    this.orgId = JSON.parse(localStorage.org).id
+    this.clubId = JSON.parse(localStorage.club).id
 
     if (this.lessonId) {
       const listResult = await storage.ref(`lessons/${this.lessonId}`).listAll()
@@ -165,8 +165,8 @@ export default {
 
       this.currentLessonId = this.lessonId
       const lesson = await firestore
-        .collection('organizations')
-        .doc(this.orgId)
+        .collection('clubs')
+        .doc(this.clubId)
         .collection('lessons')
         .doc(this.lessonId)
         .get()
@@ -205,8 +205,8 @@ export default {
       if (this.$refs.formLesson.validate()) {
         this.saving = true
         const collection = firestore
-          .collection('organizations')
-          .doc(this.orgId)
+          .collection('clubs')
+          .doc(this.clubId)
           .collection('lessons')
 
         const lesson = {

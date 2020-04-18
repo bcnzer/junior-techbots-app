@@ -72,7 +72,7 @@
     <!-- top menu of the app -->
     <v-app-bar fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="orgName" />
+      <v-toolbar-title v-text="clubName" />
       <v-spacer />
       <v-btn v-if="showWarning" depressed small color="warning"
         >testing mode - usage is being recorded</v-btn
@@ -132,8 +132,8 @@ export default {
   },
 
   computed: {
-    orgName() {
-      return JSON.parse(localStorage.org).name
+    clubName() {
+      return JSON.parse(localStorage.club).name
     },
     showWarning() {
       return new URL(window.location.href).host === 'staging.juniortechbots.com'

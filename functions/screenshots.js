@@ -10,7 +10,7 @@ const runtimeOpts = {
 // NOTE - the docs to the Cloud Storage API https://googleapis.dev/nodejs/storage/latest/File.html#exists
 exports.websiteScreenshots = functions
   .runWith(runtimeOpts)
-  .firestore.document('organizations/{organizationId}/lessons/{lessonId}')
+  .firestore.document('clubs/{clubId}/lessons/{lessonId}')
   .onWrite(async function(change, context) {
     const originalLesson = change.before.data()
     const updatedLesson = change.after.data()

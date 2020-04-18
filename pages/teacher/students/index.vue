@@ -176,14 +176,14 @@ export default {
   },
 
   async created() {
-    const org = JSON.parse(localStorage.org)
-    this.entryFormEnabled = org.entryFormEnabled
-    this.entryFormMessage = org.entryFormMessage
-    this.entryFormId = org.entryFormId
+    const club = JSON.parse(localStorage.club)
+    this.entryFormEnabled = club.entryFormEnabled
+    this.entryFormMessage = club.entryFormMessage
+    this.entryFormId = club.entryFormId
 
     await firestore
       .collection('students')
-      .where('organizations', 'array-contains', JSON.parse(localStorage.org).id)
+      .where('clubs', 'array-contains', JSON.parse(localStorage.club).id)
       .onSnapshot((querySnapshot) => {
         this.students = []
         querySnapshot.docs.forEach((doc) => {
@@ -202,18 +202,18 @@ export default {
 
   methods: {
     async onSaveEntryFormDetails(event) {
-      const org = JSON.parse(localStorage.org)
+      const club = JSON.parse(localStorage.club)
       await firestore
-        .collection('organizations')
-        .doc(org.id)
+        .collection('clubs')
+        .doc(club.id)
         .update({
           entryFormEnabled: event.entryFormEnabled,
           entryFormMessage: event.entryFormMessage
         })
 
-      org.entryFormEnabled = event.entryFormEnabled
-      org.entryFormMessage = event.entryFormMessage
-      localStorage.org = JSON.stringify(org)
+      club.entryFormEnabled = event.entryFormEnabled
+      club.entryFormMessage = event.entryFormMessage
+      localStorage.club = JSON.stringify(club)
 
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage
@@ -251,8 +251,8 @@ export default {
         .collection('students')
         .doc(student.recordId)
         .update({
-          organizations: firebase.firestore.FieldValue.arrayRemove(
-            JSON.parse(localStorage.org).id
+          clubs: firebase.firestore.FieldValue.arrayRemove(
+            JSON.parse(localStorage.club).id
           )
         })
     },
@@ -273,8 +273,8 @@ export default {
         // Add the student record and the invite
         const newStudent = await firestore.collection('students').add({
           email: this.dialogEmail
-          // organizations: firebase.firestore.FieldValue.arrayUnion(
-          //   JSON.parse(localStorage.org).id
+          // clubs: firebase.firestore.FieldValue.arrayUnion(
+          //   JSON.parse(localStorage.club).id
           // )
         })
 
@@ -283,7 +283,7 @@ export default {
         studentId = studentRecord.docs[0].id
       }
 
-      const org = JSON.parse(localStorage.org)
+      const club = JSON.parse(localStorage.club)
       await firestore
         .collection('students')
         .doc(studentId)
@@ -293,8 +293,8 @@ export default {
           invitedOn: new Date(),
           invitedBy: JSON.parse(localStorage.currentUser).uid,
           email: this.dialogEmail,
-          orgName: org.name,
-          orgId: org.id,
+          clubName: club.name,
+          clubId: club.id,
           domainUrl: new URL(window.location.href).origin
         })
 

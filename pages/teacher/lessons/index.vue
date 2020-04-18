@@ -69,11 +69,11 @@ export default {
   },
 
   async created() {
-    this.orgId = JSON.parse(localStorage.org).id
+    this.clubId = JSON.parse(localStorage.club).id
 
     await firestore
-      .collection('organizations')
-      .doc(this.orgId)
+      .collection('clubs')
+      .doc(this.clubId)
       .collection('lessons')
       .orderBy('name')
       .onSnapshot((querySnapshot) => {

@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       loading: true,
-      orgId: null,
+      clubId: null,
       groupCreated: false,
       dialogAddEditId: null,
       dialogAddEditName: null,
@@ -75,11 +75,11 @@ export default {
   },
 
   async created() {
-    this.orgId = JSON.parse(localStorage.org).id
+    this.clubId = JSON.parse(localStorage.club).id
 
     const groups = await firestore
-      .collection('organizations')
-      .doc(this.orgId)
+      .collection('clubs')
+      .doc(this.clubId)
       .collection('groups')
       .get()
 
@@ -99,8 +99,8 @@ export default {
       delete addedGroup.id
 
       await firestore
-        .collection('organizations')
-        .doc(this.orgId)
+        .collection('clubs')
+        .doc(this.clubId)
         .collection('groups')
         .add(addedGroup)
 

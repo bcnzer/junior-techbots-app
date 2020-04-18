@@ -5,9 +5,10 @@ export const state = () => ({
 
 export const mutations = {
   setUser(state, newUser) {
+    localStorage.removeItem('org') // Doing this temporarily, for my test users
     if (newUser == null) {
       localStorage.removeItem('currentUser')
-      localStorage.removeItem('org')
+      localStorage.removeItem('club')
       state.currentUserId = null
     } else {
       localStorage.currentUser = JSON.stringify({

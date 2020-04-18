@@ -62,7 +62,7 @@
               <v-tab-item key="students">
                 <v-card flat>
                   <group-students
-                    :students="allStudentsInOrg"
+                    :students="allStudentsInClub"
                     v-on:save-selected-students="onSaveSelectedStudents"
                   ></group-students>
                 </v-card>
@@ -105,15 +105,15 @@ export default {
       valid: false,
       loading: true,
       tab: null,
-      currentOrg: null,
+      currentClub: null,
       groupName: null,
       groupDescription: null,
       editGroupName: null,
       editGroupDescription: null,
       savingGroupName: false,
-      allStudentsInOrg: [],
+      allStudentsInClub: [],
       studentsInGroup: [],
-      allLessonsInOrg: [],
+      allLessonsInClub: [],
       schedule: [],
       focus: '',
       calendarType: 'month',
@@ -162,12 +162,12 @@ export default {
   },
 
   async created() {
-    this.orgId = JSON.parse(localStorage.org).id
+    this.clubId = JSON.parse(localStorage.club).id
 
     // Get all the possible lessons
     const readLessons = await firestore
-      .collection('organizations')
-      .doc(this.orgId)
+      .collection('clubs')
+      .doc(this.clubId)
       .collection('lessons')
       .get()
 
@@ -175,11 +175,11 @@ export default {
       readLessons.docs.forEach((lesson) => {
         const lessonWithId = lesson.data()
         lessonWithId.id = lesson.id
-        this.allLessonsInOrg.push(lessonWithId)
+        this.allLessonsInClub.push(lessonWithId)
       })
 
       // Now fetch their images
-      this.allLessonsInOrg.forEach(async (lesson) => {
+      this.allLessonsInClub.forEach(async (lesson) => {
         let imageSrc
         try {
           imageSrc = await storage
@@ -194,24 +194,24 @@ export default {
       })
     }
 
-    // Get all the students in the organization - everyone possible
+    // Get all the students in the club - everyone possible
     const readStudents = await firestore
       .collection('students')
-      .where('organizations', 'array-contains', this.orgId)
+      .where('clubs', 'array-contains', this.clubId)
       .get()
 
     if (!readStudents.empty) {
       readStudents.docs.forEach((student) => {
         const studentWithId = student.data()
         studentWithId.id = student.id
-        this.allStudentsInOrg.push(studentWithId)
+        this.allStudentsInClub.push(studentWithId)
       })
     }
 
     // Finally get info about this specific group
     const readGroup = await firestore
-      .collection('organizations')
-      .doc(this.orgId)
+      .collection('clubs')
+      .doc(this.clubId)
       .collection('groups')
       .doc(this.$route.params.id)
       .get()
@@ -224,13 +224,13 @@ export default {
 
         // Go through and mark all the selected students
         if (currentGroup.students) {
-          this.allStudentsInOrg.forEach((student) => {
+          this.allStudentsInClub.forEach((student) => {
             student.selected = currentGroup.students.includes(student.id)
           })
         }
 
         if (currentGroup.lessons) {
-          this.allLessonsInOrg.forEach((lesson) => {
+          this.allLessonsInClub.forEach((lesson) => {
             lesson.selected = currentGroup.lessons.includes(lesson.id)
           })
         }
@@ -256,8 +256,8 @@ export default {
         this.savingGroupName = true
 
         await firestore
-          .collection('organizations')
-          .doc(this.orgId)
+          .collection('clubs')
+          .doc(this.clubId)
           .collection('groups')
           .doc(this.$route.params.id)
           .update({
@@ -278,14 +278,14 @@ export default {
       // TODO
     },
     async onSaveSelectedStudents(students) {
-      this.allStudentsInOrg = students
+      this.allStudentsInClub = students
       const selectedStudents = students
         .filter((currentStudent) => currentStudent.selected)
         .map((selectedStudent) => selectedStudent.id)
 
       await firestore
-        .collection('organizations')
-        .doc(this.orgId)
+        .collection('clubs')
+        .doc(this.clubId)
         .collection('groups')
         .doc(this.$route.params.id)
         .update({

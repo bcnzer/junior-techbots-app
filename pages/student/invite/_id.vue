@@ -22,7 +22,7 @@
       <v-row>
         <div class="headline mx-auto">
           Are you sure you want to join
-          <span class="font-weight-bold">{{ orgName }}</span
+          <span class="font-weight-bold">{{ clubName }}</span
           >?
         </div>
       </v-row>
@@ -74,9 +74,9 @@ export default {
   },
 
   computed: {
-    orgName() {
+    clubName() {
       if (!this.invite) return null
-      return this.invite.orgName
+      return this.invite.clubName
     }
   },
 
@@ -109,7 +109,7 @@ export default {
 
   methods: {
     async acceptInvite() {
-      // Add the org to the student's list or orgs and delete the invite
+      // Add the org to the student's list or clubs and delete the invite
       this.saving = true
       this.waitingYes = true
 
@@ -120,9 +120,7 @@ export default {
         .collection('students')
         .doc(this.studentId)
         .update({
-          organizations: firebase.firestore.FieldValue.arrayUnion(
-            this.invite.orgId
-          ),
+          clubs: firebase.firestore.FieldValue.arrayUnion(this.invite.clubId),
           photoURL: userInfo.photoURL,
           displayName: userInfo.displayName
         })

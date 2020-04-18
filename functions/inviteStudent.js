@@ -11,11 +11,11 @@ exports.inviteStudentEmail = functions.firestore
     const msg = {
       to: invite.email,
       from: 'Junior Techbots <noreply@juniortechbots.com>',
-      subject: `You've been invited to ${invite.orgName}`,
+      subject: `You've been invited to ${invite.clubName}`,
       templateId: 'd-ce3cf6acb54549999cb13c7db296140c',
       dynamic_template_data: {
-        orgName: invite.orgName,
-        orgId: invite.orgId,
+        clubName: invite.clubName,
+        clubId: invite.clubId,
         studentId: invite.inviteId,
         domainUrl: invite.domainUrl
       }
@@ -23,6 +23,6 @@ exports.inviteStudentEmail = functions.firestore
 
     return sendGridEmail
       .send(msg)
-      .then(() => console.log(invite.orgName))
+      .then(() => console.log(invite.clubName))
       .catch((error) => console.error(error.toString()))
   })

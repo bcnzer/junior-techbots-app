@@ -80,7 +80,7 @@ export default {
 
   methods: {
     teacher() {
-      this.$router.push('/teacher/org')
+      this.$router.push('/teacher/club')
     },
 
     student() {

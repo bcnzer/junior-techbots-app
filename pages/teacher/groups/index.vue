@@ -76,7 +76,7 @@ export default {
 
   data() {
     return {
-      orgId: null,
+      clubId: null,
       dialogId: null,
       dialogName: null,
       dialogDescription: null,
@@ -110,11 +110,11 @@ export default {
   },
 
   async created() {
-    this.orgId = JSON.parse(localStorage.org).id
+    this.clubId = JSON.parse(localStorage.club).id
 
     await firestore
-      .collection('organizations')
-      .doc(this.orgId)
+      .collection('clubs')
+      .doc(this.clubId)
       .collection('groups')
       .orderBy('name')
       .onSnapshot((querySnapshot) => {
@@ -144,14 +144,14 @@ export default {
 
       if (!id) {
         await firestore
-          .collection('organizations')
-          .doc(this.orgId)
+          .collection('clubs')
+          .doc(this.clubId)
           .collection('groups')
           .add(addedGroup)
       } else {
         await firestore
-          .collection('organizations')
-          .doc(this.orgId)
+          .collection('clubs')
+          .doc(this.clubId)
           .collection('groups')
           .doc(id)
           .update(addedGroup)
@@ -170,8 +170,8 @@ export default {
       this.showConfirmationDialog = false
 
       await firestore
-        .collection('organizations')
-        .doc(this.orgId)
+        .collection('clubs')
+        .doc(this.clubId)
         .collection('groups')
         .doc(this.groupToRemoveId)
         .delete()

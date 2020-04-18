@@ -20,16 +20,16 @@
           <v-stepper-content step="1">
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
-                v-model="orgName"
+                v-model="clubName"
                 :rules="[(v) => !!v || 'Name is required']"
-                :disabled="savingOrg"
+                :disabled="savingClub"
                 label="Club Name"
                 placeholder="i.e. Tawa Code Club"
                 required
               ></v-text-field>
               <v-textarea
-                v-model="orgDescription"
-                :disabled="savingOrg"
+                v-model="clubDescription"
+                :disabled="savingClub"
                 placeholder="Description"
               ></v-textarea>
             </v-form>
@@ -125,7 +125,7 @@ export default {
 
   methods: {
     teacher() {
-      this.$router.push('/teacher/org')
+      this.$router.push('/teacher/club')
     },
 
     student() {
