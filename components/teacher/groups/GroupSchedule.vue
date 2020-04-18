@@ -4,14 +4,14 @@
       <v-btn @click="showDialog = true" class="primary"
         >Schedule a Lesson</v-btn
       >
-      <div v-if="classLessons.length <= 0" class="body-1 mt-4 mb-2">
+      <div v-if="groupLessons.length <= 0" class="body-1 mt-4 mb-2">
         Go ahead and schedule some lessons 😊
       </div>
       <v-data-table
         v-else
         :headers="headers"
         :items="lessons"
-        @click:row="showScheduledClass"
+        @click:row="showScheduledGroup"
         class="mx-3"
       >
         <template v-slot:item.action="{ item }">
@@ -138,7 +138,7 @@
                 >Cancel</v-btn
               >
               <v-btn
-                @click="saveScheduledClass()"
+                @click="saveScheduledGroup()"
                 :loading="saving"
                 color="primary"
                 >Save</v-btn
@@ -153,7 +153,7 @@
 
 <script>
 export default {
-  name: 'ClassSchedule',
+  name: 'GroupSchedule',
 
   props: {
     schedule: {
@@ -170,7 +170,7 @@ export default {
     return {
       saving: null,
       showDialog: false,
-      classLessons: [],
+      groupLessons: [],
       headers: [
         { text: 'Date', value: 'date' },
         { text: 'Name', value: 'name' },
@@ -210,12 +210,12 @@ export default {
     addLesson() {
       this.showDialog = true
     },
-    saveScheduledClass() {
+    saveScheduledGroup() {
       // TODO
       this.showDialog = false
     },
-    showScheduledClass(scheduledClass) {
-      console.log(scheduledClass)
+    showScheduledGroup(scheduledGroup) {
+      console.log(scheduledGroup)
       this.showDialog = true
     }
   }

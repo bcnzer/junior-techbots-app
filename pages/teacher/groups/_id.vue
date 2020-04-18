@@ -24,10 +24,10 @@
         <v-col>
           <v-row>
             <div class="ml-3 headline">
-              {{ className }}
+              {{ groupName }}
             </div>
             <v-btn
-              @click="onShowEditClassName()"
+              @click="onShowEditGroupName()"
               x-small
               class="mt-1 ml-3"
               icon
@@ -35,51 +35,42 @@
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-row>
-          <div v-if="classDescription" class="subtitle-1">
-            {{ classDescription }}
+          <div v-if="groupDescription" class="subtitle-1">
+            {{ groupDescription }}
           </div>
         </v-col>
       </v-row>
 
-      <change-class-name
+      <change-group-name
         v-if="showEditName"
-        @onSave="onClassEditSave"
-        @onClose="onClassEditClose"
-        :class-name="editClassName"
-        :class-description="editClassDescription"
-        :saving="savingClassName"
-      ></change-class-name>
+        @onSave="onGroupEditSave"
+        @onClose="onGroupEditClose"
+        :group-name="editGroupName"
+        :group-description="editGroupDescription"
+        :saving="savingGroupName"
+      ></change-group-name>
 
       <v-row>
         <v-col cols="12" xs="12" class="mx-auto">
           <v-card :disabled="showEditName">
             <v-tabs v-model="tab">
-              <v-tab key="details">Students</v-tab>
+              <v-tab key="students">Students</v-tab>
               <v-tab key="schedule">Lesson Schedule</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item key="details">
+              <v-tab-item key="students">
                 <v-card flat>
-                  <class-students
+                  <group-students
                     :students="allStudentsInOrg"
                     v-on:save-selected-students="onSaveSelectedStudents"
-                  ></class-students>
+                  ></group-students>
                 </v-card>
               </v-tab-item>
 
               <v-tab-item key="schedule">
                 <v-card flat>
-                  <class-schedule></class-schedule>
-                </v-card>
-              </v-tab-item>
-
-              <v-tab-item key="lessonQueue">
-                <v-card flat>
-                  <lesson-queue
-                    :lessons="allLessonsInOrg"
-                    v-on:save-selected-lessons="onSaveSelectedLessons"
-                  ></lesson-queue>
+                  <group-schedule></group-schedule>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -92,21 +83,21 @@
 
 <script>
 import { firestore, storage } from '@/services/fireinit.js'
-import ClassStudents from '~/components/teacher/classes/ClassStudents'
-import ClassSchedule from '~/components/teacher/classes/ClassSchedule'
-import ChangeClassName from '~/components/teacher/classes/ChangeClassName'
+import GroupStudents from '~/components/teacher/groups/GroupStudents'
+import GroupSchedule from '~/components/teacher/groups/GroupSchedule'
+import ChangeGroupName from '~/components/teacher/groups/ChangeGroupName'
 
 export default {
   layout: 'teacher',
 
   head() {
-    return { title: 'Class' }
+    return { title: 'Group' }
   },
 
   components: {
-    ClassStudents,
-    ClassSchedule,
-    ChangeClassName
+    GroupStudents,
+    GroupSchedule,
+    ChangeGroupName
   },
 
   data() {
@@ -115,13 +106,13 @@ export default {
       loading: true,
       tab: null,
       currentOrg: null,
-      className: null,
-      classDescription: null,
-      editClassName: null,
-      editClassDescription: null,
-      savingClassName: false,
+      groupName: null,
+      groupDescription: null,
+      editGroupName: null,
+      editGroupDescription: null,
+      savingGroupName: false,
       allStudentsInOrg: [],
-      studentsInClass: [],
+      studentsInGroup: [],
       allLessonsInOrg: [],
       schedule: [],
       focus: '',
@@ -217,30 +208,30 @@ export default {
       })
     }
 
-    // Finally get info about this specific class
-    const readClass = await firestore
+    // Finally get info about this specific group
+    const readGroup = await firestore
       .collection('organizations')
       .doc(this.orgId)
-      .collection('classes')
+      .collection('groups')
       .doc(this.$route.params.id)
       .get()
 
-    if (!readClass.empty) {
-      const currentClass = readClass.data()
-      if (currentClass) {
-        this.className = currentClass.name
-        this.classDescription = currentClass.description
+    if (!readGroup.empty) {
+      const currentGroup = readGroup.data()
+      if (currentGroup) {
+        this.groupName = currentGroup.name
+        this.groupDescription = currentGroup.description
 
         // Go through and mark all the selected students
-        if (currentClass.students) {
+        if (currentGroup.students) {
           this.allStudentsInOrg.forEach((student) => {
-            student.selected = currentClass.students.includes(student.id)
+            student.selected = currentGroup.students.includes(student.id)
           })
         }
 
-        if (currentClass.lessons) {
+        if (currentGroup.lessons) {
           this.allLessonsInOrg.forEach((lesson) => {
-            lesson.selected = currentClass.lessons.includes(lesson.id)
+            lesson.selected = currentGroup.lessons.includes(lesson.id)
           })
         }
       }
@@ -250,37 +241,37 @@ export default {
   },
 
   methods: {
-    onShowEditClassName() {
-      this.editClassName = this.className
-      this.editClassDescription = this.classDescription
+    onShowEditGroupName() {
+      this.editGroupName = this.groupName
+      this.editGroupDescription = this.groupDescription
       this.showEditName = true
     },
-    async onClassEditSave(editedClass) {
+    async onGroupEditSave(editedGroup) {
       if (
-        this.className !== editedClass.name ||
-        this.classDescription !== editedClass.description
+        this.groupName !== editedGroup.name ||
+        this.groupDescription !== editedGroup.description
       ) {
-        this.className = editedClass.name
-        this.classDescription = editedClass.description
-        this.savingClassName = true
+        this.groupName = editedGroup.name
+        this.groupDescription = editedGroup.description
+        this.savingGroupName = true
 
         await firestore
           .collection('organizations')
           .doc(this.orgId)
-          .collection('classes')
+          .collection('groups')
           .doc(this.$route.params.id)
           .update({
-            name: this.className,
-            description: this.classDescription
+            name: this.groupName,
+            description: this.groupDescription
           })
       }
 
       this.showEditName = false
-      this.savingClassName = false
+      this.savingGroupName = false
     },
-    onClassEditClose() {
-      this.editClassName = this.className
-      this.editClassDescription = this.classDescription
+    onGroupEditClose() {
+      this.editGroupName = this.groupName
+      this.editGroupDescription = this.groupDescription
       this.showEditName = false
     },
     onSaveSelectedLessons(lessons) {
@@ -295,7 +286,7 @@ export default {
       await firestore
         .collection('organizations')
         .doc(this.orgId)
-        .collection('classes')
+        .collection('groups')
         .doc(this.$route.params.id)
         .update({
           students: selectedStudents

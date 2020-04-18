@@ -30,8 +30,8 @@
         <v-avatar color="secondary" size="36">
           <v-icon dark>mdi-alert-circle-outline</v-icon>
         </v-avatar>
-        If there are multiple classes, the students will be able to pick the
-        class they would like to join
+        If there are multiple groups, the students will be able to pick the
+        group they would like to join
       </div>
       <div class="ml-5 mt-5">
         <div class="body-1">

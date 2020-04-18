@@ -1,17 +1,17 @@
 <template>
-  <v-form ref="modalAddEditClass" lazy-validation>
+  <v-form ref="modalAddEditGroup" lazy-validation>
     <v-row>
       <v-col cols="12" xs="12" sm="6">
         <v-text-field
           v-model="name"
           :rules="[(v) => !!v || 'Name is required']"
           :disabled="saving"
-          label="Class name"
+          label="Group name"
         ></v-text-field>
         <v-text-field
           v-model="description"
           :disabled="saving"
-          label="Class description"
+          label="Group description"
         ></v-text-field>
       </v-col>
       <v-col cols="12" xs="12" sm="6" class="my-bottom">
@@ -32,14 +32,14 @@
 
 <script>
 export default {
-  name: 'ChangeClassName',
+  name: 'ChangeGroupName',
 
   props: {
-    className: {
+    groupName: {
       type: String,
       default: null
     },
-    classDescription: {
+    groupDescription: {
       type: String,
       default: null
     },
@@ -59,7 +59,7 @@ export default {
   computed: {
     name: {
       get() {
-        return this.className
+        return this.groupName
       },
       set(value) {
         this.internalName = value
@@ -67,7 +67,7 @@ export default {
     },
     description: {
       get() {
-        return this.classDescription
+        return this.groupDescription
       },
       set(value) {
         this.internalDescription = value
@@ -77,18 +77,18 @@ export default {
 
   methods: {
     btnClick(save) {
-      if (save && !this.$refs.modalAddEditClass.validate()) {
+      if (save && !this.$refs.modalAddEditGroup.validate()) {
         return
       }
       if (save) {
-        const updatedClass = {}
-        updatedClass.name = this.internalName
+        const updatedGroup = {}
+        updatedGroup.name = this.internalName
           ? this.internalName
-          : this.className
-        updatedClass.description = this.internalDescription
+          : this.groupName
+        updatedGroup.description = this.internalDescription
           ? this.internalDescription
-          : this.classDescription
-        this.$emit('onSave', updatedClass)
+          : this.groupDescription
+        this.$emit('onSave', updatedGroup)
       } else {
         this.$emit('onClose')
       }

@@ -108,8 +108,8 @@ export default {
         },
         {
           icon: 'mdi-account-multiple',
-          title: 'Classes',
-          to: '/teacher/classes'
+          title: 'Groups',
+          to: '/teacher/groups'
         },
         {
           icon: 'mdi-school',

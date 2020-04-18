@@ -21,12 +21,12 @@ service cloud.firestore {
     	allow create: if uidCheck()
     }
     
-  	match /organizations/{org_id}/{anyOrgClass=**} {
+  	match /organizations/{org_id}/{anyOrgGroup=**} {
     	allow read, write: if uidCheck() && request.auth.uid in get(/databases/$(database)/documents/organizations/$(org_id)).data.teachers;
     	allow create: if uidCheck()
     }
     
-  	// match /organizations/{org_id}/classes/{class_id} {
+  	// match /organizations/{org_id}/groups/{group_id} {
   	// allow read, write: if uidCheck()
   	// allow create: if uidCheck()
   	// }

@@ -18,7 +18,7 @@
             Enter the name of your org, school or club
           </div>
           <div class="body-1 my-2">
-            You will be able to create multiple classes under this organization
+            You will be able to create multiple groups under this organization
           </div>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field

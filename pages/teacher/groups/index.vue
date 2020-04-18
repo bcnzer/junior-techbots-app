@@ -8,34 +8,34 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
-        <v-alert v-if="classes.length == 0" type="warning">
-          You must have at least one class defined
+        <v-alert v-if="groups.length == 0" type="warning">
+          You must have at least one group defined
         </v-alert>
         <v-card>
           <v-card-title>
-            Classes
+            Groups
             <v-spacer></v-spacer>
-            <v-btn @click="showAddEdit = true" class="primary">Add Class</v-btn>
-            <add-edit-class
+            <v-btn @click="showAddEdit = true" class="primary">Add Group</v-btn>
+            <add-edit-group
               :show="showAddEdit"
-              :id="dialogAddEditClassId"
-              :class-name="dialogAddEditName"
-              :class-description="dialogAddEditDescription"
-              @onSave="addEditClass"
-              @onClose="closeAddEditClass"
-            ></add-edit-class>
+              :id="dialogId"
+              :group-name="dialogName"
+              :group-description="dialogDescription"
+              @onSave="onAddEditGroup"
+              @onClose="onCloseGroup"
+            ></add-edit-group>
           </v-card-title>
           <v-data-table
             :headers="headers"
-            :items="classes"
-            @click:row="showEditClass"
+            :items="groups"
+            @click:row="showEditGroup"
           >
             <template slot="no-data">
-              No classes exist. You must have at least one class
+              No groups exist. You must have at least one group
             </template>
 
             <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditClass(item)" class="mr-3">
+              <v-icon @click="showEditGroup(item)" class="mr-3">
                 mdi-pencil
               </v-icon>
             </template>
@@ -47,9 +47,9 @@
         :showDialog="showConfirmationDialog"
         @on-dialog-confirmation="onConfirmation()"
         @on-dialog-cancel="onCancel()"
-        :id="classToRemoveId"
+        :id="groupToRemoveId"
         :text="confirmationDialogMessage"
-        title="Delete Class?"
+        title="Delete Group?"
       />
     </v-row>
   </v-container>
@@ -59,7 +59,7 @@
 import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
 import ConfirmationDialog from '@/components/ConfirmationDialog'
-import AddEditClass from '@/components/teacher/AddEditClass'
+import AddEditGroup from '@/components/teacher/groups/AddEditGroup'
 
 export default {
   layout: 'teacher',
@@ -67,22 +67,22 @@ export default {
   components: {
     snackbar,
     ConfirmationDialog,
-    AddEditClass
+    AddEditGroup
   },
 
   head() {
-    return { title: 'Classes' }
+    return { title: 'Groups' }
   },
 
   data() {
     return {
       orgId: null,
-      dialogAddEditClassId: null,
-      dialogAddEditName: null,
-      dialogAddEditDescription: null,
+      dialogId: null,
+      dialogName: null,
+      dialogDescription: null,
       showAddEdit: false,
-      classToRemoveId: null,
-      classToRemoveName: null,
+      groupToRemoveId: null,
+      groupToRemoveName: null,
 
       showConfirmationDialog: false,
       valid: false,
@@ -99,13 +99,13 @@ export default {
         { text: 'Description', value: 'description' },
         { text: '', value: 'edit' }
       ],
-      classes: []
+      groups: []
     }
   },
 
   computed: {
     confirmationDialogMessage() {
-      return `Are you want to delete '${this.classToRemoveName}'?`
+      return `Are you want to delete '${this.groupToRemoveName}'?`
     }
   },
 
@@ -115,54 +115,54 @@ export default {
     await firestore
       .collection('organizations')
       .doc(this.orgId)
-      .collection('classes')
+      .collection('groups')
       .orderBy('name')
       .onSnapshot((querySnapshot) => {
-        this.classes = []
+        this.groups = []
         querySnapshot.docs.forEach((doc) => {
           const record = doc.data()
           record.id = doc.id
-          this.classes.push(record)
+          this.groups.push(record)
         })
         this.loading = false
       })
   },
 
   methods: {
-    closeAddEditClass() {
+    onCloseGroup() {
       // All we're doing is closing the window as the person pressed cancel
-      this.dialogAddEditClassId = null
-      this.dialogAddEditName = null
-      this.dialogAddEditDescription = null
+      this.dialogId = null
+      this.dialogName = null
+      this.dialogDescription = null
       this.showAddEdit = false
     },
-    async addEditClass(addedClass) {
+    async onAddEditGroup(addedGroup) {
       this.showAddEdit = false
 
-      const id = addedClass.id
-      delete addedClass.id
+      const id = addedGroup.id
+      delete addedGroup.id
 
       if (!id) {
         await firestore
           .collection('organizations')
           .doc(this.orgId)
-          .collection('classes')
-          .add(addedClass)
+          .collection('groups')
+          .add(addedGroup)
       } else {
         await firestore
           .collection('organizations')
           .doc(this.orgId)
-          .collection('classes')
+          .collection('groups')
           .doc(id)
-          .update(addedClass)
+          .update(addedGroup)
       }
 
-      this.dialogAddEditClassId = null
-      this.dialogAddEditName = null
-      this.dialogAddEditDescription = null
+      this.dialogId = null
+      this.dialogName = null
+      this.dialogDescription = null
       this.$store.commit(
         'snackbar/setSnack',
-        `Class ${id == null ? 'added' : 'updated'}`
+        `Group ${id == null ? 'added' : 'updated'}`
       )
     },
     async onConfirmation() {
@@ -172,27 +172,27 @@ export default {
       await firestore
         .collection('organizations')
         .doc(this.orgId)
-        .collection('classes')
-        .doc(this.classToRemoveId)
+        .collection('groups')
+        .doc(this.groupToRemoveId)
         .delete()
 
-      this.classToRemoveId = null
-      this.classToRemoveName = null
+      this.groupToRemoveId = null
+      this.groupToRemoveName = null
     },
     onCancel() {
       this.showConfirmationDialog = false
     },
-    showEditClass(item) {
+    showEditGroup(item) {
       console.log(item)
-      this.$router.push(`/teacher/classes/${item.id}`)
-      // this.dialogAddEditClassId = item.id
-      // this.dialogAddEditName = item.name
-      // this.dialogAddEditDescription = item.description
+      this.$router.push(`/teacher/groups/${item.id}`)
+      // this.dialogId = item.id
+      // this.dialogName = item.name
+      // this.dialogDescription = item.description
       // this.showAddEdit = true
     },
     showConfirmationToDelete(item) {
-      this.classToRemoveId = item.id
-      this.classToRemoveName = item.name
+      this.groupToRemoveId = item.id
+      this.groupToRemoveName = item.name
       this.showConfirmationDialog = true
     }
   }

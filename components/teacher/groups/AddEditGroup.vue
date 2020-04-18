@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="show" max-width="500px">
-    <v-form ref="modalAddEditClass" lazy-validation>
+    <v-form ref="modalAddEditGroup" lazy-validation>
       <v-card>
         <v-card-title>
-          <span class="headline">{{ actionType }} Class</span>
+          <span class="headline">{{ actionType }} Group</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -43,14 +43,14 @@
 
 <script>
 export default {
-  name: 'AddEditClass',
+  name: 'AddEditGroup',
 
   props: {
-    className: {
+    groupName: {
       type: String,
       default: null
     },
-    classDescription: {
+    groupDescription: {
       type: String,
       default: null
     },
@@ -78,7 +78,7 @@ export default {
     },
     name: {
       get() {
-        return this.className
+        return this.groupName
       },
       set(value) {
         this.internalName = value
@@ -86,7 +86,7 @@ export default {
     },
     description: {
       get() {
-        return this.classDescription
+        return this.groupDescription
       },
       set(value) {
         this.internalDescription = value
@@ -96,21 +96,21 @@ export default {
 
   methods: {
     btnClick(save) {
-      if (save && !this.$refs.modalAddEditClass.validate()) {
+      if (save && !this.$refs.modalAddEditGroup.validate()) {
         return
       }
       // Note that closing of the dialog is done by the component that called
       // the dialog so they must listen to both events below
       this.saving = false
       if (save && this.internalName) {
-        const updatedClass = { id: this.id }
+        const updatedGroup = { id: this.id }
         if (this.internalName) {
-          updatedClass.name = this.internalName
+          updatedGroup.name = this.internalName
         }
         if (this.internalDescription) {
-          updatedClass.description = this.internalDescription
+          updatedGroup.description = this.internalDescription
         }
-        this.$emit('onSave', updatedClass)
+        this.$emit('onSave', updatedGroup)
       } else {
         this.$emit('onClose')
       }

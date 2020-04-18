@@ -111,7 +111,7 @@
 
 <script>
 export default {
-  name: 'ClassStudents',
+  name: 'GroupStudents',
 
   props: {
     students: {

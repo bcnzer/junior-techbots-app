@@ -164,7 +164,7 @@ export default {
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Email', value: 'email' },
-        { text: 'Class', value: 'class' },
+        { text: 'Group', value: 'group' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       students: [],
@@ -193,7 +193,7 @@ export default {
             recordId: doc.id,
             name: student.displayName,
             email: student.email,
-            class: ''
+            group: ''
           })
         })
         this.loading = false
