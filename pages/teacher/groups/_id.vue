@@ -102,62 +102,16 @@ export default {
 
   data() {
     return {
-      valid: false,
       loading: true,
       tab: null,
-      currentClub: null,
       groupName: null,
       groupDescription: null,
       editGroupName: null,
       editGroupDescription: null,
       savingGroupName: false,
       allStudentsInClub: [],
-      studentsInGroup: [],
       allLessonsInClub: [],
-      schedule: [],
-      focus: '',
-      calendarType: 'month',
-      calendarTypes: ['month', 'week', 'day', '4day'],
-      calendarValue: '',
-      calendarEvents: [],
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days'
-      },
       showEditName: false
-    }
-  },
-
-  computed: {
-    title() {
-      const { start, end } = this
-      if (!start || !end) {
-        return ''
-      }
-
-      const startMonth = this.monthFormatter(start)
-      const endMonth = this.monthFormatter(end)
-      const suffixMonth = startMonth === endMonth ? '' : endMonth
-
-      const startYear = start.year
-      const endYear = end.year
-      const suffixYear = startYear === endYear ? '' : endYear
-
-      const startDay = start.day + this.nth(start.day)
-      const endDay = end.day + this.nth(end.day)
-
-      switch (this.type) {
-        case 'month':
-          return `${startMonth} ${startYear}`
-        case 'week':
-        case '4day':
-          return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
-        case 'day':
-          return `${startMonth} ${startDay} ${startYear}`
-      }
-      return ''
     }
   },
 
@@ -274,9 +228,6 @@ export default {
       this.editGroupDescription = this.groupDescription
       this.showEditName = false
     },
-    onSaveSelectedLessons(lessons) {
-      // TODO
-    },
     async onSaveSelectedStudents(students) {
       this.allStudentsInClub = students
       const selectedStudents = students
@@ -291,27 +242,6 @@ export default {
         .update({
           students: selectedStudents
         })
-    },
-    viewDay({ date }) {
-      this.focus = date
-      this.type = 'day'
-    },
-    getEventColor(event) {
-      return event.color
-    },
-    setToday() {
-      this.focus = this.today
-    },
-    prev() {
-      this.$refs.calendar.prev()
-    },
-    next() {
-      this.$refs.calendar.next()
-    },
-    showDivider(index, length) {
-      if (index <= 0) return false
-      if (index < length) return true
-      return false
     }
   }
 }

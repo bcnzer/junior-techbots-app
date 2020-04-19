@@ -83,17 +83,8 @@ export default {
       showAddEdit: false,
       groupToRemoveId: null,
       groupToRemoveName: null,
-
       showConfirmationDialog: false,
-      valid: false,
       loading: true,
-      saving: false,
-      dialogEmail: null,
-      dialogEmailRules: [
-        (v) => !!v || 'E-mail is required',
-        (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
-      ],
-      showSnackbar: false,
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Description', value: 'description' },
@@ -189,11 +180,6 @@ export default {
       // this.dialogName = item.name
       // this.dialogDescription = item.description
       // this.showAddEdit = true
-    },
-    showConfirmationToDelete(item) {
-      this.groupToRemoveId = item.id
-      this.groupToRemoveName = item.name
-      this.showConfirmationDialog = true
     }
   }
 }

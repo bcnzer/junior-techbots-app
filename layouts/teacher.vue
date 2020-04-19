@@ -12,15 +12,11 @@
         <v-list>
           <v-list-item key="teacher" to="/">
             <v-list-item-action>
-              <img
-                src="~/static/logo32x32.png"
-                width="24"
-                alt="Junior Techbots"
-              />
+              <img :alt="title" src="~/static/logo32x32.png" width="24" />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="amber--text">
-                Junior Techbots
+                {{ title }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>

@@ -156,10 +156,6 @@ export default {
   name: 'GroupSchedule',
 
   props: {
-    schedule: {
-      type: Array,
-      default: () => []
-    },
     lessons: {
       type: Array,
       default: () => []
@@ -207,9 +203,6 @@ export default {
   },
 
   methods: {
-    addLesson() {
-      this.showDialog = true
-    },
     saveScheduledGroup() {
       // TODO
       this.showDialog = false

@@ -64,10 +64,6 @@ export default {
   },
 
   props: {
-    buttonText: {
-      type: String,
-      default: null
-    },
     entryFormEnabled: {
       type: Boolean,
       default: true

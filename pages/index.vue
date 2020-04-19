@@ -60,7 +60,6 @@ export default {
 
   data() {
     return {
-      valid: false,
       loading: true,
       enableStudentButton: false
     }

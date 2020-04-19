@@ -58,7 +58,6 @@ export default {
       loading: true,
       search: null,
       lessons: [],
-      viewTypes: ['Details', 'Card'],
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },

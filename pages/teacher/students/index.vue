@@ -133,7 +133,6 @@ import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
 import StudentEntryForm from '@/components/teacher/StudentEntryForm'
 import uuidv4 from 'uuid/v4'
-import firebase from 'firebase/app'
 
 export default {
   layout: 'teacher',
@@ -149,10 +148,8 @@ export default {
 
   data() {
     return {
-      valid: false,
       search: null,
       loading: true,
-      sendingEmail: false,
       showEmailDialog: false,
       saving: false,
       dialogEmail: null,
@@ -160,7 +157,6 @@ export default {
         (v) => !!v || 'E-mail is required',
         (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
       ],
-      showSnackbar: false,
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Email', value: 'email' },
@@ -245,17 +241,17 @@ export default {
       this.$store.commit('snackbar/setSnack', 'Student updated')
     },
 
-    async deleteStudent(student) {
-      // TODO - implement this properly
-      await firestore
-        .collection('students')
-        .doc(student.recordId)
-        .update({
-          clubs: firebase.firestore.FieldValue.arrayRemove(
-            JSON.parse(localStorage.club).id
-          )
-        })
-    },
+    // async deleteStudent(student) {
+    //   // TODO - implement this properly
+    //   await firestore
+    //     .collection('students')
+    //     .doc(student.recordId)
+    //     .update({
+    //       clubs: firebase.firestore.FieldValue.arrayRemove(
+    //         JSON.parse(localStorage.club).id
+    //       )
+    //     })
+    // },
 
     async inviteStudent() {
       if (!this.$refs.modalInviteStudent.validate()) {

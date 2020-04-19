@@ -1,14 +1,16 @@
 <template>
   <v-dialog v-model="showDialog" :persistent="persistent" max-width="400">
     <v-card>
-      <v-card-title class="headline">{{ title }}</v-card-title>
+      <v-card-title v-if="title" class="headline">{{ title }}</v-card-title>
       <v-card-text>{{ text }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="onConfirmationBtn()" text>{{
           confirmationBtnText
         }}</v-btn>
-        <v-btn @click="onCancelBtn()" text>{{ cancelBtnText }}</v-btn>
+        <v-btn @click="onCancelBtn()" v-if="cancelBtnText" text>{{
+          cancelBtnText
+        }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

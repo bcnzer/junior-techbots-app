@@ -14,15 +14,9 @@
 
 <script>
 export default {
-  data() {
-    return {
-      title: 'Login type'
-    }
-  },
-
   head() {
     return {
-      title: this.title
+      title: 'Login type'
     }
   },
 
