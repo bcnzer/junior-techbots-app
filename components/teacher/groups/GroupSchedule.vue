@@ -208,7 +208,6 @@ export default {
       this.showDialog = false
     },
     showScheduledGroup(scheduledGroup) {
-      console.log(scheduledGroup)
       this.showDialog = true
     }
   }

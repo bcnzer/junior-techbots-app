@@ -139,7 +139,6 @@ export default {
           imageSrc = await storage
             .ref(`lessons/${lesson.id}/screenshot_256x192.png`)
             .getDownloadURL()
-          console.log(imageSrc)
         } catch (error) {
           // By keeping it undefined the fuzzy, lazy loaded image is used
           imageSrc = '../../bots/robots small.png'

@@ -17,7 +17,6 @@ let firebaseConfig = {
 }
 
 if (new URL(window.location.href).host === 'app.juniortechbots.com') {
-  console.log('using production')
   firebaseConfig = {
     apiKey: 'AIzaSyCbobsqPSkxwZvGTH9tpfDKf_YkZxWVhYI',
     authDomain: 'junior-techbots.firebaseapp.com',

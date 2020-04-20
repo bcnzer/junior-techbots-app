@@ -218,7 +218,6 @@ export default {
           messageForParents: this.messageForParents,
           furtherResources: this.furtherResources
         }
-        console.log(lesson)
 
         if (!this.currentLessonId) {
           const newLesson = await collection.add(lesson)

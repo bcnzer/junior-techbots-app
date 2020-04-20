@@ -22,7 +22,7 @@
           </div>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
-              v-model="orgName"
+              v-model="clubName"
               :rules="[(v) => !!v || 'Name is required']"
               :disabled="savingOrg"
               placeholder="Example: Discovery School Code Club"
@@ -30,7 +30,7 @@
               class="mt-3"
             ></v-text-field>
             <v-textarea
-              v-model="orgDescription"
+              v-model="clubDescription"
               :disabled="savingOrg"
               placeholder="Description"
             ></v-textarea>
@@ -62,8 +62,8 @@ export default {
   data() {
     return {
       valid: false,
-      orgName: null,
-      orgDescription: null,
+      clubName: null,
+      clubDescription: null,
       loading: true,
       createOrg: false,
       pickOrg: false,
@@ -96,22 +96,22 @@ export default {
 
     if (teacherRecord.clubs === undefined) {
       // User account exists but they don't have an org so ask them to create one
-      this.createOrg = true
+      this.createClub = true
       this.loading = false
     } else if (teacherRecord.clubs.length === 1) {
       // Just one so just use that one and move on
-      const org = await firestore
+      const club = await firestore
         .collection('clubs')
         .doc(teacherRecord.clubs[0])
         .get()
 
-      const orgData = org.data()
-      localStorage.org = JSON.stringify({
-        id: org.id,
-        name: orgData.name,
-        entryFormId: orgData.entryFormId,
-        entryFormEnabled: orgData.entryFormEnabled,
-        entryFormMessage: orgData.entryFormMessage
+      const clubData = club.data()
+      localStorage.group = JSON.stringify({
+        id: club.id,
+        name: clubData.name,
+        entryFormId: clubData.entryFormId,
+        entryFormEnabled: clubData.entryFormEnabled,
+        entryFormMessage: clubData.entryFormMessage
       })
       this.$router.push('/teacher')
     } else {
@@ -131,9 +131,9 @@ export default {
       this.savingOrg = true
       const entryId = uuidv4().substring(0, 8)
       const currentUserUid = JSON.parse(localStorage.currentUser).uid
-      const newOrg = await firestore.collection('clubs').add({
-        name: this.orgName,
-        description: this.orgDescription,
+      const newClub = await firestore.collection('clubs').add({
+        name: this.clubName,
+        description: this.clubDescription,
         teachers: [currentUserUid],
         uid: currentUserUid,
         entryFormId: entryId
@@ -143,12 +143,12 @@ export default {
         .collection('teachers')
         .doc(this.teacherRecordId)
         .update({
-          clubs: firebase.firestore.FieldValue.arrayUnion(newOrg.id)
+          clubs: firebase.firestore.FieldValue.arrayUnion(newClub.id)
         })
 
       localStorage.org = JSON.stringify({
-        id: newOrg.id,
-        name: this.orgName,
+        id: newClub.id,
+        name: this.clubName,
         entryFormId: entryId
       })
       this.$router.push('/')

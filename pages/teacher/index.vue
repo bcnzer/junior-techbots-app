@@ -111,7 +111,6 @@ export default {
     },
     closeAddEditGroup() {
       // All we're doing is closing the window as the person pressed cancel
-      console.log('closeAddEditGroup')
       this.dialogAddEditId = null
       this.dialogAddEditName = ''
       this.dialogAddEditDescription = ''

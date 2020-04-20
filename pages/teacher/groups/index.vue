@@ -174,7 +174,6 @@ export default {
       this.showConfirmationDialog = false
     },
     showEditGroup(item) {
-      console.log(item)
       this.$router.push(`/teacher/groups/${item.id}`)
       // this.dialogId = item.id
       // this.dialogName = item.name

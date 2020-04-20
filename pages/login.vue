@@ -34,7 +34,9 @@ export default {
         .auth()
         .signInWithPopup(this.provider)
         .then((result) => {
-          if (this.$route.query.invite) {
+          if (this.$route.query.redirect === 'clubsetup') {
+            this.$router.push('/clubsetup')
+          } else if (this.$route.query.invite) {
             this.$router.push(`/student/invite/${this.$route.query.invite}`)
           } else {
             this.$router.push('/')
