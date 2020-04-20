@@ -7,7 +7,7 @@
     "junior-techbots": {
       "hosting": {
         "default": [
-          "app-junior-techbots"
+          "junior-techbots"
         ]
       }
     },
