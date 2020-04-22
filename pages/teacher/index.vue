@@ -77,6 +77,8 @@ export default {
   async created() {
     this.clubId = JSON.parse(localStorage.club).id
 
+    console.log('hi')
+
     const groups = await firestore
       .collection('clubs')
       .doc(this.clubId)

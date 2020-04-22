@@ -175,10 +175,6 @@ export default {
     },
     showEditGroup(item) {
       this.$router.push(`/teacher/groups/${item.id}`)
-      // this.dialogId = item.id
-      // this.dialogName = item.name
-      // this.dialogDescription = item.description
-      // this.showAddEdit = true
     }
   }
 }

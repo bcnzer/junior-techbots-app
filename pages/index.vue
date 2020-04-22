@@ -66,6 +66,7 @@ export default {
   },
 
   async mounted() {
+    console.log(localStorage.currentUser)
     const currentUserUid = JSON.parse(localStorage.currentUser).uid
     const studentRecord = await firestore
       .collection('students')
@@ -79,7 +80,7 @@ export default {
 
   methods: {
     teacher() {
-      this.$router.push('/teacher/club')
+      this.$router.push('/teacher')
     },
 
     student() {

@@ -90,7 +90,7 @@ export default {
   },
 
   router: {
-    middleware: ['notloggedin', 'teacher-noclub']
+    middleware: ['notloggedin']
   },
 
   /*

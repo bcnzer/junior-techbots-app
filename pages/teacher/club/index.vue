@@ -106,7 +106,7 @@ export default {
         .get()
 
       const clubData = club.data()
-      localStorage.group = JSON.stringify({
+      localStorage.club = JSON.stringify({
         id: club.id,
         name: clubData.name,
         entryFormId: clubData.entryFormId,
@@ -114,6 +114,7 @@ export default {
         entryFormMessage: clubData.entryFormMessage
       })
       this.$router.push('/teacher')
+      console.log(teacherRecord.clubs[0])
     } else {
       // There's more than one so we need to ask which one the user wants to use
       // TODO - allow user to pick their org while also allowing to create a new one
