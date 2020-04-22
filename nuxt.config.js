@@ -93,6 +93,10 @@ export default {
     middleware: ['notloggedin']
   },
 
+  // server: {
+  //   host: '192.168.150.211'
+  // },
+
   /*
    ** Build configuration
    */

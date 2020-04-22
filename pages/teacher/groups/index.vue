@@ -35,7 +35,7 @@
             </template>
 
             <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditGroup(item)" class="mr-3">
+              <v-icon @click="showEditGroup(item)">
                 mdi-pencil
               </v-icon>
             </template>
@@ -88,7 +88,7 @@ export default {
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Description', value: 'description' },
-        { text: '', value: 'edit' }
+        { text: '', value: 'action' }
       ],
       groups: []
     }

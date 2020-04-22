@@ -16,17 +16,24 @@
       </v-row>
     </div>
     <div v-else>
-      <v-row>
-        <v-col class="text-center my-5">
-          <div class="display-1">
-            Welcome to Junior Techbots
-          </div>
-          <div class="sub-heading">
-            Please select your view
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
+      <div v-if="studentClubCount == 0 && teacherClubCount == 0">
+        <div class="display-1 text-center mx-auto my-5">
+          You are not a member of a club
+        </div>
+        <div class="headline text-center my-5">
+          <b>Students</b>: ask the person running the club for an invite!
+        </div>
+        <v-img
+          src="/bots/robot-sorry1.png"
+          max-width="150"
+          class="mx-auto"
+        ></v-img>
+        <div class="heading text-center mt-5">
+          If you are a teacher, click here to
+          <nuxt-link to="/clubsetup">Create a Club</nuxt-link>
+        </div>
+      </div>
+      <!-- <v-row>
         <v-col cols="12" xs="6" sm="6" md="6" lg="6" xl="6" class="mx-auto">
           <viewtype
             @card-clicked="student()"
@@ -42,45 +49,77 @@
             button-text="teacher"
           ></viewtype>
         </v-col>
-      </v-row>
+      </v-row> -->
     </div>
   </v-container>
 </template>
 
 <script>
 import { firestore } from '@/services/fireinit.js'
-import viewtype from '~/components/viewtype'
 
 export default {
   layout: 'minimal',
 
-  components: {
-    viewtype
-  },
-
   data() {
     return {
       loading: true,
-      enableStudentButton: false
+      studentClubCount: 0,
+      teacherClubCount: 0
     }
   },
 
   async mounted() {
-    console.log(localStorage.currentUser)
     const currentUserUid = JSON.parse(localStorage.currentUser).uid
     const studentRecord = await firestore
       .collection('students')
       .where('uid', '==', currentUserUid)
       .get()
 
-    this.enableStudentButton = studentRecord.docs.length > 0
+    const teacherRecord = await firestore
+      .collection('teachers')
+      .where('uid', '==', currentUserUid)
+      .get()
+
+    let studentClubs
+    let teacherClubs
+    this.studentClubCount = studentRecord.docs.length
+    if (this.studentClubCount > 0) {
+      studentClubs = studentRecord.docs[0].data()
+      this.studentClubCount = studentClubs.clubs.length
+    }
+    this.teacherClubCount = teacherRecord.docs.length
+    if (this.teacherClubCount > 0) {
+      teacherClubs = teacherRecord.docs[0].data()
+      this.teacherClubCount = teacherClubs.clubs.length
+    }
+
+    if (this.studentClubCount === 0 && this.teacherClubCount === 1) {
+      // They're only in one club so forward them
+      const onlyTeacherClubResponse = await firestore
+        .collection('clubs')
+        .doc(teacherClubs.clubs[0])
+        .get()
+
+      const onlyTeacherClub = onlyTeacherClubResponse.data()
+      localStorage.club = JSON.stringify({
+        id: onlyTeacherClubResponse.id,
+        name: onlyTeacherClub.name,
+        entryFormId: onlyTeacherClub.entryId
+      })
+
+      this.$router.push('/teacher')
+    } else if (this.studentClubCount === 1 && this.teacherClubCount === 0) {
+      // TODO
+    } else {
+      // TODO - need to handle multiple connections
+    }
 
     this.loading = false
   },
 
   methods: {
     teacher() {
-      this.$router.push('/teacher')
+      this.$router.push('/teacher/group')
     },
 
     student() {

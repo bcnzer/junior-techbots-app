@@ -78,50 +78,20 @@
                     </v-menu>
                   </v-col>
                   <v-col cols="12" xs="12" sm="4">
-                    <v-menu
-                      ref="dialogTimeMenu"
-                      v-model="dialogTimeMenu"
-                      :close-on-content-click="false"
-                      :return-value.sync="dialogStartTime"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="dialogStartTime"
-                          v-on="on"
-                          label="Start Time"
-                          class="mx-1"
-                          readonly
-                        ></v-text-field>
-                      </template>
-                      <v-time-picker
-                        v-model="dialogStartTime"
-                        :ampm-in-title="true"
-                        full-width
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          @click="dialogTimeMenu = false"
-                          text
-                          color="primary"
-                          >Cancel</v-btn
-                        >
-                        <v-btn
-                          @click="$refs.dialogTimeMenu.save(dialogStartTime)"
-                          text
-                          color="primary"
-                          >OK</v-btn
-                        >
-                      </v-time-picker>
-                    </v-menu>
+                    <v-text-field
+                      v-model="startTime"
+                      label="Start Time"
+                      type="time"
+                      class="ml-2 mr-3"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" xs="12" sm="4">
-                    <v-select
-                      :items="durations"
-                      label="Duration (minutes)"
-                    ></v-select>
+                    <v-text-field
+                      v-model="duration"
+                      label="Duration"
+                      type="number"
+                      suffix="minutes"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
 
@@ -165,34 +135,14 @@ export default {
   data() {
     return {
       saving: null,
+      startTime: null,
+      duration: null,
       showDialog: false,
       groupLessons: [],
       headers: [
         { text: 'Date', value: 'date' },
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' }
-      ],
-      durations: [
-        5,
-        10,
-        15,
-        20,
-        25,
-        30,
-        35,
-        40,
-        45,
-        50,
-        55,
-        60,
-        65,
-        70,
-        75,
-        80,
-        85,
-        90,
-        95,
-        100
       ],
       dialogDate: null,
       dialogStartTime: null,
