@@ -279,9 +279,9 @@ export default {
     return {
       currentUser: null,
       currentStep: 5,
-      clubName: 'Papakowhai School Coding Club',
-      clubDescription: 'Lunchtime coding club out of Rimu 2',
-      groupName: 'Years 3-8',
+      clubName: null,
+      clubDescription: null,
+      groupName: null,
       dialogGroupMoreInfo: false,
       projectsCodeClubNZ: false,
       inviteEmail1: null,
@@ -313,6 +313,13 @@ export default {
   mounted() {
     if (!localStorage.currentUser) return null
     this.currentUser = JSON.parse(localStorage.currentUser)
+
+    if (new URL(window.location.href).host === 'localhost:3000') {
+      // Load some local-only test data
+      this.clubName = 'Papakowhai School Coding Club'
+      this.clubDescription = 'Lunchtime coding club out of Rimu 2'
+      this.groupName = 'Years 3-8'
+    }
   },
 
   methods: {
