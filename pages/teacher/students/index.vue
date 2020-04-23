@@ -120,7 +120,7 @@
               <v-icon @click="showEditStudent(item)" class="mr-3">
                 mdi-pencil
               </v-icon>
-              <v-icon @click="deleteStudent(item)" :disabled="disabledAddEdit">
+              <v-icon @click="deleteStudent(item)">
                 mdi-delete
               </v-icon>
             </template>
