@@ -117,7 +117,7 @@
             </template>
 
             <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditStudent(item)" class="mr-3">
+              <v-icon @click="showEditStudent(item)" class="mr-5">
                 mdi-pencil
               </v-icon>
               <v-icon @click="deleteStudent(item)">
@@ -165,7 +165,6 @@ export default {
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Email', value: 'email' },
-        { text: 'Group', value: 'group' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       students: [],
