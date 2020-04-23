@@ -89,6 +89,7 @@ export default {
 
       if (!studentRecord.empty) {
         this.studentId = studentRecord.docs[0].id
+        console.log(this.studentId)
         const invite = await firestore
           .collection('students')
           .doc(this.studentId)

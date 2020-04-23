@@ -40,6 +40,10 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12">
+                          <v-alert type="warning">
+                            Students must login with a Google account - a GMail
+                            or GSuite account
+                          </v-alert>
                           <v-text-field
                             v-model="dialogEmail"
                             :rules="dialogEmailRules"
@@ -57,7 +61,7 @@
                       @click="inviteStudent()"
                       :loading="saving"
                       color="primary"
-                      >Save</v-btn
+                      >Send</v-btn
                     >
                     <v-btn @click="showEmailDialog = false" :disabled="saving"
                       >Cancel</v-btn
@@ -113,10 +117,10 @@
             </template>
 
             <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditStudent(item)" small class="mr-3">
+              <v-icon @click="showEditStudent(item)" class="mr-3">
                 mdi-pencil
               </v-icon>
-              <v-icon @click="removeStudent(item)" small>
+              <v-icon @click="deleteStudent(item)" :disabled="disabledAddEdit">
                 mdi-delete
               </v-icon>
             </template>
@@ -132,6 +136,7 @@
 import { firestore } from '@/services/fireinit.js'
 import snackbar from '@/components/snackbar'
 import StudentEntryForm from '@/components/teacher/StudentEntryForm'
+import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
 
 export default {
@@ -214,11 +219,13 @@ export default {
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage
     },
+
     showEditStudent(student) {
       this.dialogCurrentStudent = student // used later when we update
       this.dialogStudentDisplayName = student.name
       this.showStudentEditDialog = true
     },
+
     async editStudent() {
       if (
         !this.dialogCurrentStudent ||
@@ -241,17 +248,16 @@ export default {
       this.$store.commit('snackbar/setSnack', 'Student updated')
     },
 
-    // async deleteStudent(student) {
-    //   // TODO - implement this properly
-    //   await firestore
-    //     .collection('students')
-    //     .doc(student.recordId)
-    //     .update({
-    //       clubs: firebase.firestore.FieldValue.arrayRemove(
-    //         JSON.parse(localStorage.club).id
-    //       )
-    //     })
-    // },
+    async deleteStudent(student) {
+      await firestore
+        .collection('students')
+        .doc(student.recordId)
+        .update({
+          clubs: firebase.firestore.FieldValue.arrayRemove(
+            JSON.parse(localStorage.club).id
+          )
+        })
+    },
 
     async inviteStudent() {
       if (!this.$refs.modalInviteStudent.validate()) {
@@ -269,9 +275,6 @@ export default {
         // Add the student record and the invite
         const newStudent = await firestore.collection('students').add({
           email: this.dialogEmail
-          // clubs: firebase.firestore.FieldValue.arrayUnion(
-          //   JSON.parse(localStorage.club).id
-          // )
         })
 
         studentId = newStudent.id
