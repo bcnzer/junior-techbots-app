@@ -189,8 +189,64 @@
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step step="5">Confirmation</v-stepper-step>
+          <v-stepper-step :complete="currentStep > 3" step="5"
+            >Privacy and Data Retention</v-stepper-step
+          >
+
           <v-stepper-content step="5">
+            <div class="mb-5">
+              Please confirm the following
+            </div>
+            <div class="ml-2 mb-3">
+              <v-form ref="formPrivacyDataRetention">
+                <v-checkbox
+                  v-model="confirmCookiesUsage"
+                  :rules="[(v) => !!v || 'Confirmation required']"
+                >
+                  <template v-slot:label>
+                    <div>
+                      You accept that we use cookies
+                    </div>
+                  </template>
+                </v-checkbox>
+                <v-checkbox
+                  v-model="confirmPrivacyPolicy"
+                  :rules="[(v) => !!v || 'Confirmation required']"
+                  class="mt-1 pt-1"
+                >
+                  <template v-slot:label>
+                    <div>
+                      Confirm you have read the
+                      <a href="www.juniortechbots.com/privacy"
+                        >Privacy Policy</a
+                      >
+                    </div>
+                  </template>
+                </v-checkbox>
+                <v-checkbox
+                  v-model="confirmDataRetention"
+                  :rules="[(v) => !!v || 'Confirmation required']"
+                  class="mt-1 pt-1"
+                >
+                  <template v-slot:label>
+                    <div>
+                      Confirm you have read the
+                      <a href="www.juniortechbots.com/dataretention"
+                        >Data Retention Policy</a
+                      >
+                    </div>
+                  </template>
+                </v-checkbox>
+              </v-form>
+            </div>
+
+            <v-btn @click="goForwardStep" color="primary">Continue</v-btn>
+            <v-btn @click="goBackStep" text>back</v-btn>
+          </v-stepper-content>
+
+          <v-stepper-step step="6">Confirmation</v-stepper-step>
+
+          <v-stepper-content step="6">
             <div class="mb-5">
               Are you sure you want to go ahead and create
               <b>{{ clubName }}</b
@@ -222,7 +278,7 @@ export default {
   data() {
     return {
       currentUser: null,
-      currentStep: 1,
+      currentStep: 5,
       clubName: 'Papakowhai School Coding Club',
       clubDescription: 'Lunchtime coding club out of Rimu 2',
       groupName: 'Years 3-8',
@@ -231,6 +287,9 @@ export default {
       inviteEmail1: null,
       inviteEmail2: null,
       inviteEmail3: null,
+      confirmPrivacyPolicy: false,
+      confirmCookiesUsage: false,
+      confirmDataRetention: false,
       emailRules: [(v) => !v || /.+@.+\..+/.test(v) || 'E-mail must be valid'],
       saving: false
     }
@@ -288,12 +347,16 @@ export default {
 
       // Create the club
       const entryId = uuidv4().substring(0, 8)
+      const currentDateTime = new Date()
       const newClub = await firestore.collection('clubs').add({
         name: this.clubName,
         description: this.clubDescription,
         teachers: [currentUserUid],
         uid: currentUserUid,
-        entryFormId: entryId
+        entryFormId: entryId,
+        confirmPrivacyPolicy: currentDateTime,
+        confirmCookiesUsage: currentDateTime,
+        confirmDataRetention: currentDateTime
       })
 
       // Create the group within the club
@@ -334,6 +397,12 @@ export default {
       if (
         this.currentStep === 4 &&
         !this.$refs.formInviteOrganizers.validate()
+      ) {
+        return
+      }
+      if (
+        this.currentStep === 5 &&
+        !this.$refs.formPrivacyDataRetention.validate()
       ) {
         return
       }
