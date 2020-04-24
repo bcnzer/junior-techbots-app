@@ -35,6 +35,7 @@ exports.onPublicLessonUpdate = functions.firestore
       const searchLesson = {
         objectID: context.params.lessonId, // Add an 'objectID' field which Algolia requires
         name: publicLesson.name,
+        description: publicLesson.description,
         category: publicLesson.category,
         achievements: publicLesson.achievements
       }

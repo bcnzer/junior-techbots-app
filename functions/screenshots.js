@@ -80,9 +80,10 @@ async function saveScreenshot(id, url) {
   // Screenshot size
   await page.setViewport({ width: 1024, height: 768 })
 
-  // Go to your website
+  // Go to your website. The networkidle2 means it waits for almost all
+  // network traffic to complete - needed or else I might capture a loading icon
   console.log(`Going to ${url}`)
-  await page.goto(url)
+  await page.goto(url, { waitUntil: 'networkidle2' })
 
   // Disable service workers
   await page._client.send('ServiceWorker.enable')
