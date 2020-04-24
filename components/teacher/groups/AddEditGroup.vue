@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="500px">
+  <v-dialog v-model="show" max-width="500px" persistent>
     <v-form ref="modalAddEditGroup" lazy-validation>
       <v-card>
         <v-card-title>

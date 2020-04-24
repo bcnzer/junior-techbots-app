@@ -39,7 +39,30 @@
             {{ groupDescription }}
           </div>
         </v-col>
+        <v-spacer></v-spacer>
+        <v-menu bottom left>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon class="mt-3">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item @click="showAddGroup = true">
+              <v-list-item-title>Add new group</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="showDeleteConfirmationDialog = true">
+              <v-list-item-title>Delete group</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-row>
+
+      <add-edit-group
+        :show="showAddGroup"
+        @onSave="onAddGroup"
+        @onClose="onCloseGroup"
+      ></add-edit-group>
 
       <change-group-name
         v-if="showEditName"
@@ -77,6 +100,15 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <confirmation-dialog
+        :showDialog="showDeleteConfirmationDialog"
+        @on-dialog-confirmation="onDeleteConfirmation()"
+        @on-dialog-cancel="onDeleteCancel()"
+        :id="$route.params.id"
+        :text="confirmationDialogMessage"
+        title="Delete Group?"
+      />
     </div>
   </v-container>
 </template>
@@ -86,6 +118,8 @@ import { firestore, storage } from '@/services/fireinit.js'
 import GroupStudents from '~/components/teacher/groups/GroupStudents'
 import GroupSchedule from '~/components/teacher/groups/GroupSchedule'
 import ChangeGroupName from '~/components/teacher/groups/ChangeGroupName'
+import AddEditGroup from '~/components/teacher/groups/AddEditGroup'
+import ConfirmationDialog from '~/components/ConfirmationDialog'
 
 export default {
   layout: 'teacher',
@@ -97,7 +131,9 @@ export default {
   components: {
     GroupStudents,
     GroupSchedule,
-    ChangeGroupName
+    ChangeGroupName,
+    AddEditGroup,
+    ConfirmationDialog
   },
 
   data() {
@@ -111,7 +147,15 @@ export default {
       savingGroupName: false,
       allStudentsInClub: [],
       allLessonsInClub: [],
-      showEditName: false
+      showEditName: false,
+      showAddGroup: false,
+      showDeleteConfirmationDialog: false
+    }
+  },
+
+  computed: {
+    confirmationDialogMessage() {
+      return `Are you want to delete '${this.groupName}'?`
     }
   },
 
@@ -194,6 +238,33 @@ export default {
   },
 
   methods: {
+    async onDeleteConfirmation() {
+      await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('groups')
+        .doc(this.$route.params.id)
+        .delete()
+
+      this.$router.push('/teacher/groups')
+    },
+    onDeleteCancel() {
+      this.showDeleteConfirmationDialog = false
+    },
+    onCloseGroup() {
+      this.showAddGroup = false
+    },
+    async onAddGroup(addedGroup) {
+      delete addedGroup.id
+
+      const newGroup = await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('groups')
+        .add(addedGroup)
+
+      this.$router.push(`/teacher/groups/${newGroup.id}`)
+    },
     onShowEditGroupName() {
       this.editGroupName = this.groupName
       this.editGroupDescription = this.groupDescription

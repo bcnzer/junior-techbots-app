@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showDialog" :persistent="persistent" max-width="400">
+  <v-dialog v-model="showingDialog" :persistent="persistent" max-width="400">
     <v-card>
       <v-card-title v-if="title" class="headline">{{ title }}</v-card-title>
       <v-card-text>{{ text }}</v-card-text>
@@ -51,6 +51,15 @@ export default {
       default: null
     }
   },
+
+  computed: {
+    showingDialog: {
+      get() {
+        return this.showDialog
+      }
+    }
+  },
+
   methods: {
     onConfirmationBtn() {
       this.$emit('on-dialog-confirmation', this.id)

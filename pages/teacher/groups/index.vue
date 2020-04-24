@@ -25,6 +25,7 @@
               @onClose="onCloseGroup"
             ></add-edit-group>
           </v-card-title>
+
           <v-data-table
             :headers="headers"
             :items="groups"
@@ -42,6 +43,7 @@
           </v-data-table>
         </v-card>
       </v-col>
+
       <snackbar />
       <confirmation-dialog
         :showDialog="showConfirmationDialog"
@@ -115,6 +117,9 @@ export default {
           record.id = doc.id
           this.groups.push(record)
         })
+        if (this.groups.length === 1) {
+          this.$router.push(`/teacher/groups/${this.groups[0].id}`)
+        }
         this.loading = false
       })
   },
