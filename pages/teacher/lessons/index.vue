@@ -6,6 +6,28 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-spacer />
+      <div class="text-center mr-3">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" color="primary" dark>
+              Add Lesson
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item to="/teacher/lessons/create">
+              <v-list-item-title>Create Lesson</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/teacher/lessons/search">
+              <v-list-item-title
+                >Import Lesson(s) from Library</v-list-item-title
+              >
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+    </v-row>
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
         <v-card>
@@ -19,12 +41,6 @@
               single-line
               hide-details
             ></v-text-field>
-            <v-btn
-              @click="showAddEdit = true"
-              class="primary mt-3 ml-2"
-              to="/teacher/lessons/add"
-              >Add Lesson</v-btn
-            >
           </v-card-title>
           <v-data-table
             :headers="headers"
