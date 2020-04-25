@@ -1,8 +1,3 @@
-const inviteStudent = require('./inviteStudent')
-const screenshots = require('./screenshots')
-const algolia = require('./algolia/onPublicLessonUpdate')
-
-// More info on organizing functions https://firebase.google.com/docs/functions/organize-functions
-exports.inviteStudentEmail = inviteStudent.inviteStudentEmail
-exports.websiteScreenshots = screenshots.websiteScreenshots
-exports.onPublicLessonUpdate = algolia.onPublicLessonUpdate
+exports.email = require('./email/inviteStudent')
+exports.algolia = require('./algolia/updateLessons')
+exports.screenshots = require('./screenshots/screenshots')

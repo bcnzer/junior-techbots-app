@@ -12,7 +12,7 @@ const ALGOLIA_ADMIN_KEY = functions.config().algolia.api_key
 const ALGOLIA_INDEX_NAME = 'staging_lessons'
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY)
 
-exports.onPublicLessonUpdate = functions.firestore
+exports.updateIndex = functions.firestore
   .document('publiclessons/{lessonId}')
   .onWrite((change, context) => {
     if (change.before.exists && !change.after.exists) {
@@ -36,8 +36,11 @@ exports.onPublicLessonUpdate = functions.firestore
         objectID: context.params.lessonId, // Add an 'objectID' field which Algolia requires
         name: publicLesson.name,
         description: publicLesson.description,
+        language: publicLesson.language,
+        source: publicLesson.source,
         category: publicLesson.category,
-        achievements: publicLesson.achievements
+        achievements: publicLesson.achievements,
+        url: publicLesson.url
       }
 
       // Write to the algolia index. If the object exists it will get fully overwritten

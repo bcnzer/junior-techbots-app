@@ -4,7 +4,7 @@ const sendGridEmail = require('@sendgrid/mail')
 const SENDGRID_API_KEY = functions.config().sendgrid.key
 sendGridEmail.setApiKey(SENDGRID_API_KEY)
 
-exports.inviteStudentEmail = functions.firestore
+exports.inviteStudent = functions.firestore
   .document('students/{studentId}/invites/{inviteId}')
   .onCreate((event, context) => {
     const invite = event.data()
