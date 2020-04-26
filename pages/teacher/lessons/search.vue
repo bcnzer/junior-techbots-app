@@ -96,7 +96,14 @@
                             </v-card-text>
 
                             <v-card-actions>
-                              <v-btn color="secondary" text>
+                              <v-btn
+                                @click="importLesson(searchResult)"
+                                :loading="
+                                  searchResult.objectID == currentlyImportingId
+                                "
+                                color="secondary"
+                                text
+                              >
                                 Import
                               </v-btn>
                             </v-card-actions>
@@ -160,6 +167,8 @@ export default {
   data() {
     return {
       loading: true,
+      clubId: null,
+      currentlyImportingId: null,
       allLessonsInClub: [],
       addedLessons: ['AvxymQflkVHfxJsVcQVX', '1A408Gb4FohcZUAKcWhQ'],
       searchClient: algoliasearch(
@@ -200,6 +209,27 @@ export default {
     storeItems(allItems) {
       this.currentSearchResults = allItems
       return 'got it'
+    },
+    async importLesson(lesson) {
+      // Get the full record from the public lessons
+      this.currentlyImportingId = lesson.objectID
+      const originalLesson = await firestore
+        .collection('publiclessons')
+        .doc(lesson.objectID)
+        .get()
+
+      // Add the record to the club's record but make sure to record where we got it from
+      const originalLessonData = originalLesson.data()
+      originalLessonData.importId = lesson.objectID
+
+      const addedLesson = await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('lessons')
+        .add(originalLessonData)
+
+      this.allLessonsInClub.push(addedLesson.id)
+      this.currentlyImportingId = null
     }
   }
 }

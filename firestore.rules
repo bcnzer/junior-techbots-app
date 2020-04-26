@@ -26,6 +26,10 @@ service cloud.firestore {
     	allow create: if uidCheck()
     }
     
+  	match /publiclessons/{publiclesson_id} {
+    	allow read: if uidCheck()
+    }
+    
   	// match /clubs/{club_id}/groups/{group_id} {
   	// allow read, write: if uidCheck()
   	// allow create: if uidCheck()
