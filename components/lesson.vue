@@ -94,11 +94,7 @@
             class="mr-2"
             >Save</v-btn
           >
-          <v-btn
-            :disabled="saving"
-            :loading="saving"
-            to="/teacher/lessons"
-            class="mr-2"
+          <v-btn :disabled="saving" to="/teacher/lessons" class="mr-2"
             >Cancel</v-btn
           >
         </v-row>
