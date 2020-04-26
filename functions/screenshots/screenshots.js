@@ -41,14 +41,7 @@ async function startScreenshot(change, context, lessonType) {
   if (change.before.exists && !change.after.exists) {
     // The whole document was deleted
     console.log('The document was deleted so delete the thumbnail')
-    const fileToDelete = bucket.file(
-      `lessons/${originalLesson.id}/screenshot.png`
-    )
-
-    const info = await fileToDelete.exists()
-    if (info.exists) {
-      fileToDelete.delete()
-    }
+    await deleteScreenshots(bucket, originalLesson.id)
   } else if (
     !change.before.exists &&
     change.after.exists &&
@@ -65,15 +58,7 @@ async function startScreenshot(change, context, lessonType) {
   } else if (originalLesson.url && !updatedLesson.url) {
     // User deleted the URL so delete the image
     console.log(`Deleting file ${originalLesson.url}`)
-
-    const fileToDelete = bucket.file(
-      `lessons/${context.params.lessonId}/screenshot.png`
-    )
-    const info = await fileToDelete.exists()
-    if (info.exists) {
-      fileToDelete.delete()
-    }
-    // change.after.ref.set({ url_thumbnail: null }, { merge: true })
+    await deleteScreenshots(bucket, context.params.lessonId)
   } else if (!originalLesson.url && updatedLesson.url) {
     // User added a URL to an existing lesson, when previously there was none, so let's process it
     console.log(
@@ -82,22 +67,34 @@ async function startScreenshot(change, context, lessonType) {
     await saveScreenshot(context.params.lessonId, updatedLesson.url, lessonType)
   } else if (originalLesson.url !== updatedLesson.url) {
     // URL changed so delete the previous image and create a new one
-    const fileToDelete = bucket.file(
-      `lessons/${context.params.lessonId}/screenshot.png`
-    )
-    const info = await fileToDelete.exists()
-    if (info.exists) {
-      console.log(
-        `Deleting file ${originalLesson.url} and creating a new thumbnail`
-      )
+    await deleteScreenshots(bucket, context.params.lessonId)
 
-      fileToDelete.delete()
-    }
-
-    console.log('Saving screenshot')
+    console.log('Saving screenshot as the URL changed')
     await saveScreenshot(context.params.lessonId, updatedLesson.url, lessonType)
   } else {
     console.log('Nothing happened')
+  }
+}
+
+/**
+ * Delete the original screenshot and the thumbnail
+ */
+async function deleteScreenshots(bucket, id) {
+  const originalFile = bucket.file(`lessons/${id}/screenshot.png`)
+
+  const originalFileInfo = await originalFile.exists()
+  if (originalFileInfo[0] === true) {
+    console.log('original exists')
+    originalFile.delete()
+  }
+
+  // Also delete the thumbnail
+  const thumbnailFile = bucket.file(`lessons/${id}/screenshot_256x192.png`)
+
+  const thumbnailFileInfo = await thumbnailFile.exists()
+  if (thumbnailFileInfo[0] === true) {
+    console.log('thumbnail exists')
+    thumbnailFile.delete()
   }
 }
 
