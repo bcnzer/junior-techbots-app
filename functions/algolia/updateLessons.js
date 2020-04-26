@@ -3,8 +3,12 @@
 //
 // App ID and API Key are stored in functions config variables
 // Use firebase functions:config:get to see all the config variables
+//
+// NOTE: I had to run this to add permission to generate signed tokens
+// https://stackoverflow.com/questions/53305784/signingerror-with-firebase-getsignedurl
 const algoliasearch = require('algoliasearch')
 const functions = require('firebase-functions')
+const admin = require('firebase-admin')
 
 const ALGOLIA_ID = functions.config().algolia.app_id
 const ALGOLIA_ADMIN_KEY = functions.config().algolia.api_key
@@ -14,7 +18,7 @@ const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY)
 
 exports.updateIndex = functions.firestore
   .document('publiclessons/{lessonId}')
-  .onWrite((change, context) => {
+  .onWrite(async (change, context) => {
     if (change.before.exists && !change.after.exists) {
       // The whole document was deleted
       const deletedLesson = change.before.data()
@@ -32,6 +36,22 @@ exports.updateIndex = functions.firestore
       }
       console.log(`Saved ${publicLesson.name} - ID ${context.params.lessonId}`)
 
+      const bucket = admin.storage().bucket()
+      const thumbnailImage = bucket.file(
+        `lessons/${context.params.lessonId}/screenshot_256x192.png`
+      )
+      const thumbnailImageUrl = await thumbnailImage.getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500'
+      })
+      const fullsizeImage = bucket.file(
+        `lessons/${context.params.lessonId}/screenshot.png`
+      )
+      const fullsizeImageUrl = await fullsizeImage.getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500'
+      })
+
       const searchLesson = {
         objectID: context.params.lessonId, // Add an 'objectID' field which Algolia requires
         name: publicLesson.name,
@@ -40,7 +60,9 @@ exports.updateIndex = functions.firestore
         source: publicLesson.source,
         category: publicLesson.category,
         achievements: publicLesson.achievements,
-        url: publicLesson.url
+        url: publicLesson.url,
+        imageUrl: thumbnailImageUrl[0],
+        imageFullSizeUrl: fullsizeImageUrl[0]
       }
 
       // Write to the algolia index. If the object exists it will get fully overwritten
