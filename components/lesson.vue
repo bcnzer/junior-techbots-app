@@ -85,6 +85,13 @@
           </v-col>
         </v-row>
         <v-row>
+          <v-btn
+            v-if="currentLessonId"
+            @click="showDeleteConfirmationDialog = true"
+            color="error"
+            dark
+            >Delete</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn
             @click="saveLesson"
@@ -100,13 +107,28 @@
         </v-row>
       </v-form>
     </div>
+
+    <confirmation-dialog
+      :showDialog="showDeleteConfirmationDialog"
+      @on-dialog-confirmation="onDeleteConfirmation()"
+      @on-dialog-cancel="onDeleteCancel()"
+      :id="$route.params.id"
+      :text="confirmationDialogMessage"
+      title="Delete Lesson?"
+    />
   </div>
 </template>
 
 <script>
 import { firestore, storage } from '@/services/fireinit.js'
+import ConfirmationDialog from '~/components/ConfirmationDialog'
+
 export default {
   name: 'Lesson',
+
+  components: {
+    ConfirmationDialog
+  },
 
   props: {
     lessonId: {
@@ -117,6 +139,7 @@ export default {
 
   data() {
     return {
+      clubId: null,
       loading: true,
       saving: false,
       currentLessonId: null,
@@ -131,6 +154,7 @@ export default {
       allAchievements: [],
       imageSrc: null,
       imageSrcLarge: null,
+      showDeleteConfirmationDialog: false,
       urlRule: [
         (v) => {
           if (
@@ -145,6 +169,12 @@ export default {
           }
         }
       ]
+    }
+  },
+
+  computed: {
+    confirmationDialogMessage() {
+      return `Are you sure you want to delete '${this.name}'?`
     }
   },
 
@@ -204,6 +234,19 @@ export default {
   },
 
   methods: {
+    async onDeleteConfirmation() {
+      await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('lessons')
+        .doc(this.$route.params.id)
+        .delete()
+
+      this.$router.push('/teacher/lessons')
+    },
+    onDeleteCancel() {
+      this.showDeleteConfirmationDialog = false
+    },
     async saveLesson() {
       if (this.$refs.formLesson.validate()) {
         this.saving = true

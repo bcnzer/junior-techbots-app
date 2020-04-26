@@ -155,7 +155,7 @@ export default {
 
   computed: {
     confirmationDialogMessage() {
-      return `Are you want to delete '${this.groupName}'?`
+      return `Are you sure you want to delete '${this.groupName}'?`
     }
   },
 
