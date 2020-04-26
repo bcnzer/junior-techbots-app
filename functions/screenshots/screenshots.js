@@ -42,7 +42,7 @@ async function startScreenshot(change, context, lessonType) {
   if (change.before.exists && !change.after.exists) {
     // The whole document was deleted
     console.log('The document was deleted so delete the thumbnail')
-    await deleteScreenshots(bucket, originalLesson.id)
+    await deleteScreenshots(bucket, context.params.lessonId)
   } else if (
     !change.before.exists &&
     change.after.exists &&
@@ -84,6 +84,7 @@ async function deleteScreenshots(bucket, id) {
   const originalFile = bucket.file(`lessons/${id}/screenshot.png`)
 
   const originalFileInfo = await originalFile.exists()
+  console.log(originalFileInfo)
   if (originalFileInfo[0] === true) {
     console.log('original exists')
     originalFile.delete()
