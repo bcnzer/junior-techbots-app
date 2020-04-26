@@ -15,8 +15,9 @@
     "@sendgrid/mail": "^6.4.0",
     "algoliasearch": "^4.2.0",
     "firebase-admin": "^8.6.0",
-    "firebase-functions": "^3.3.0",
-    "puppeteer": "^2.0.0"
+    "firebase-functions": "^3.6.1",
+    "puppeteer": "^2.0.0",
+    "sharp": "^0.25.2"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.1.6"

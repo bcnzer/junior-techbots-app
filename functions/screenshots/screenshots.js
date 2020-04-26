@@ -1,4 +1,5 @@
 // NOTE - the docs to the Cloud Storage API https://googleapis.dev/nodejs/storage/latest/File.html#exists
+const sharp = require('sharp')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp(functions.config().firebase)
@@ -122,7 +123,7 @@ async function saveScreenshot(id, url, lessonTypeToStore) {
   await page._client.send('ServiceWorker.stopAllWorkers')
 
   // Take the screenshot
-  const screenshot = await page.screenshot()
+  const screenshotBuffer = await page.screenshot()
 
   await browser.close()
 
@@ -130,16 +131,36 @@ async function saveScreenshot(id, url, lessonTypeToStore) {
 
   // Create a file object
   const filePath = `lessons/${id}/screenshot.png`
-  console.log(`Creating file at ${filePath}`)
-  const file = bucket.file(filePath)
-
-  // Save the image
-  console.log(`Saving file`)
   const metadata = {
     contentType: 'image/png',
     lessonType: lessonTypeToStore
   }
-  await file.save(screenshot, metadata)
+  await saveFileToStorage(bucket, screenshotBuffer, filePath, metadata)
+  // console.log(`Creating file at ${filePath}`)
+  // const file = bucket.file(filePath)
 
-  return filePath
+  // // Save the image
+  // console.log(`Saving file`)
+
+  // await file.save(screenshot, metadata)
+
+  // Create a thumbnail
+  const thumbnailBuffer = await sharp(screenshotBuffer)
+    .resize(256, 192)
+    .toBuffer()
+
+  const thumbnailPath = `lessons/${id}/screenshot_256x192.png`
+  console.log(`Creating file at ${thumbnailPath}`)
+  await saveFileToStorage(bucket, thumbnailBuffer, thumbnailPath, metadata)
+  // const thumbnailFile = bucket.file(thumbnailPath)
+
+  // // Save the image
+  // console.log(`Saving file`)
+  // await thumbnailFile.save(thumbnail, metadata)
+}
+
+async function saveFileToStorage(bucket, buffer, filePath, metadata) {
+  const file = bucket.file(filePath)
+
+  await file.save(buffer, metadata)
 }
