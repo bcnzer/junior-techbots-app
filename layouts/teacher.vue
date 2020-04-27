@@ -98,14 +98,14 @@ export default {
       drawer: true,
       items: [
         {
-          icon: 'mdi-library',
-          title: 'Lessons',
-          to: '/teacher/lessons'
-        },
-        {
           icon: 'mdi-account-multiple',
           title: 'Groups',
           to: '/teacher/groups'
+        },
+        {
+          icon: 'mdi-library',
+          title: 'Lessons',
+          to: '/teacher/lessons'
         },
         {
           icon: 'mdi-school',
