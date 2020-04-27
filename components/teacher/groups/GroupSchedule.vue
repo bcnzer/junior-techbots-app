@@ -4,14 +4,14 @@
       <v-btn @click="showDialog = true" class="primary"
         >Schedule a Lesson</v-btn
       >
-      <div v-if="groupLessons.length <= 0" class="body-1 mt-4 mb-2">
+      <div v-if="lessons.length <= 0" class="body-1 mt-4 mb-2">
         Go ahead and schedule some lessons 😊
       </div>
       <v-data-table
         v-else
         :headers="headers"
         :items="lessons"
-        @click:row="showScheduledGroup"
+        @click:row="showDialog = true"
         class="mx-3"
       >
         <template v-slot:item.action="{ item }">
@@ -22,7 +22,7 @@
       </v-data-table>
 
       <v-dialog v-model="showDialog" scrollable max-width="600px">
-        <v-form ref="modalStudents" lazy-validation>
+        <v-form ref="modalAddLesson" lazy-validation>
           <v-card>
             <v-card-title class="mx-3">
               Schedule a Lesson
@@ -46,21 +46,25 @@
                       ref="dialogDateMenu"
                       v-model="dialogDateMenu"
                       :close-on-content-click="false"
-                      :return-value.sync="dialogDate"
+                      :return-value.sync="dialogStartDate"
                       transition="scale-transition"
                       offset-y
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dialogDate"
+                          v-model="dialogStartDate"
                           v-on="on"
                           label="Date"
                           class="mr-1"
                           readonly
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="dialogDate" no-title scrollable>
+                      <v-date-picker
+                        v-model="dialogStartDate"
+                        no-title
+                        scrollable
+                      >
                         <v-spacer></v-spacer>
                         <v-btn
                           @click="dialogDateMenu = false"
@@ -69,7 +73,7 @@
                           >Cancel</v-btn
                         >
                         <v-btn
-                          @click="$refs.dialogDateMenu.save(dialogDate)"
+                          @click="$refs.dialogDateMenu.save(dialogStartDate)"
                           text
                           color="primary"
                           >OK</v-btn
@@ -79,7 +83,7 @@
                   </v-col>
                   <v-col cols="12" xs="12" sm="4">
                     <v-text-field
-                      v-model="startTime"
+                      v-model="dialogStartTime"
                       label="Start Time"
                       type="time"
                       class="ml-2 mr-3"
@@ -87,7 +91,7 @@
                   </v-col>
                   <v-col cols="12" xs="12" sm="4">
                     <v-text-field
-                      v-model="duration"
+                      v-model="dialogDuration"
                       label="Duration"
                       type="number"
                       suffix="minutes"
@@ -97,21 +101,24 @@
 
                 <v-row>
                   <v-col>
-                    <v-textarea label="Notes" value=""></v-textarea>
+                    <v-textarea
+                      v-model="dialogNotes"
+                      label="Notes"
+                    ></v-textarea>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
             <v-card-actions class="mb-3 mr-3">
               <v-spacer></v-spacer>
-              <v-btn @click="showDialog = false" :disabled="saving"
-                >Cancel</v-btn
-              >
               <v-btn
-                @click="saveScheduledGroup()"
+                @click="saveScheduledLesson()"
                 :loading="saving"
                 color="primary"
                 >Save</v-btn
+              >
+              <v-btn @click="showDialog = false" :disabled="saving"
+                >Cancel</v-btn
               >
             </v-card-actions>
           </v-card>
@@ -135,30 +142,27 @@ export default {
   data() {
     return {
       saving: null,
-      startTime: null,
-      duration: null,
+      dialogDateMenu: null,
+      dialogSelectedLesson: null,
+      dialogStartDate: null,
+      dialogStartTime: null,
+      dialogDuration: null,
+      dialogNotes: null,
       showDialog: false,
-      groupLessons: [],
       headers: [
         { text: 'Date', value: 'date' },
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' }
-      ],
-      dialogDate: null,
-      dialogStartTime: null,
-      dialogTimeMenu: null,
-      dialogDateMenu: null,
-      dialogSelectedLesson: null
+      ]
     }
   },
 
   methods: {
-    saveScheduledGroup() {
-      // TODO
+    saveScheduledLesson() {
+      if (this.$refs.modalStudents.validate()) {
+        // TODO
+      }
       this.showDialog = false
-    },
-    showScheduledGroup(scheduledGroup) {
-      this.showDialog = true
     }
   }
 }

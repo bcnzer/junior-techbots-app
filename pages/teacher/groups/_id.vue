@@ -77,23 +77,30 @@
         <v-col cols="12" xs="12" class="mx-auto">
           <v-card :disabled="showEditName">
             <v-tabs v-model="tab">
-              <v-tab key="students">Students</v-tab>
               <v-tab key="schedule">Lesson Schedule</v-tab>
+              <v-tab key="completedLessons">Completed Lessons</v-tab>
+              <v-tab key="students">{{ studentsTabHeader }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
+              <v-tab-item key="schedule">
+                <v-card flat>
+                  <group-schedule></group-schedule>
+                </v-card>
+              </v-tab-item>
+
+              <v-tab-item key="completedLessons">
+                <v-card flat>
+                  TODO
+                </v-card>
+              </v-tab-item>
+
               <v-tab-item key="students">
                 <v-card flat>
                   <group-students
                     :students="allStudentsInClub"
                     v-on:save-selected-students="onSaveSelectedStudents"
                   ></group-students>
-                </v-card>
-              </v-tab-item>
-
-              <v-tab-item key="schedule">
-                <v-card flat>
-                  <group-schedule></group-schedule>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -156,6 +163,11 @@ export default {
   computed: {
     confirmationDialogMessage() {
       return `Are you sure you want to delete '${this.groupName}'?`
+    },
+    studentsTabHeader() {
+      if (this.allStudentsInClub.length === 0) return 'Students'
+
+      return `Students (${this.allStudentsInClub.length})`
     }
   },
 

@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row v-if="!loading">
       <v-spacer />
       <div class="text-center mr-3">
         <v-menu offset-y>
