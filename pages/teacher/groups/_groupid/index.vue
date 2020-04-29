@@ -112,7 +112,7 @@
         :showDialog="showDeleteConfirmationDialog"
         @on-dialog-confirmation="onDeleteConfirmation()"
         @on-dialog-cancel="onDeleteCancel()"
-        :id="$route.params.id"
+        :id="$route.params.groupid"
         :text="confirmationDialogMessage"
         title="Delete Group?"
       />
@@ -222,7 +222,7 @@ export default {
       .collection('clubs')
       .doc(this.clubId)
       .collection('groups')
-      .doc(this.$route.params.id)
+      .doc(this.$route.params.groupid)
       .get()
 
     if (!readGroup.empty) {
@@ -255,7 +255,7 @@ export default {
         .collection('clubs')
         .doc(this.clubId)
         .collection('groups')
-        .doc(this.$route.params.id)
+        .doc(this.$route.params.groupid)
         .delete()
 
       this.$router.push('/teacher/groups')
@@ -295,7 +295,7 @@ export default {
           .collection('clubs')
           .doc(this.clubId)
           .collection('groups')
-          .doc(this.$route.params.id)
+          .doc(this.$route.params.groupid)
           .update({
             name: this.groupName,
             description: this.groupDescription
@@ -320,7 +320,7 @@ export default {
         .collection('clubs')
         .doc(this.clubId)
         .collection('groups')
-        .doc(this.$route.params.id)
+        .doc(this.$route.params.groupid)
         .update({
           students: selectedStudents
         })

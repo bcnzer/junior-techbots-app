@@ -120,7 +120,8 @@
 </template>
 
 <script>
-import { firestore, storage } from '@/services/fireinit.js'
+// import { firestore, storage } from '@/services/fireinit.js'
+import { firestore } from '@/services/fireinit.js'
 import ConfirmationDialog from '~/components/ConfirmationDialog'
 
 export default {
@@ -131,7 +132,7 @@ export default {
   },
 
   props: {
-    lessonId: {
+    scheduledLessonId: {
       type: String,
       default: null
     }
@@ -143,32 +144,8 @@ export default {
       loading: true,
       saving: false,
       currentLessonId: null,
-      name: null,
-      description: null,
-      url: null,
-      messageForParents: null,
-      furtherResources: null,
-      category: null,
-      defaultCategories: ['Scratch', 'Python'],
-      achievements: null,
-      allAchievements: [],
       imageSrc: null,
-      imageSrcLarge: null,
-      showDeleteConfirmationDialog: false,
-      urlRule: [
-        (v) => {
-          if (
-            v &&
-            /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
-              v
-            ) === false
-          ) {
-            return 'URL must be valid'
-          } else {
-            return true
-          }
-        }
-      ]
+      imageSrcLarge: null
     }
   },
 
@@ -178,56 +155,10 @@ export default {
     }
   },
 
-  async created() {
+  created() {
     this.clubId = JSON.parse(localStorage.club).id
 
-    if (this.lessonId) {
-      const listResult = await storage.ref(`lessons/${this.lessonId}`).listAll()
-
-      // How I could check for file existance
-      if (listResult.items.length > 0) {
-        // Exists!
-        this.imageSrc = await storage
-          .ref(`lessons/${this.lessonId}/screenshot_256x192.png`)
-          .getDownloadURL()
-
-        this.imageSrcLarge = await storage
-          .ref(`lessons/${this.lessonId}/screenshot.png`)
-          .getDownloadURL()
-      }
-
-      this.currentLessonId = this.lessonId
-      const lesson = await firestore
-        .collection('clubs')
-        .doc(this.clubId)
-        .collection('lessons')
-        .doc(this.lessonId)
-        .get()
-
-      const lessonData = lesson.data()
-
-      this.name = lessonData.name
-      if (lessonData.description) {
-        this.description = lessonData.description
-      }
-      if (lessonData.url) {
-        this.url = lessonData.url
-      }
-      if (lessonData.url) {
-        this.urlPreview = lessonData.url
-      }
-      if (lessonData.url) {
-        this.messageForParents = lessonData.messageForParents
-      }
-      if (lessonData.url) {
-        this.furtherResources = lessonData.furtherResources
-      }
-      if (lessonData.url) {
-        this.category = lessonData.category
-      }
-      if (lessonData.url) {
-        this.achievements = lessonData.achievements
-      }
+    if (this.scheduledLessonId) {
     }
 
     this.loading = false
