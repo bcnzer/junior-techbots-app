@@ -104,33 +104,26 @@
             ></v-text-field>
           </v-card-title>
           <v-card-text>
-            <v-list v-for="lesson in lessons" :key="lesson.id">
-              <v-divider></v-divider>
-              <template>
-                <v-list-item :key="lesson.id" v-show="showLesson(lesson)">
-                  <v-list-item-action>
-                    <v-checkbox v-model="lesson.selected"></v-checkbox>
-                  </v-list-item-action>
-                  <v-list-item-avatar class="mr-5">
-                    <v-img
-                      :src="lesson.imageUrl"
-                      width="75"
-                      height="75"
-                    ></v-img>
-                  </v-list-item-avatar>
-
+            <v-list>
+              <v-list-item-group v-model="selectedLesson">
+                <v-divider></v-divider>
+                <v-list-item v-for="lesson in lessons" :key="lesson.id">
                   <v-list-item-content>
+                    hi
                     <v-list-item-title v-html="lesson.name"></v-list-item-title>
                     <v-list-item-subtitle
                       v-html="lesson.description"
                     ></v-list-item-subtitle>
+                    <v-list-item-subtitle
+                      v-html="lesson.category"
+                    ></v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-divider></v-divider>
-              </template>
+              </v-list-item-group>
             </v-list>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="mr-2 mb-2">
             <v-spacer></v-spacer>
             <v-btn
               @click="saveSelectedStudents()"
@@ -147,7 +140,7 @@
 </template>
 
 <script>
-import { firestore, storage } from '@/services/fireinit.js'
+import { firestore } from '@/services/fireinit.js'
 
 export default {
   name: 'ScheduledLesson',
@@ -173,7 +166,8 @@ export default {
       showDialog: false,
       lessonSearch: null,
       lessons: [],
-      search: null
+      search: null,
+      selectedLesson: null
     }
   },
 
@@ -187,17 +181,11 @@ export default {
       .collection('lessons')
       .get()
 
-    lessonsRef.forEach(async (lesson) => {
+    lessonsRef.forEach((lesson) => {
       const currentLesson = lesson.data()
-      currentLesson.imageUrl = await storage
-        .ref(`lessons/${lesson.id}/screenshot_256x192.png`)
-        .getDownloadURL()
-
-      currentLesson.selected = false
       this.lessons.push(currentLesson)
     })
 
-    console.log(this.lessons)
     this.loading = false
   },
 
