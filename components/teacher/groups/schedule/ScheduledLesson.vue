@@ -95,6 +95,11 @@
           <v-card-title>
             Lessons
             <v-spacer></v-spacer>
+            <v-select
+              :items="categories"
+              v-model="selectedCategory"
+              label="Category"
+            ></v-select>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -104,18 +109,18 @@
             ></v-text-field>
           </v-card-title>
           <v-card-text>
-            <v-list>
+            <v-list two-line>
               <v-list-item-group v-model="selectedLesson">
                 <v-divider></v-divider>
                 <v-list-item v-for="lesson in lessons" :key="lesson.id">
                   <v-list-item-content>
-                    hi
                     <v-list-item-title v-html="lesson.name"></v-list-item-title>
                     <v-list-item-subtitle
-                      v-html="lesson.description"
+                      v-html="lesson.category"
+                      class="text--primary my-1"
                     ></v-list-item-subtitle>
                     <v-list-item-subtitle
-                      v-html="lesson.category"
+                      v-html="lesson.description"
                     ></v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
@@ -166,7 +171,8 @@ export default {
       showDialog: false,
       lessonSearch: null,
       lessons: [],
-      search: null,
+      categories: [],
+      selectedCategory: null,
       selectedLesson: null
     }
   },
@@ -192,6 +198,9 @@ export default {
   methods: {
     showLesson(lesson) {
       return true
+    },
+    lessonDescription(lesson) {
+      return `<span class='text--primary'>${lesson.category}</span> &mdash; ${lesson.description}`
     }
   }
 }
