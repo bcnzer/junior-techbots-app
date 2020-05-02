@@ -7,12 +7,41 @@
     </v-row>
 
     <div v-if="!loading">
-      <v-form ref="modalAddLesson" lazy-validation>
-        <v-row>
+      <v-form ref="scheduleLessonForm" lazy-validation>
+        <v-row v-if="!selectedLesson" style="height: 205px">
           <v-col>
             <v-btn @click="showDialog = true" class="info"
               >Select a Lesson</v-btn
             >
+          </v-col>
+        </v-row>
+        <v-row v-if="selectedLesson">
+          <v-col cols="12" xs="12" sm="3">
+            <v-img
+              v-if="!selectedImageSrc"
+              src="../../../../bots/robots small.png"
+              style="filter: blur(2px)"
+            ></v-img>
+            <v-img
+              v-else
+              :src="selectedImageSrc"
+              lazy-src="../../../../bots/robots small.png"
+              width="256"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="amber"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <div class="headline mt-2">{{ selectedLessonName }}</div>
+            <div class="subtitle-1">{{ selectedLessonCategory }}</div>
+            <div class="subtitle">{{ selectedLessonDescription }}</div>
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -30,6 +59,7 @@
                 <v-text-field
                   v-model="startDate"
                   v-on="on"
+                  :rules="[(v) => !!v || 'Start date is required']"
                   label="Date"
                   class="mr-1"
                   readonly
@@ -52,6 +82,7 @@
           <v-col cols="12" xs="12" sm="4">
             <v-text-field
               v-model="startTime"
+              :rules="[(v) => !!v || 'Time is required']"
               label="Start Time"
               type="time"
               class="ml-2 mr-3"
@@ -60,6 +91,7 @@
           <v-col cols="12" xs="12" sm="4">
             <v-text-field
               v-model="duration"
+              :rules="[(v) => !!v || 'Duration is required']"
               label="Duration"
               type="number"
               suffix="minutes"
@@ -76,6 +108,7 @@
         <v-row>
           <v-spacer></v-spacer>
           <v-btn
+            :disabled="!selectedLesson"
             @click="saveScheduledLesson()"
             :loading="saving"
             color="primary"
@@ -89,7 +122,7 @@
       </v-form>
     </div>
 
-    <v-dialog v-model="showDialog" persistent scrollable max-width="750px">
+    <v-dialog v-model="showDialog" persistent scrollable max-width="500px">
       <v-form ref="modalStudents" lazy-validation>
         <v-card>
           <v-card-title>
@@ -98,21 +131,21 @@
             <v-select
               :items="categories"
               v-model="selectedCategory"
+              v-if="categories.length > 0"
               label="Category"
+              clearable
             ></v-select>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
           </v-card-title>
           <v-card-text>
             <v-list two-line>
-              <v-list-item-group v-model="selectedLesson">
-                <v-divider></v-divider>
-                <v-list-item v-for="lesson in lessons" :key="lesson.id">
+              <v-list-item-group v-model="selectedLessonIndex">
+                <v-list-item
+                  v-for="lesson in lessons"
+                  :key="lesson.id"
+                  v-if="
+                    !selectedCategory || lesson.category == selectedCategory
+                  "
+                >
                   <v-list-item-content>
                     <v-list-item-title v-html="lesson.name"></v-list-item-title>
                     <v-list-item-subtitle
@@ -124,19 +157,18 @@
                     ></v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
-                <v-divider></v-divider>
               </v-list-item-group>
             </v-list>
           </v-card-text>
           <v-card-actions class="mr-2 mb-2">
             <v-spacer></v-spacer>
             <v-btn
-              @click="saveSelectedStudents()"
-              :loading="saving"
+              @click="onLessonSelect()"
+              :disabled="selectedLessonIndex == null"
               color="primary"
-              >Save</v-btn
+              >Select</v-btn
             >
-            <v-btn @click="showDialog = false" :disabled="saving">Cancel</v-btn>
+            <v-btn @click="showDialog = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -145,7 +177,7 @@
 </template>
 
 <script>
-import { firestore } from '@/services/fireinit.js'
+import { firestore, storage } from '@/services/fireinit.js'
 
 export default {
   name: 'ScheduledLesson',
@@ -173,7 +205,33 @@ export default {
       lessons: [],
       categories: [],
       selectedCategory: null,
-      selectedLesson: null
+      selectedLesson: null,
+      selectedLessonIndex: null,
+      selectedImageSrc: ''
+    }
+  },
+
+  computed: {
+    selectedLessonImage() {
+      if (!this.selectedLesson) return
+
+      console.log('selected image')
+      return this.selectedLesson.imageSrc
+    },
+    selectedLessonName() {
+      if (!this.selectedLesson) return
+
+      return this.selectedLesson.name
+    },
+    selectedLessonDescription() {
+      if (!this.selectedLesson) return
+
+      return this.selectedLesson.description
+    },
+    selectedLessonCategory() {
+      if (!this.selectedLesson) return
+
+      return this.selectedLesson.category
     }
   },
 
@@ -189,8 +247,18 @@ export default {
 
     lessonsRef.forEach((lesson) => {
       const currentLesson = lesson.data()
+      currentLesson.id = lesson.id
       this.lessons.push(currentLesson)
+
+      if (
+        !this.categories.includes(currentLesson.category) &&
+        currentLesson.category
+      ) {
+        this.categories.push(currentLesson.category)
+      }
     })
+
+    this.categories.sort()
 
     this.loading = false
   },
@@ -201,6 +269,40 @@ export default {
     },
     lessonDescription(lesson) {
       return `<span class='text--primary'>${lesson.category}</span> &mdash; ${lesson.description}`
+    },
+    async onLessonSelect() {
+      if (this.selectedCategory) {
+        const filteredLessons = this.lessons.find(
+          (element) => element.category === this.selectedCategory
+        )
+        this.selectedLesson = filteredLessons[this.selectedLessonIndex]
+      } else {
+        this.selectedLesson = this.lessons[this.selectedLessonIndex]
+      }
+      this.showDialog = false
+
+      this.selectedImageSrc = await storage
+        .ref(`lessons/${this.selectedLesson.id}/screenshot_256x192.png`)
+        .getDownloadURL()
+    },
+    async saveScheduledLesson() {
+      if (this.$refs.scheduleLessonForm.validate()) {
+        this.saving = true
+
+        await firestore
+          .collection('clubs')
+          .doc(this.clubId)
+          .collection('scheduledlessons')
+          .add({
+            lesson: this.selectedLesson,
+            startDateTime: new Date(`${this.startDate} ${this.startTime}`),
+            duration: this.duration,
+            notes: this.notes
+          })
+
+        this.$router.push(`/teacher/groups/${this.$route.params.groupid}`)
+        this.saving = false
+      }
     }
   }
 }
