@@ -8,14 +8,15 @@
 
     <div v-if="!loading">
       <v-form ref="scheduleLessonForm" lazy-validation>
-        <v-row v-if="!selectedLesson" style="height: 205px">
+        <v-row v-if="!selectedLesson" style="min-height: 205px">
           <v-col>
             <v-btn @click="showDialog = true" class="info"
               >Select a Lesson</v-btn
             >
           </v-col>
         </v-row>
-        <v-row v-if="selectedLesson">
+
+        <v-row v-if="selectedLesson" style="min-height: 205px">
           <v-col cols="12" xs="12" sm="3">
             <v-img
               v-if="!selectedImageSrc"
@@ -39,11 +40,21 @@
             </v-img>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
-            <div class="headline mt-2">{{ selectedLessonName }}</div>
-            <div class="subtitle-1">{{ selectedLessonCategory }}</div>
-            <div class="subtitle">{{ selectedLessonDescription }}</div>
+            <v-row>
+              <div class="headline mt-2">{{ selectedLessonName }}</div>
+              <v-btn @click="onRemoveLesson()" x-small class="mt-3 ml-5" icon>
+                <v-icon>mdi-close-circle-outline</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row>
+              <div class="subtitle-1">{{ selectedLessonCategory }}</div>
+            </v-row>
+            <v-row>
+              <div class="subtitle">{{ selectedLessonDescription }}</div>
+            </v-row>
           </v-col>
         </v-row>
+
         <v-row no-gutters>
           <v-col cols="12" xs="12" sm="4">
             <v-menu
@@ -60,6 +71,7 @@
                   v-model="startDate"
                   v-on="on"
                   :rules="[(v) => !!v || 'Start date is required']"
+                  :disabled="saving"
                   label="Date"
                   class="mr-1"
                   readonly
@@ -83,6 +95,7 @@
             <v-text-field
               v-model="startTime"
               :rules="[(v) => !!v || 'Time is required']"
+              :disabled="saving"
               label="Start Time"
               type="time"
               class="ml-2 mr-3"
@@ -92,6 +105,7 @@
             <v-text-field
               v-model="duration"
               :rules="[(v) => !!v || 'Duration is required']"
+              :disabled="saving"
               label="Duration"
               type="number"
               suffix="minutes"
@@ -101,7 +115,11 @@
 
         <v-row>
           <v-col>
-            <v-textarea v-model="notes" label="Notes"></v-textarea>
+            <v-textarea
+              v-model="notes"
+              :disabled="saving"
+              label="Notes"
+            ></v-textarea>
           </v-col>
         </v-row>
 
@@ -115,7 +133,7 @@
             class="mr-2"
             >Save</v-btn
           >
-          <v-btn @click="showDateMenu = false" :disabled="saving" class="mr-2"
+          <v-btn @click="goBack()" :disabled="saving" class="mr-2"
             >Cancel</v-btn
           >
         </v-row>
@@ -272,7 +290,7 @@ export default {
     },
     async onLessonSelect() {
       if (this.selectedCategory) {
-        const filteredLessons = this.lessons.find(
+        const filteredLessons = this.lessons.filter(
           (element) => element.category === this.selectedCategory
         )
         this.selectedLesson = filteredLessons[this.selectedLessonIndex]
@@ -284,6 +302,9 @@ export default {
       this.selectedImageSrc = await storage
         .ref(`lessons/${this.selectedLesson.id}/screenshot_256x192.png`)
         .getDownloadURL()
+    },
+    goBack() {
+      this.$router.push(`/teacher/groups/${this.$route.params.groupid}`)
     },
     async saveScheduledLesson() {
       if (this.$refs.scheduleLessonForm.validate()) {
@@ -300,9 +321,13 @@ export default {
             notes: this.notes
           })
 
-        this.$router.push(`/teacher/groups/${this.$route.params.groupid}`)
+        this.goBack()
         this.saving = false
       }
+    },
+    onRemoveLesson() {
+      this.selectedLesson = null
+      this.selectedLessonIndex = null
     }
   }
 }
