@@ -77,21 +77,29 @@
         <v-col cols="12" xs="12" class="mx-auto">
           <v-card :disabled="showEditName">
             <v-tabs v-model="tab">
-              <v-tab key="schedule">Lesson Schedule</v-tab>
-              <v-tab key="completedLessons">Completed Lessons</v-tab>
+              <v-tab key="schedule">{{ lessonScheduleTabHeader }}</v-tab>
+              <v-tab key="completedLessons">{{
+                completedScheduleTabHeader
+              }}</v-tab>
               <v-tab key="students">{{ studentsTabHeader }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
               <v-tab-item key="schedule">
                 <v-card flat>
-                  <group-schedule></group-schedule>
+                  <group-schedule
+                    :lessons="scheduledLessonsFuture"
+                    :show-schedule-btn="true"
+                  ></group-schedule>
                 </v-card>
               </v-tab-item>
 
               <v-tab-item key="completedLessons">
                 <v-card flat>
-                  TODO
+                  <group-schedule
+                    :lessons="scheduledLessonsCompleted"
+                    :show-schedule-btn="false"
+                  ></group-schedule>
                 </v-card>
               </v-tab-item>
 
@@ -154,6 +162,8 @@ export default {
       savingGroupName: false,
       allStudentsInClub: [],
       allLessonsInClub: [],
+      scheduledLessonsFuture: [], // Today or in the future
+      scheduledLessonsCompleted: [], // In the past
       showEditName: false,
       showAddGroup: false,
       showDeleteConfirmationDialog: false
@@ -163,6 +173,17 @@ export default {
   computed: {
     confirmationDialogMessage() {
       return `Are you sure you want to delete '${this.groupName}'?`
+    },
+    completedScheduleTabHeader() {
+      if (this.scheduledLessonsCompleted.length === 0)
+        return 'Completed Lessons'
+
+      return `Completed Lessons (${this.scheduledLessonsCompleted.length})`
+    },
+    lessonScheduleTabHeader() {
+      if (this.scheduledLessonsFuture.length === 0) return 'Lesson Schedule'
+
+      return `Lesson Schedule (${this.scheduledLessonsFuture.length})`
     },
     studentsTabHeader() {
       if (this.allStudentsInClub.length === 0) return 'Students'
@@ -214,6 +235,38 @@ export default {
         const studentWithId = student.data()
         studentWithId.id = student.id
         this.allStudentsInClub.push(studentWithId)
+      })
+    }
+
+    // Get the scheduled lessons and break them up into future and completed
+    const readSchedule = await firestore
+      .collection('clubs')
+      .doc(this.clubId)
+      .collection('scheduledlessons')
+      .get()
+
+    if (!readSchedule.empty) {
+      const currentDateTime = Date.now()
+      readSchedule.docs.forEach((readScheduledLesson) => {
+        const scheduledLesson = readScheduledLesson.data()
+        scheduledLesson.id = readScheduledLesson.id
+        scheduledLesson.date = scheduledLesson.startDateTime.toDate()
+
+        if (scheduledLesson.date > currentDateTime) {
+          this.scheduledLessonsFuture.push(scheduledLesson)
+        } else {
+          this.scheduledLessonsCompleted.push(scheduledLesson)
+        }
+      })
+      this.scheduledLessonsCompleted = this.scheduledLessonsCompleted.sort(
+        (a, b) => {
+          if (a.date === b.date) return 0
+          return a.date > b.date ? 1 : -1
+        }
+      )
+      this.scheduledLessonsFuture = this.scheduledLessonsFuture.sort((a, b) => {
+        if (a.date === b.date) return 0
+        return a.date > b.date ? 1 : -1
       })
     }
 

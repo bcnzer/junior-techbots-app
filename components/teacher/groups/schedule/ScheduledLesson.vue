@@ -8,6 +8,12 @@
 
     <div v-if="!loading">
       <v-form ref="scheduleLessonForm" lazy-validation>
+        <v-row>
+          <v-col>
+            <div class="headline">{{ pageTitle }}</div>
+          </v-col>
+        </v-row>
+
         <v-row v-if="!selectedLesson" style="min-height: 205px">
           <v-col>
             <v-btn @click="showDialog = true" class="info"
@@ -250,6 +256,9 @@ export default {
       if (!this.selectedLesson) return
 
       return this.selectedLesson.category
+    },
+    pageTitle() {
+      return !this.lessonId ? 'Schedule a Lesson' : 'Scheduled Lesson'
     }
   },
 
