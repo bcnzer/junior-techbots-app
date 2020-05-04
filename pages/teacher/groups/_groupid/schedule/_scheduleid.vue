@@ -1,7 +1,6 @@
 <template>
   <div>
-    {{ $route.params.scheduleid }}
-    <scheduled-lesson :lessonId="$route.params.id"></scheduled-lesson>
+    <scheduled-lesson :lessonId="$route.params.scheduleid"></scheduled-lesson>
   </div>
 </template>
 

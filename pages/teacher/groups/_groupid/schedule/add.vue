@@ -1,5 +1,5 @@
 <template>
-  <scheduled-lesson :lessonId="$route.params.id"></scheduled-lesson>
+  <scheduled-lesson></scheduled-lesson>
 </template>
 
 <script>

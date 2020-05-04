@@ -8,15 +8,13 @@
 
     <div v-if="!loading">
       <v-form ref="scheduleLessonForm" lazy-validation>
-        <v-row>
-          <v-col>
-            <div class="headline">{{ pageTitle }}</div>
-          </v-col>
-        </v-row>
-
         <v-row v-if="!selectedLesson" style="min-height: 205px">
           <v-col>
-            <v-btn @click="showDialog = true" class="info"
+            <div class="headline mb-4">Schedule a Lesson</div>
+            <v-btn
+              @click="showLessonDialog"
+              :loading="selectLessonLoading"
+              class="info"
               >Select a Lesson</v-btn
             >
           </v-col>
@@ -202,6 +200,7 @@
 
 <script>
 import { firestore, storage } from '@/services/fireinit.js'
+import date from 'date-and-time'
 
 export default {
   name: 'ScheduledLesson',
@@ -227,11 +226,13 @@ export default {
       showDialog: false,
       lessonSearch: null,
       lessons: [],
+      lessonsLoaded: false,
       categories: [],
       selectedCategory: null,
       selectedLesson: null,
       selectedLessonIndex: null,
-      selectedImageSrc: ''
+      selectedImageSrc: '',
+      selectLessonLoading: false
     }
   },
 
@@ -256,43 +257,73 @@ export default {
       if (!this.selectedLesson) return
 
       return this.selectedLesson.category
-    },
-    pageTitle() {
-      return !this.lessonId ? 'Schedule a Lesson' : 'Scheduled Lesson'
     }
   },
 
   async created() {
     this.clubId = JSON.parse(localStorage.club).id
 
-    // Get the lessons
-    const lessonsRef = await firestore
-      .collection('clubs')
-      .doc(this.clubId)
-      .collection('lessons')
-      .get()
+    if (this.$route.params.scheduleid) {
+      const scheduleLessonRef = await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('scheduledlessons')
+        .doc(this.$route.params.scheduleid)
+        .get()
 
-    lessonsRef.forEach((lesson) => {
-      const currentLesson = lesson.data()
-      currentLesson.id = lesson.id
-      this.lessons.push(currentLesson)
+      const scheduledLesson = scheduleLessonRef.data()
+      scheduledLesson.id = scheduleLessonRef.id
 
-      if (
-        !this.categories.includes(currentLesson.category) &&
-        currentLesson.category
-      ) {
-        this.categories.push(currentLesson.category)
-      }
-    })
+      this.selectedLesson = scheduledLesson.lesson
+      this.selectedImageSrc = await storage
+        .ref(`lessons/${this.selectedLesson.id}/screenshot_256x192.png`)
+        .getDownloadURL()
 
-    this.categories.sort()
+      this.startDate = date.format(
+        scheduledLesson.startDateTime.toDate(),
+        'YYYY-MM-DD'
+      )
+      this.startTime = date.format(
+        scheduledLesson.startDateTime.toDate(),
+        'HH:mm'
+      )
+      this.duration = scheduledLesson.duration
+      this.notes = scheduledLesson.notes
+    }
 
     this.loading = false
   },
 
   methods: {
-    showLesson(lesson) {
-      return true
+    async showLessonDialog() {
+      if (!this.lessonsLoaded) {
+        // Get the lessons
+        this.selectLessonLoading = true
+        const lessonsRef = await firestore
+          .collection('clubs')
+          .doc(this.clubId)
+          .collection('lessons')
+          .get()
+
+        lessonsRef.forEach((lesson) => {
+          const currentLesson = lesson.data()
+          currentLesson.id = lesson.id
+          this.lessons.push(currentLesson)
+
+          if (
+            !this.categories.includes(currentLesson.category) &&
+            currentLesson.category
+          ) {
+            this.categories.push(currentLesson.category)
+          }
+        })
+
+        this.categories.sort()
+        this.lessonsLoaded = true
+      }
+
+      this.selectLessonLoading = false
+      this.showDialog = true
     },
     lessonDescription(lesson) {
       return `<span class='text--primary'>${lesson.category}</span> &mdash; ${lesson.description}`
@@ -319,16 +350,26 @@ export default {
       if (this.$refs.scheduleLessonForm.validate()) {
         this.saving = true
 
-        await firestore
-          .collection('clubs')
-          .doc(this.clubId)
-          .collection('scheduledlessons')
-          .add({
-            lesson: this.selectedLesson,
-            startDateTime: new Date(`${this.startDate} ${this.startTime}`),
-            duration: this.duration,
-            notes: this.notes
-          })
+        const dataToSave = {
+          lesson: this.selectedLesson,
+          startDateTime: new Date(`${this.startDate} ${this.startTime}`),
+          duration: this.duration,
+          notes: this.notes
+        }
+        if (this.$route.params.scheduleid) {
+          await firestore
+            .collection('clubs')
+            .doc(this.clubId)
+            .collection('scheduledlessons')
+            .doc(this.$route.params.scheduleid)
+            .update(dataToSave)
+        } else {
+          await firestore
+            .collection('clubs')
+            .doc(this.clubId)
+            .collection('scheduledlessons')
+            .add(dataToSave)
+        }
 
         this.goBack()
         this.saving = false
