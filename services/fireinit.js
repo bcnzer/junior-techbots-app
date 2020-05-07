@@ -40,6 +40,12 @@ if (!firebase.apps.length) {
 firebase.analytics()
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
+// if (location.hostname === 'localhost') {
+//   firestore.settings({
+//     host: 'localhost:8080',
+//     ssl: false
+//   })
+// }
 export const perf = firebase.performance()
 export const storage = firebase.storage()
 export default firebase

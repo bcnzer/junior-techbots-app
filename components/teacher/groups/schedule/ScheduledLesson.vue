@@ -289,6 +289,20 @@ export default {
       )
       this.duration = scheduledLesson.duration
       this.notes = scheduledLesson.notes
+    } else {
+      // Load the last used settings for time and duration
+      const clubInfoRef = await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .get()
+
+      const clubData = clubInfoRef.data()
+      if (clubData.lastDuration) {
+        this.duration = clubData.lastDuration
+      }
+      if (clubData.lastStartTime) {
+        this.startTime = clubData.lastStartTime
+      }
     }
 
     this.loading = false
@@ -369,6 +383,15 @@ export default {
             .doc(this.clubId)
             .collection('scheduledlessons')
             .add(dataToSave)
+
+          // Also save the duration and time, for use next time as a default
+          await firestore
+            .collection('clubs')
+            .doc(this.clubId)
+            .update({
+              lastDuration: this.duration,
+              lastStartTime: this.startTime
+            })
         }
 
         this.goBack()
