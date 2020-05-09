@@ -1,54 +1,51 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="showDialog" max-width="750">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" dark class="mr-2">Entry form</v-btn>
     </template>
     <v-card :disabled="saving">
+      <v-card-title>
+        Entry Form
+      </v-card-title>
       <snackbar />
-      <v-toolbar dark color="dark grey-3">
-        <v-btn @click="dialog = false" icon dark>
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>Entry Form</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
-          <v-btn @click="saveEntryForm" :loading="saving" dark text>Save</v-btn>
-        </v-toolbar-items>
-      </v-toolbar>
-      <div class="ml-5 mt-5">
+      <v-card-text>
+        <v-alert type="info">
+          You will need to approve any requests to join your club
+        </v-alert>
         <v-switch
           v-model="isFormEnabled"
           :label="entryFormSwitchLabel"
+          class="mt-5"
         ></v-switch>
-      </div>
-      <div class="ml-5 body-1">
-        <v-avatar color="secondary" size="36">
-          <v-icon dark>mdi-alert-circle-outline</v-icon>
-        </v-avatar>
-        If there are multiple groups, the students will be able to pick the
-        group they would like to join
-      </div>
-      <div class="ml-5 mt-5">
         <div class="body-1">
           Link to entry form:
           <a :href="entryFormUrl">{{ entryFormUrl }}</a>
-          <v-btn @click="copyLink()" class="ml-3">
-            Copy
+          <v-btn @click="copyLink()" icon class="ml-3">
+            <v-icon>mdi-content-copy</v-icon>
           </v-btn>
         </div>
-      </div>
-      <div class="ml-5 mr-5">
         <v-textarea
           v-model="formMessage"
           label="Additional Message"
           hint="Information that may be useful for potential students (optional)"
         ></v-textarea>
-      </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          @click="saveEntryForm(true)"
+          :loading="saving"
+          color="primary"
+          class="mb-3"
+          >Save</v-btn
+        >
+        <v-btn
+          @click="saveEntryForm(false)"
+          :disabled="saving"
+          class="mb-3 mr-3"
+          >Cancel</v-btn
+        >
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -75,13 +72,16 @@ export default {
     entryFormId: {
       type: String,
       default: null
+    },
+    saving: {
+      type: Boolean,
+      default: false
     }
   },
 
   data: () => ({
     formEnabled: true,
-    saving: false,
-    dialog: false,
+    showDialog: false,
     additionalMessage: null,
     message: '',
     url: null
@@ -117,17 +117,20 @@ export default {
   methods: {
     copyLink() {
       navigator.clipboard.writeText(this.entryFormUrl)
-      this.$store.commit('snackbar/setSnack', 'URL copied')
+      this.$store.commit('snackbar/setSnack', 'URL copied to clipboard')
     },
-    saveEntryForm() {
+    saveEntryForm(save) {
       this.saving = true
+      this.showDialog = false
+      if (save) {
+        this.$emit('save-event-form', {
+          entryFormEnabled: this.formEnabled,
+          entryFormMessage: this.additionalMessage
+        })
+      } else {
+        this.$emit('save-event-form')
+      }
 
-      this.$emit('save-event-form', {
-        entryFormEnabled: this.formEnabled,
-        entryFormMessage: this.additionalMessage
-      })
-
-      this.dialog = false
       this.saving = false
     }
   }

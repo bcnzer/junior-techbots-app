@@ -103,8 +103,7 @@ export default {
       const onlyTeacherClub = onlyTeacherClubResponse.data()
       localStorage.club = JSON.stringify({
         id: onlyTeacherClubResponse.id,
-        name: onlyTeacherClub.name,
-        entryFormId: onlyTeacherClub.entryId
+        name: onlyTeacherClub.name
       })
 
       this.$router.push('/teacher')

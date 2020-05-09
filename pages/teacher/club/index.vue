@@ -108,10 +108,7 @@ export default {
       const clubData = club.data()
       localStorage.club = JSON.stringify({
         id: club.id,
-        name: clubData.name,
-        entryFormId: clubData.entryFormId,
-        entryFormEnabled: clubData.entryFormEnabled,
-        entryFormMessage: clubData.entryFormMessage
+        name: clubData.name
       })
       this.$router.push('/teacher')
       console.log(teacherRecord.clubs[0])

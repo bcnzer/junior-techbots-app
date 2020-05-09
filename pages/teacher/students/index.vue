@@ -176,14 +176,20 @@ export default {
   },
 
   async created() {
-    const club = JSON.parse(localStorage.club)
+    const clubId = JSON.parse(localStorage.club).id
+    const clubRef = await firestore
+      .collection('clubs')
+      .doc(clubId)
+      .get()
+
+    const club = clubRef.data()
     this.entryFormEnabled = club.entryFormEnabled
     this.entryFormMessage = club.entryFormMessage
     this.entryFormId = club.entryFormId
 
     await firestore
       .collection('students')
-      .where('clubs', 'array-contains', JSON.parse(localStorage.club).id)
+      .where('clubs', 'array-contains', clubId)
       .onSnapshot((querySnapshot) => {
         this.students = []
         querySnapshot.docs.forEach((doc) => {
@@ -202,6 +208,8 @@ export default {
 
   methods: {
     async onSaveEntryFormDetails(event) {
+      if (!event) return
+
       const club = JSON.parse(localStorage.club)
       await firestore
         .collection('clubs')
@@ -210,10 +218,6 @@ export default {
           entryFormEnabled: event.entryFormEnabled,
           entryFormMessage: event.entryFormMessage
         })
-
-      club.entryFormEnabled = event.entryFormEnabled
-      club.entryFormMessage = event.entryFormMessage
-      localStorage.club = JSON.stringify(club)
 
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage

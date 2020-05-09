@@ -385,8 +385,7 @@ export default {
 
       localStorage.club = JSON.stringify({
         id: newClub.id,
-        name: this.clubName,
-        entryFormId: entryId
+        name: this.clubName
       })
 
       this.$router.push('/teacher')
