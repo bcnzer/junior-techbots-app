@@ -1,9 +1,13 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" xs="12" lg="9" xl="6" class="mx-auto">
-        <v-img src="/bots/robots small.png" width="330" class="mx-auto"></v-img>
-      </v-col>
+      <object
+        type="image/svg+xml"
+        data="/bots/redrobotwaves.svg"
+        width="250px"
+        class="mx-auto"
+      ></object>
+      <!-- <v-img src="/bots/robots small.png" width="330" class="mx-auto"></v-img> -->
     </v-row>
     <v-row justify="center">
       <div class="title my-2">
