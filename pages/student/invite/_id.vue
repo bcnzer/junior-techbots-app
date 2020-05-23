@@ -50,6 +50,7 @@
 </template>
 
 <script>
+// The form used by the email invite
 import { firestore } from '@/services/fireinit.js'
 import firebase from 'firebase/app'
 

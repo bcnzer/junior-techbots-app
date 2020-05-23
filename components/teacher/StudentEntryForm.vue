@@ -3,7 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" dark class="mr-2">Entry form</v-btn>
     </template>
-    <v-card :disabled="saving">
+    <v-card>
       <v-card-title>
         Entry Form
       </v-card-title>
@@ -32,19 +32,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          @click="saveEntryForm(true)"
-          :loading="saving"
-          color="primary"
-          class="mb-3"
+        <v-btn @click="saveEntryForm(true)" color="primary" class="mb-3"
           >Save</v-btn
         >
-        <v-btn
-          @click="saveEntryForm(false)"
-          :disabled="saving"
-          class="mb-3 mr-3"
-          >Cancel</v-btn
-        >
+        <v-btn @click="saveEntryForm(false)" class="mb-3 mr-3">Cancel</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -72,10 +63,6 @@ export default {
     entryFormId: {
       type: String,
       default: null
-    },
-    saving: {
-      type: Boolean,
-      default: false
     }
   },
 
@@ -120,7 +107,6 @@ export default {
       this.$store.commit('snackbar/setSnack', 'URL copied to clipboard')
     },
     saveEntryForm(save) {
-      this.saving = true
       this.showDialog = false
       if (save) {
         this.$emit('save-event-form', {
@@ -130,8 +116,6 @@ export default {
       } else {
         this.$emit('save-event-form')
       }
-
-      this.saving = false
     }
   }
 }

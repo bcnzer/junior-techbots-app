@@ -171,7 +171,8 @@ export default {
       showStudentEditDialog: false,
       dialogStudentDisplayName: null,
       dialogCurrentStudent: null,
-      entryFormMessage: null
+      entryFormMessage: null,
+      currentClub: null
     }
   },
 
@@ -182,10 +183,11 @@ export default {
       .doc(clubId)
       .get()
 
-    const club = clubRef.data()
-    this.entryFormEnabled = club.entryFormEnabled
-    this.entryFormMessage = club.entryFormMessage
-    this.entryFormId = club.entryFormId
+    this.currentClub = clubRef.data()
+    this.currentClub.id = clubId
+    this.entryFormEnabled = this.currentClub.entryFormEnabled
+    this.entryFormMessage = this.currentClub.entryFormMessage
+    this.entryFormId = this.currentClub.entryFormId
 
     await firestore
       .collection('students')
@@ -210,15 +212,25 @@ export default {
     async onSaveEntryFormDetails(event) {
       if (!event) return
 
-      const club = JSON.parse(localStorage.club)
+      const currentUserUid = JSON.parse(localStorage.currentUser).uid
       await firestore
         .collection('clubs')
-        .doc(club.id)
+        .doc(this.currentClub.id)
         .update({
           entryFormEnabled: event.entryFormEnabled,
           entryFormMessage: event.entryFormMessage
         })
-
+      await firestore
+        .collection('publicentryforms')
+        .doc(this.currentClub.entryFormId)
+        .set({
+          uid: currentUserUid,
+          clubId: this.currentClub.id,
+          clubName: this.currentClub.name,
+          clubDescription: this.currentClub.description,
+          entryFormEnabled: event.entryFormEnabled,
+          entryFormMessage: event.entryFormMessage
+        })
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage
     },
