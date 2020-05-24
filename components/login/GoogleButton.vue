@@ -11,7 +11,7 @@ export default {
 
   methods: {
     googleSignIn() {
-      this.$emit('on-google-sign-in')
+      this.$emit('on-click')
     }
   }
 }

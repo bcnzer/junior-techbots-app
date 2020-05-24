@@ -22,43 +22,12 @@
           </v-stepper-step>
 
           <v-stepper-content step="1">
-            <div v-if="currentUser">
-              Junior Techbots uses Google to sign in. Your club will be setup
-              against this account
-              <v-list>
-                <v-list-item>
-                  <v-list-item-avatar class="mr-5">
-                    <v-img :src="currentUserPhoto"></v-img>
-                  </v-list-item-avatar>
-
-                  <v-list-item-content>
-                    <v-list-item-title
-                      v-html="currentUserDisplayName"
-                    ></v-list-item-title>
-                    <v-list-item-subtitle
-                      v-html="currentUserEmail"
-                    ></v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-              <div>
-                If you have multiple Google accounts, click here to sign in and
-                pick one
-              </div>
-            </div>
-            <div v-else>
-              Please login with your Google account
-            </div>
+            <display-logged-in-user
+              :current-user="currentUser"
+              additional-message="Your club will be setup against this account"
+            ></display-logged-in-user>
             <div class="mt-3">
-              <v-btn @click="googleSignIn">
-                <v-img
-                  height="18"
-                  width="18"
-                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                  class="mr-2"
-                ></v-img>
-                Sign in with Google
-              </v-btn>
+              <google-button @on-click="googleSignIn"></google-button>
             </div>
             <v-btn
               @click="goForwardStep"
@@ -275,9 +244,16 @@
 import { firestore } from '@/services/fireinit.js'
 import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
+import GoogleButton from '@/components/login/GoogleButton'
+import DisplayLoggedInUser from '@/components/login/DisplayLoggedInUser'
 
 export default {
   layout: 'minimal',
+
+  components: {
+    GoogleButton,
+    DisplayLoggedInUser
+  },
 
   data() {
     return {

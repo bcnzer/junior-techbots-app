@@ -32,20 +32,24 @@
         <v-row>
           <v-col>
             <v-card class="mx-auto" max-width="600px">
-              <v-card-title>{{ clubName }}</v-card-title>
-              <v-card-subtitle v-if="clubDescription">{{
-                clubDescription
-              }}</v-card-subtitle>
+              <v-card-title>ENTRY FORM</v-card-title>
               <v-card-text>
-                <div>
+                <div class="display-1">{{ clubName }}</div>
+                <div v-if="clubDescription" class="title">
+                  {{ clubDescription }}
+                </div>
+                <div class="mt-5">
                   <display-logged-in-user
                     :current-user="currentUser"
                   ></display-logged-in-user>
                 </div>
                 <div class="mt-4">
-                  <google-button></google-button>
+                  <google-button @on-click="googleSignIn"></google-button>
                 </div>
-                <v-textarea label="Message for teacher"></v-textarea>
+                <v-textarea
+                  class="mt-4"
+                  label="Message for teacher"
+                ></v-textarea>
               </v-card-text>
 
               <v-card-actions>
@@ -105,7 +109,9 @@ export default {
   },
 
   async created() {
-    this.currentUser = JSON.parse(localStorage.currentUser)
+    if (localStorage.currentUser) {
+      this.currentUser = JSON.parse(localStorage.currentUser)
+    }
 
     if (this.$route.params.id) {
       console.log(this.$route.params.id)
@@ -122,6 +128,12 @@ export default {
     }
 
     this.loading = false
+  },
+
+  methods: {
+    googleSignIn() {
+      this.$router.push(`/login?entryform=${this.$route.params.id}`)
+    }
   }
 }
 </script>

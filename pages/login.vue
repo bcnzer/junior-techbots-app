@@ -37,7 +37,11 @@ export default {
           if (this.$route.query.redirect === 'clubsetup') {
             this.$router.push('/clubsetup')
           } else if (this.$route.query.invite) {
+            // A specific invite for one person
             this.$router.push(`/student/invite/${this.$route.query.invite}`)
+          } else if (this.$route.query.entryform) {
+            // The entry form anyone can use
+            this.$router.push(`/student/entry/${this.$route.query.entryform}`)
           } else {
             this.$router.push('/')
           }
