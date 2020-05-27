@@ -31,7 +31,7 @@
         ></v-img>
         <v-row>
           <v-col>
-            <v-card class="mx-auto" max-width="600px">
+            <v-card v-if="!submitted" class="mx-auto" max-width="600px">
               <v-card-title>ENTRY FORM</v-card-title>
               <v-card-text>
                 <div class="display-1">{{ clubName }}</div>
@@ -47,6 +47,7 @@
                   <google-button @on-click="googleSignIn"></google-button>
                 </div>
                 <v-textarea
+                  v-model="messageForTeacher"
                   class="mt-4"
                   label="Message for teacher"
                 ></v-textarea>
@@ -54,10 +55,35 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">Submit</v-btn>
-                <v-btn>Cancel</v-btn>
+                <v-btn
+                  :disabled="!currentUser"
+                  @click="submitEntry"
+                  color="primary"
+                  class="mb-2 mr-2"
+                  >Submit Entry</v-btn
+                >
               </v-card-actions>
             </v-card>
+            <v-slide-y-transition>
+              <v-card
+                v-if="submitted"
+                class="mx-auto"
+                max-width="600px"
+                transition="slide-x-reverse-transition"
+              >
+                <v-card-text>
+                  <div class="display-1">{{ clubName }}</div>
+                  <div v-if="clubDescription" class="title">
+                    {{ clubDescription }}
+                  </div></v-card-text
+                >
+                <v-card-title>ENTRY SUBMITTED</v-card-title>
+                <v-card-text
+                  >The teacher will need to approve your request to join the
+                  club</v-card-text
+                >
+              </v-card>
+            </v-slide-y-transition>
           </v-col>
         </v-row>
       </div>
@@ -89,7 +115,9 @@ export default {
       entryFormData: null,
       entryFormValid: false,
       entryFormEnabled: false,
-      currentUser: null
+      currentUser: null,
+      messageForTeacher: null,
+      submitted: false
     }
   },
 
@@ -131,6 +159,17 @@ export default {
   },
 
   methods: {
+    async submitEntry() {
+      await firestore.collection('submittedentries').add({
+        displayName: this.currentUser.displayName,
+        email: this.currentUser.email,
+        photoURL: this.currentUser.photoURL,
+        uid: this.currentUser.uid,
+        entryId: this.$route.params.id,
+        messageForTeacher: this.messageForTeacher
+      })
+      this.submitted = true
+    },
     googleSignIn() {
       this.$router.push(`/login?entryform=${this.$route.params.id}`)
     }

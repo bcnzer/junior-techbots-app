@@ -36,10 +36,11 @@ service cloud.firestore {
     	allow create: if uidCheck()
     }
     
-  	// match /clubs/{club_id}/groups/{group_id} {
-  	// allow read, write: if uidCheck()
-  	// allow create: if uidCheck()
-  	// }
+		// TODO - implement this for the submittedentries collection
+  	match /submittedentries/{submittedentry_id} {
+    	allow create: if uidCheck()
+    	allow read, write: if uidCheck() && submittedentry_id == get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.entryFormId && request.auth.uid in get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.teachers;
+    }
     
     match /{document=**} {
       allow read, write: if false;
