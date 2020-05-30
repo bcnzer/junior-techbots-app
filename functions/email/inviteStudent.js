@@ -26,3 +26,23 @@ exports.inviteStudent = functions.firestore
       .then(() => console.log(invite.clubName))
       .catch((error) => console.error(error.toString()))
   })
+
+exports.entryConfirmation = functions.firestore
+  .document('submittedentries/{entryId}')
+  .onCreate((event, context) => {
+    const invite = event.data()
+    const msg = {
+      to: invite.email,
+      from: 'Junior Techbots <noreply@juniortechbots.com>',
+      subject: `We've received your request to join ${invite.clubName}`,
+      templateId: 'd-dbca7ba9559a4618917ad80d8849ff3c',
+      dynamic_template_data: {
+        clubName: invite.clubName
+      }
+    }
+
+    return sendGridEmail
+      .send(msg)
+      .then(() => console.log(invite.clubName))
+      .catch((error) => console.error(error.toString()))
+  })

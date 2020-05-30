@@ -23,7 +23,34 @@
         <div class="display-2">Entry form disabled</div>
       </v-row>
 
-      <div v-if="entryFormValid && entryFormEnabled">
+      <div v-if="entryFormValid && entryFormEnabled && entryAlreadyReceived">
+        <v-img
+          src="/bots/robots small.png"
+          max-width="300"
+          class="mx-auto my-5"
+        ></v-img>
+        <v-row>
+          <v-col>
+            <v-card v-if="!submitted" class="mx-auto" max-width="600px">
+              <v-card-title>{{ clubName }}</v-card-title>
+              <v-card-text>
+                <div class="title">
+                  Entry form already received for this account
+                </div>
+                <display-logged-in-user
+                  :current-user="currentUser"
+                  hide-text="true"
+                ></display-logged-in-user>
+                <div class="mt-2">
+                  If you have any questions ask the teacher
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+
+      <div v-if="entryFormValid && entryFormEnabled && !entryAlreadyReceived">
         <v-img
           src="/bots/robots small.png"
           max-width="300"
@@ -115,6 +142,7 @@ export default {
       entryFormData: null,
       entryFormValid: false,
       entryFormEnabled: false,
+      entryAlreadyReceived: false,
       currentUser: null,
       messageForTeacher: null,
       submitted: false
@@ -139,6 +167,17 @@ export default {
   async created() {
     if (localStorage.currentUser) {
       this.currentUser = JSON.parse(localStorage.currentUser)
+      if (this.$route.params.id) {
+        const entryRef = await firestore
+          .collection('submittedentries')
+          .where('email', '==', this.currentUser.email)
+          .where('entryId', '==', this.$route.params.id)
+
+        if (!entryRef.empty) {
+          // There's already at least one submitted entry for this
+          this.entryAlreadyReceived = true
+        }
+      }
     }
 
     if (this.$route.params.id) {
@@ -166,7 +205,10 @@ export default {
         photoURL: this.currentUser.photoURL,
         uid: this.currentUser.uid,
         entryId: this.$route.params.id,
-        messageForTeacher: this.messageForTeacher
+        messageForTeacher: this.messageForTeacher,
+        clubName: this.entryFormData.clubName,
+        clubDescription: this.entryFormData.clubDescription,
+        entryFormMessage: this.entryFormData.entryFormMessage
       })
       this.submitted = true
     },

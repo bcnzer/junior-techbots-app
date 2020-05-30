@@ -1,7 +1,9 @@
 <template>
   <div>
     <div v-if="currentUser">
-      Junior Techbots uses Google to sign in. {{ additionalMessage }}
+      <div v-if="!hideText">
+        Junior Techbots uses Google to sign in. {{ additionalMessage }}
+      </div>
       <v-list>
         <v-list-item>
           <v-list-item-avatar class="mr-5">
@@ -18,12 +20,14 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <div>
+      <div v-if="!hideText">
         If you have multiple Google accounts, click here to sign in and pick one
       </div>
     </div>
     <div v-else>
-      Please login with your Google account
+      <div v-if="!hideText">
+        Please login with your Google account
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +44,10 @@ export default {
     additionalMessage: {
       type: String,
       default: null
+    },
+    hideText: {
+      type: Boolean,
+      default: false
     }
   },
 
