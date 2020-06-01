@@ -38,8 +38,9 @@ service cloud.firestore {
     
 		// TODO - implement this for the submittedentries collection
   	match /submittedentries/{submittedentry_id} {
-    	allow create: if uidCheck()
-    	allow read, write: if uidCheck() && submittedentry_id == get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.entryFormId && request.auth.uid in get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.teachers;
+      allow read: if uidCheck() && ((request.auth.uid == resource.data.uid) || (submittedentry_id == get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.entryFormId && request.auth.uid in get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.teachers));
+    	allow create: if uidCheck();
+    	allow write: if uidCheck() && submittedentry_id == get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.entryFormId && request.auth.uid in get(/databases/$(database)/documents/clubs/$(resource.data.clubId)).data.teachers;
     }
     
     match /{document=**} {

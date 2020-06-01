@@ -39,7 +39,7 @@
                 </div>
                 <display-logged-in-user
                   :current-user="currentUser"
-                  hide-text="true"
+                  :hide-text="true"
                 ></display-logged-in-user>
                 <div class="mt-2">
                   If you have any questions ask the teacher
@@ -168,20 +168,22 @@ export default {
     if (localStorage.currentUser) {
       this.currentUser = JSON.parse(localStorage.currentUser)
       if (this.$route.params.id) {
-        const entryRef = await firestore
-          .collection('submittedentries')
-          .where('email', '==', this.currentUser.email)
-          .where('entryId', '==', this.$route.params.id)
+        try {
+          const entryRef = await firestore
+            .collection('submittedentries')
+            .where('uid', '==', this.currentUser.uid)
+            .where('entryId', '==', this.$route.params.id)
+            .get()
 
-        if (!entryRef.empty) {
           // There's already at least one submitted entry for this
-          this.entryAlreadyReceived = true
+          this.entryAlreadyReceived = !entryRef.empty
+        } catch (error) {
+          console.error(error)
         }
       }
     }
 
     if (this.$route.params.id) {
-      console.log(this.$route.params.id)
       const entryFormRef = await firestore
         .collection('publicentryforms')
         .doc(this.$route.params.id)
