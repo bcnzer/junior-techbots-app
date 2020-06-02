@@ -9,122 +9,199 @@
     <v-row v-if="!loading">
       <v-col cols="12" xs="12" class="mx-auto">
         <v-card>
-          <v-card-title>
-            Students
-            <v-spacer></v-spacer>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-              class="mr-2 mb-2"
-            ></v-text-field>
+          <v-tabs v-model="tab">
+            <v-tab key="students">{{ studentHeader }}</v-tab>
+            <v-tab key="requestsToJoin">{{ requestsToJoin }}</v-tab>
+          </v-tabs>
 
-            <student-entry-form
-              :entry-form-id="entryFormId"
-              :entry-form-enabled="entryFormEnabled"
-              :entry-form-message="entryFormMessage"
-              v-on:save-event-form="onSaveEntryFormDetails"
-            ></student-entry-form>
-            <v-dialog v-model="showEmailDialog" max-width="500px">
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on">Invite Student</v-btn>
-              </template>
-              <v-form ref="modalInviteStudent" lazy-validation>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Invite Student</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-alert type="warning">
-                            Students must login with a Google account - a GMail
-                            or GSuite account
-                          </v-alert>
-                          <v-text-field
-                            v-model="dialogEmail"
-                            :rules="dialogEmailRules"
+          <v-tabs-items v-model="tab">
+            <v-tab-item key="students">
+              <v-card flat>
+                <v-card-title>
+                  Students
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+                    class="mr-2 mb-2"
+                  ></v-text-field>
+
+                  <student-entry-form
+                    :entry-form-id="entryFormId"
+                    :entry-form-enabled="entryFormEnabled"
+                    :entry-form-message="entryFormMessage"
+                    v-on:save-event-form="onSaveEntryFormDetails"
+                  ></student-entry-form>
+                  <v-dialog v-model="showEmailDialog" max-width="500px">
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on">Invite Student</v-btn>
+                    </template>
+                    <v-form ref="modalInviteStudent" lazy-validation>
+                      <v-card>
+                        <v-card-title>
+                          <span class="headline">Invite Student</span>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col cols="12">
+                                <v-alert type="warning">
+                                  Students must login with a Google account - a
+                                  GMail or GSuite account
+                                </v-alert>
+                                <v-text-field
+                                  v-model="dialogEmail"
+                                  :rules="dialogEmailRules"
+                                  :disabled="saving"
+                                  label="Email"
+                                  required
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            @click="inviteStudent()"
+                            :loading="saving"
+                            color="primary"
+                            >Send</v-btn
+                          >
+                          <v-btn
+                            @click="showEmailDialog = false"
                             :disabled="saving"
-                            label="Email"
-                            required
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      @click="inviteStudent()"
-                      :loading="saving"
-                      color="primary"
-                      >Send</v-btn
-                    >
-                    <v-btn @click="showEmailDialog = false" :disabled="saving"
-                      >Cancel</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-form>
-            </v-dialog>
+                            >Cancel</v-btn
+                          >
+                        </v-card-actions>
+                      </v-card>
+                    </v-form>
+                  </v-dialog>
 
-            <v-dialog
-              v-model="showStudentEditDialog"
-              persistent
-              max-width="500px"
-            >
-              <v-form ref="modalEditStudent" lazy-validation>
-                <v-card>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="dialogStudentDisplayName"
+                  <v-dialog
+                    v-model="showStudentEditDialog"
+                    persistent
+                    max-width="500px"
+                  >
+                    <v-form ref="modalEditStudent" lazy-validation>
+                      <v-card>
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col cols="12">
+                                <v-text-field
+                                  v-model="dialogStudentDisplayName"
+                                  :disabled="saving"
+                                  :rules="[(v) => !!v || 'Name is required']"
+                                  label="Name"
+                                  required
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            @click="editStudent()"
+                            :loading="saving"
+                            color="primary"
+                            >Save</v-btn
+                          >
+                          <v-btn
+                            @click="showStudentEditDialog = false"
                             :disabled="saving"
-                            :rules="[(v) => !!v || 'Name is required']"
-                            label="Name"
-                            required
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      @click="editStudent()"
-                      :loading="saving"
-                      color="primary"
-                      >Save</v-btn
-                    >
-                    <v-btn
-                      @click="showStudentEditDialog = false"
-                      :disabled="saving"
-                      >Cancel</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-form>
-            </v-dialog>
-          </v-card-title>
-          <v-data-table :headers="headers" :items="students">
-            <template slot="no-data">
-              No students have joined. Invite some!
-            </template>
+                            >Cancel</v-btn
+                          >
+                        </v-card-actions>
+                      </v-card>
+                    </v-form>
+                  </v-dialog>
+                </v-card-title>
+                <v-data-table :headers="headers" :items="students">
+                  <template slot="no-data">
+                    No students have joined. Invite some!
+                  </template>
 
-            <template v-slot:item.action="{ item }">
-              <v-icon @click="showEditStudent(item)" class="mr-5">
-                mdi-pencil
-              </v-icon>
-              <v-icon @click="deleteStudent(item)">
-                mdi-delete
-              </v-icon>
-            </template>
-          </v-data-table>
+                  <template v-slot:item.action="{ item }">
+                    <v-icon @click="showEditStudent(item)" class="mr-5">
+                      mdi-pencil
+                    </v-icon>
+                    <v-icon @click="deleteStudent(item)">
+                      mdi-delete
+                    </v-icon>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-tab-item>
+
+            <v-tab-item key="requestsToJoin">
+              <v-card flat>
+                <v-list two-line>
+                  <template v-for="(request, index) in joinRequests">
+                    <v-divider
+                      v-if="showDivider(index, joinRequests.length)"
+                      :key="index"
+                    ></v-divider>
+
+                    <v-list-item :key="request.id">
+                      <v-list-item-avatar>
+                        <v-img :src="request.photoURL"></v-img>
+                      </v-list-item-avatar>
+
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-html="request.displayName"
+                        ></v-list-item-title>
+                        <v-list-item-subtitle
+                          v-html="request.email"
+                        ></v-list-item-subtitle>
+                      </v-list-item-content>
+
+                      <v-list-item-action>
+                        <v-tooltip left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              v-on="on"
+                              @click="approveRequest(index)"
+                              text
+                              icon
+                            >
+                              <v-icon>
+                                mdi-account-check
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Approve request</span>
+                        </v-tooltip>
+                      </v-list-item-action>
+
+                      <v-list-item-action>
+                        <v-tooltip left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              v-on="on"
+                              @click="denyRequest(index)"
+                              text
+                              icon
+                            >
+                              <v-icon>
+                                mdi-account-remove
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Remove request</span>
+                        </v-tooltip>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </template>
+                </v-list>
+              </v-card>
+            </v-tab-item>
+          </v-tabs-items>
         </v-card>
       </v-col>
       <snackbar />
@@ -155,6 +232,7 @@ export default {
     return {
       search: null,
       loading: true,
+      tab: null,
       showEmailDialog: false,
       saving: false,
       dialogEmail: null,
@@ -172,7 +250,21 @@ export default {
       dialogStudentDisplayName: null,
       dialogCurrentStudent: null,
       entryFormMessage: null,
-      currentClub: null
+      currentClub: null,
+      joinRequests: []
+    }
+  },
+
+  computed: {
+    studentHeader() {
+      if (this.students.length === 0) return 'Students'
+
+      return `Students (${this.students.length})`
+    },
+    requestsToJoin() {
+      if (this.joinRequests.length === 0) return 'Requests to Join'
+
+      return `Requests to Join (${this.joinRequests.length})`
     }
   },
 
@@ -204,11 +296,52 @@ export default {
             group: ''
           })
         })
-        this.loading = false
       })
+
+    await firestore
+      .collection('submittedentries')
+      .where('clubId', '==', clubId)
+      .onSnapshot((querySnapshot) => {
+        this.joinRequests = []
+        querySnapshot.docs.forEach((doc) => {
+          const record = doc.data()
+          record.id = doc.id
+          this.joinRequests.push(record)
+        })
+      })
+
+    this.loading = false
   },
 
   methods: {
+    async handleRequest(approve, index) {
+      const clubId = JSON.parse(localStorage.club).id
+
+      // Assign the club to the student
+      await firestore
+        .collection('students')
+        .doc(this.joinRequests[index].studentId)
+        .update({
+          clubs: approve
+            ? firebase.firestore.FieldValue.arrayUnion(clubId)
+            : firebase.firestore.FieldValue.arrayRemove(clubId)
+        })
+
+      // Delete the entry once done
+      await firestore
+        .collection('submittedentries')
+        .doc(this.joinRequests[index].id)
+        .delete()
+    },
+
+    async approveRequest(index) {
+      await this.handleRequest(true, index)
+    },
+
+    async denyRequest(index) {
+      await this.handleRequest(false, index)
+    },
+
     async onSaveEntryFormDetails(event) {
       if (!event) return
 
@@ -220,6 +353,7 @@ export default {
           entryFormEnabled: event.entryFormEnabled,
           entryFormMessage: event.entryFormMessage
         })
+
       await firestore
         .collection('publicentryforms')
         .doc(this.currentClub.entryFormId)
@@ -233,6 +367,12 @@ export default {
         })
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage
+    },
+
+    showDivider(index, length) {
+      if (index <= 0) return false
+      if (index < length) return true
+      return false
     },
 
     showEditStudent(student) {

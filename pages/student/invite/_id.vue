@@ -124,7 +124,8 @@ export default {
         .update({
           clubs: firebase.firestore.FieldValue.arrayUnion(this.invite.clubId),
           photoURL: userInfo.photoURL,
-          displayName: userInfo.displayName
+          displayName: userInfo.displayName,
+          uid: userInfo.uid
         })
 
       await firestore

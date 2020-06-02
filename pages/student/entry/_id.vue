@@ -201,6 +201,27 @@ export default {
 
   methods: {
     async submitEntry() {
+      // Create a student record if one doesn't exist already
+      const studentRef = await firestore
+        .collection('students')
+        .where('uid', '==', this.currentUser.uid)
+        .get()
+
+      console.log(studentRef)
+      let id
+      if (studentRef.empty) {
+        const addedStudent = await firestore.collection('students').add({
+          displayName: this.currentUser.displayName,
+          email: this.currentUser.email,
+          photoURL: this.currentUser.photoURL,
+          uid: this.currentUser.uid
+        })
+        id = addedStudent.id
+      } else {
+        id = studentRef.docs[0].id
+      }
+
+      // Now add it to the list of submitted entries
       await firestore.collection('submittedentries').add({
         displayName: this.currentUser.displayName,
         email: this.currentUser.email,
@@ -208,10 +229,13 @@ export default {
         uid: this.currentUser.uid,
         entryId: this.$route.params.id,
         messageForTeacher: this.messageForTeacher,
+        clubId: this.entryFormData.clubId,
         clubName: this.entryFormData.clubName,
         clubDescription: this.entryFormData.clubDescription,
-        entryFormMessage: this.entryFormData.entryFormMessage
+        entryFormMessage: this.entryFormData.entryFormMessage,
+        studentId: id
       })
+
       this.submitted = true
     },
     googleSignIn() {
