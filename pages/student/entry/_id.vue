@@ -211,6 +211,7 @@ export default {
       let id
       if (studentRef.empty) {
         const addedStudent = await firestore.collection('students').add({
+          clubs: [],
           displayName: this.currentUser.displayName,
           email: this.currentUser.email,
           photoURL: this.currentUser.photoURL,

@@ -139,7 +139,12 @@
             </v-tab-item>
 
             <v-tab-item key="requestsToJoin">
-              <v-card flat>
+              <v-card v-if="joinRequests.length == 0" flat>
+                <v-card-text class="title">
+                  There are no requests to join your club
+                </v-card-text>
+              </v-card>
+              <v-card v-else flat>
                 <v-list two-line>
                   <template v-for="(request, index) in joinRequests">
                     <v-divider
@@ -205,6 +210,15 @@
         </v-card>
       </v-col>
       <snackbar />
+
+      <confirmation-dialog
+        :showDialog="showDeleteConfirmationDialog"
+        @on-dialog-confirmation="onDeleteConfirmation()"
+        @on-dialog-cancel="onDeleteCancel()"
+        :id="$route.params.id"
+        :text="confirmationDialogMessage"
+        title="Delete Request?"
+      />
     </v-row>
   </v-container>
 </template>
@@ -215,13 +229,15 @@ import snackbar from '@/components/snackbar'
 import StudentEntryForm from '@/components/teacher/StudentEntryForm'
 import firebase from 'firebase/app'
 import uuidv4 from 'uuid/v4'
+import ConfirmationDialog from '~/components/ConfirmationDialog'
 
 export default {
   layout: 'teacher',
 
   components: {
     snackbar,
-    StudentEntryForm
+    StudentEntryForm,
+    ConfirmationDialog
   },
 
   head() {
@@ -251,11 +267,17 @@ export default {
       dialogCurrentStudent: null,
       entryFormMessage: null,
       currentClub: null,
-      joinRequests: []
+      joinRequests: [],
+      joinRequestIndex: null,
+      joinRequestDisplayName: null,
+      showDeleteConfirmationDialog: false
     }
   },
 
   computed: {
+    confirmationDialogMessage() {
+      return `Are you sure you want to delete the request for '${this.joinRequestDisplayName}'?`
+    },
     studentHeader() {
       if (this.students.length === 0) return 'Students'
 
@@ -314,6 +336,18 @@ export default {
   },
 
   methods: {
+    async onDeleteConfirmation() {
+      await this.handleRequest(false, this.joinRequestIndex)
+      this.showDeleteConfirmationDialog = false
+      this.joinRequestIndex = null
+      this.joinRequestDisplayName = null
+    },
+
+    onDeleteCancel() {
+      this.joinRequestIndex = null
+      this.showDeleteConfirmationDialog = false
+    },
+
     async handleRequest(approve, index) {
       const clubId = JSON.parse(localStorage.club).id
 
@@ -338,8 +372,10 @@ export default {
       await this.handleRequest(true, index)
     },
 
-    async denyRequest(index) {
-      await this.handleRequest(false, index)
+    denyRequest(index) {
+      this.joinRequestIndex = index
+      this.joinRequestDisplayName = this.joinRequests[index].displayName
+      this.showDeleteConfirmationDialog = true
     },
 
     async onSaveEntryFormDetails(event) {
@@ -365,6 +401,7 @@ export default {
           entryFormEnabled: event.entryFormEnabled,
           entryFormMessage: event.entryFormMessage
         })
+
       this.entryFormEnabled = event.entryFormEnabled
       this.entryFormMessage = event.entryFormMessage
     },
