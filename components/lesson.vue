@@ -140,7 +140,18 @@ export default {
 
   data() {
     return {
+      name: null,
+      description: null,
+      url: null,
       clubId: null,
+      defaultCategories: [],
+      showDeleteConfirmationDialog: false,
+      furtherResources: null,
+      messageForParents: null,
+      allAchievements: [],
+      achievements: [],
+      urlRule: [(v) => !v || /.+@.+\..+/.test(v) || 'E-mail must be valid'],
+      category: null,
       loading: true,
       saving: false,
       currentLessonId: null,
