@@ -4,7 +4,7 @@
       <v-img src="/bots/bot5.png" max-width="128"></v-img>
     </v-row>
     <v-row align="center" justify="center" class="my-5">
-      <div class="display-1">Junior Techbot</div>
+      <div class="display-1">Junior Techbots</div>
     </v-row>
     <v-row align="center" justify="center">
       <v-btn @click="googleSignIn" color="white">
