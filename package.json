@@ -10,7 +10,9 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest --verbose false",
+    "test": "nuxt",
+    "e2e": "concurrently --kill-others \"firebase emulators:start --only firestore\" \"cypress open --browser chrome\"",
+    "e2e:silent": "cypress run",
     "deploy:prod": "firebase use default && firebase deploy",
     "deploy:prod:hosting": "nuxt build --modern=client && firebase use default && firebase deploy --only hosting:default",
     "deploy:prod:functions": "echo this won't work as you need to use Node 10. Use your Ubuntu instance",
@@ -19,6 +21,7 @@
     "deploy:staging:hosting": "nuxt build --modern=client && firebase use staging && firebase deploy --only hosting:staging",
     "deploy:staging:functions": "echo this won't work as you need to use Node 10. Use your Ubuntu instance",
     "deploy:staging:rules": "firebase use staging && firebase deploy --only firestore:rules",
+    "firebase:emulator": "firebase emulators:start",
     "firestore:export": "gcloud config set project junior-techbots-staging && gcloud firestore export gs://junior-techbots-staging-firestore-backup",
     "firestore:import": "gcloud config set project junior-techbots-staging && gcloud firestore import gs://junior-techbots-staging-firestore-backup/2020-04-11T22:15:18_23337/"
   },
@@ -28,7 +31,7 @@
     "@nuxtjs/sentry": "^4.1.2",
     "algoliasearch": "^4.3.0",
     "date-and-time": "^0.13.1",
-    "firebase": "^7.15.3",
+    "firebase": "^7.17.1",
     "instantsearch.css": "^7.4.2",
     "nuxt": "^2.13.0",
     "uuid": "^3.3.3",
@@ -43,16 +46,14 @@
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
+    "concurrently": "^5.2.0",
     "core-js": "3",
+    "cypress": "^4.11.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-vueunused": "^0.5.0",
-    "jest": "^24.1.0",
-    "jest-puppeteer": "^4.4.0",
-    "prettier": "^1.16.4",
-    "puppeteer": "^2.1.1",
-    "vue-jest": "^4.0.0-0"
+    "prettier": "^1.16.4"
   }
 }

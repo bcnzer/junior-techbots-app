@@ -1,4 +1,5 @@
-import { auth } from '@/services/fireinit.js'
+import { auth, firestore } from '@/services/fireinit.js'
+
 export const state = () => ({
   currentUserId: null
 })
@@ -11,13 +12,23 @@ export const mutations = {
       localStorage.removeItem('club')
       state.currentUserId = null
     } else {
-      localStorage.currentUser = JSON.stringify({
+      const userToSave = {
         displayName: newUser.displayName,
         email: newUser.email,
         uid: newUser.uid,
         photoURL: newUser.photoURL,
         emailVerified: newUser.emailVerified
-      })
+      }
+
+      if (newUser && firestore.ad.host === 'localhost:8080') {
+        // Anonymous login does not have the following information, which we need elsewhere such as the
+        // club setup and the main screen
+        userToSave.displayName = 'LocalTester Chartrand'
+        userToSave.email = 'mytestemail@gmail.com'
+        userToSave.photoURL =
+          'https://lh3.googleusercontent.com/a-/AOh14Ghd0zqWpSJxEJOPcyZ2BLdyuInhvfWsLbA_O67-'
+      }
+      localStorage.currentUser = JSON.stringify(userToSave)
       state.currentUserId = newUser.uid
     }
   }
