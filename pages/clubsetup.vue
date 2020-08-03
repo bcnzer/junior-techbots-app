@@ -258,7 +258,7 @@ export default {
   data() {
     return {
       currentUser: null,
-      currentStep: 5,
+      currentStep: 1,
       clubName: null,
       clubDescription: null,
       groupName: null,
@@ -294,12 +294,13 @@ export default {
     if (!localStorage.currentUser) return null
     this.currentUser = JSON.parse(localStorage.currentUser)
 
-    if (new URL(window.location.href).host === 'localhost:3000') {
-      // Load some local-only test data
-      this.clubName = 'Papakowhai School Coding Club'
-      this.clubDescription = 'Lunchtime coding club out of Rimu 2'
-      this.groupName = 'Years 3-8'
-    }
+    // if (new URL(window.location.href).host === 'localhost:3000') {
+    //   // Load some local-only test data
+    //   this.clubName = 'Papakowhai School Coding Club'
+    //   this.clubDescription = 'Lunchtime coding club out of Rimu 2'
+    //   this.groupName = 'Years 3-8'
+    //   this.currentStep = 5
+    // }
   },
 
   methods: {
