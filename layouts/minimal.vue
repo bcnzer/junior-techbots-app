@@ -3,7 +3,7 @@
     <v-content>
       <v-container>
         <v-alert v-if="showWarning" type="warning">
-          You are using a test environments. All usage is being recorded in
+          You are using a test environment. All usage is being recorded in
           detail
         </v-alert>
         <nuxt />
