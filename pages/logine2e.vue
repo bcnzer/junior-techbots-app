@@ -31,8 +31,7 @@ export default {
     })
 
     await firebase.auth().signInAnonymously()
-
-    this.$router.push('/clubsetup')
+    // this.$router.push('/clubsetup')
   }
 }
 </script>

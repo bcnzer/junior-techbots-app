@@ -34,6 +34,7 @@
               :disabled="!currentUser"
               color="primary"
               class="mt-4"
+              data-cy="clubSetupForward1"
               >Continue</v-btn
             >
           </v-stepper-content>
