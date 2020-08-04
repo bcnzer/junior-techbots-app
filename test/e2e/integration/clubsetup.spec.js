@@ -28,11 +28,26 @@ describe('Club setup', function() {
   })
 
   it('Section - Optional - Invite members of your team', function() {
-    // TODO
-    cy.get('[data-cy=addGroupName]').type(' ').clear()
-    cy.contains('Group name is required').should('have.text', 'Group name is required')
+    cy.get('[data-cy=inviteEmail1]').type('invalid@email')
+    cy.contains('E-mail must be valid').should('have.text', 'E-mail must be valid')
+    cy.get('[data-cy=clubSetupForward4]').click()
+    cy.get('[data-cy=step4]').should('have.class', 'v-stepper__step--active')
 
-    cy.get('[data-cy=addGroupName]').type('Years 5-8')
-    cy.get('[data-cy=clubSetupForward3]').click()
+    cy.get('[data-cy=inviteEmail1]').clear()
+    cy.get('[data-cy=clubSetupForward4]').click()
+  })
+
+  it('Section - Privacy and Data Retention', function() {
+    cy.get('[data-cy=clubSetupForward5]').click()
+    cy.contains('Confirmation required you accept use of cookies').should('have.text', 'Confirmation required you accept use of cookies')
+    cy.contains('Confirmation required of the Privacy Policy').should('have.text', 'Confirmation required of the Privacy Policy')
+    cy.contains('Confirmation required of the Data Retention Policy').should('have.text', 'Confirmation required of the Data Retention Policy')
+    cy.get('[data-cy=step5]').should('have.class', 'v-stepper__step--active')
+
+    cy.get('[data-cy=checkAcceptCookies]').click()
+    cy.get('[data-cy=checkConfirmPrivacyPolicy]').click()
+    cy.get('[data-cy=checkConfirmDataRetencyPolicy]').click()
+    cy.get('[data-cy=clubSetupForward5]').click()
+    cy.get('[data-cy=step5]').should('have.class', 'v-stepper__step--complete')
   })
 })

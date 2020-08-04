@@ -141,7 +141,7 @@
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step :complete="currentStep > 3" step="4"
+          <v-stepper-step :complete="currentStep > 3" step="4" data-cy="step4"
             >Optional - Invite members of your team</v-stepper-step
           >
 
@@ -180,7 +180,7 @@
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step :complete="currentStep > 3" step="5"
+          <v-stepper-step :complete="currentStep > 4" step="5" data-cy="step5"
             >Privacy and Data Retention</v-stepper-step
           >
 
@@ -192,7 +192,10 @@
               <v-form ref="formPrivacyDataRetention">
                 <v-checkbox
                   v-model="confirmCookiesUsage"
-                  :rules="[(v) => !!v || 'Confirmation required']"
+                  :rules="[
+                    (v) =>
+                      !!v || 'Confirmation required you accept use of cookies'
+                  ]"
                   data-cy="checkAcceptCookies"
                 >
                   <template v-slot:label>
@@ -203,7 +206,9 @@
                 </v-checkbox>
                 <v-checkbox
                   v-model="confirmPrivacyPolicy"
-                  :rules="[(v) => !!v || 'Confirmation required']"
+                  :rules="[
+                    (v) => !!v || 'Confirmation required of the Privacy Policy'
+                  ]"
                   class="mt-1 pt-1"
                   data-cy="checkConfirmPrivacyPolicy"
                 >
@@ -218,7 +223,11 @@
                 </v-checkbox>
                 <v-checkbox
                   v-model="confirmDataRetention"
-                  :rules="[(v) => !!v || 'Confirmation required']"
+                  :rules="[
+                    (v) =>
+                      !!v ||
+                      'Confirmation required of the Data Retention Policy'
+                  ]"
                   class="mt-1 pt-1"
                   data-cy="checkConfirmDataRetencyPolicy"
                 >
