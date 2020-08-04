@@ -50,6 +50,7 @@
                 :rules="[(v) => !!v || 'Club name is required']"
                 label="Club Name"
                 placeholder="Example: Kāpiti Code Club"
+                data-cy="clubInfoName"
                 required
               ></v-text-field>
               <v-textarea
@@ -57,8 +58,15 @@
                 placeholder="Description"
               ></v-textarea>
             </v-form>
-            <v-btn @click="goForwardStep" color="primary">Continue</v-btn>
-            <v-btn @click="goBackStep" text>back</v-btn>
+            <v-btn
+              @click="goForwardStep"
+              color="primary"
+              data-cy="clubSetupForward2"
+              >Continue</v-btn
+            >
+            <v-btn @click="goBackStep" text data-cy="clubSetupBack2"
+              >back</v-btn
+            >
           </v-stepper-content>
 
           <v-stepper-step :complete="currentStep > 2" step="3"
@@ -118,12 +126,18 @@
             <v-form ref="formGroupName">
               <v-text-field
                 v-model="groupName"
-                :rules="[(v) => !!groupName || 'Name is required']"
+                :rules="[(v) => !!groupName || 'Group name is required']"
                 label="Group Name"
                 placeholder="Example: Coding Club or Years 5-8"
+                data-cy="addGroupName"
               ></v-text-field>
             </v-form>
-            <v-btn @click="goForwardStep" color="primary">Continue</v-btn>
+            <v-btn
+              @click="goForwardStep"
+              color="primary"
+              data-cy="clubSetupForward3"
+              >Continue</v-btn
+            >
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
@@ -144,18 +158,21 @@
                 :rules="emailRules"
                 placeholder="Email address"
                 clearable
+                data-cy="inviteEmail1"
               ></v-text-field>
               <v-text-field
                 v-model="inviteEmail2"
                 :rules="emailRules"
                 placeholder="Email address"
                 clearable
+                data-cy="inviteEmail2"
               ></v-text-field>
               <v-text-field
                 v-model="inviteEmail3"
                 :rules="emailRules"
                 placeholder="Email address"
                 clearable
+                data-cy="inviteEmail3"
               ></v-text-field>
             </v-form>
 
@@ -176,6 +193,7 @@
                 <v-checkbox
                   v-model="confirmCookiesUsage"
                   :rules="[(v) => !!v || 'Confirmation required']"
+                  data-cy="checkAcceptCookies"
                 >
                   <template v-slot:label>
                     <div>
@@ -187,6 +205,7 @@
                   v-model="confirmPrivacyPolicy"
                   :rules="[(v) => !!v || 'Confirmation required']"
                   class="mt-1 pt-1"
+                  data-cy="checkConfirmPrivacyPolicy"
                 >
                   <template v-slot:label>
                     <div>
@@ -201,6 +220,7 @@
                   v-model="confirmDataRetention"
                   :rules="[(v) => !!v || 'Confirmation required']"
                   class="mt-1 pt-1"
+                  data-cy="checkConfirmDataRetencyPolicy"
                 >
                   <template v-slot:label>
                     <div>

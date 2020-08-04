@@ -1,4 +1,4 @@
-import { auth, firestore } from '@/services/fireinit.js'
+import { auth } from '@/services/fireinit.js'
 
 export const state = () => ({
   currentUserId: null
@@ -20,9 +20,9 @@ export const mutations = {
         emailVerified: newUser.emailVerified
       }
 
-      if (newUser && firestore.ad.host === 'localhost:8080') {
+      if (localStorage.anonymousLogin) {
         // Anonymous login does not have the following information, which we need elsewhere such as the
-        // club setup and the main screen
+        // club setup and the main screen, so I always bung in the same details
         userToSave.displayName = 'LocalTester Chartrand'
         userToSave.email = 'mytestemail@gmail.com'
         userToSave.photoURL =

@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { firestore } from '@/services/fireinit.js'
 import * as firebase from 'firebase/app'
 
 export default {
@@ -25,13 +24,16 @@ export default {
       this.$router.push('/login')
     }
 
-    firestore.settings({
-      host: 'localhost:8080',
-      ssl: false
-    })
+    // firestore.settings({
+    //   host: 'localhost:8080',
+    //   ssl: false
+    // })
 
+    // NOTE - the moment I sign in anonymously the DB is set to my remote DB. Not my
+    // local emulator, which sucks. As such I MUST use my online staging DB and
+    // not the emulator
+    localStorage.anonymousLogin = true
     await firebase.auth().signInAnonymously()
-    // this.$router.push('/clubsetup')
   }
 }
 </script>
