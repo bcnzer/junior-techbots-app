@@ -9,7 +9,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
