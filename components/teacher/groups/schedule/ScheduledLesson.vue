@@ -240,7 +240,6 @@ export default {
     selectedLessonImage() {
       if (!this.selectedLesson) return
 
-      console.log('selected image')
       return this.selectedLesson.imageSrc
     },
     selectedLessonName() {

@@ -68,7 +68,7 @@
     <!-- top menu of the app -->
     <v-app-bar fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="clubName" />
+      <v-toolbar-title v-text="clubName" data-cy="clubName" />
       <v-spacer />
       <v-btn v-if="showWarning" depressed small color="warning"
         >testing mode - usage is being recorded</v-btn

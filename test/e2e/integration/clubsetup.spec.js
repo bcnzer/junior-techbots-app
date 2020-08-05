@@ -1,9 +1,21 @@
 describe('Club setup', function() {
   before(() => {
     cy.visit('/logine2e')
-    cy.pause()
+    cy.wait(1000) // Two waits as there are two network requests
+    cy.wait(1000)
     cy.visit('/clubsetup')
+    cy.saveLocalStorage() // Really important to note that localStorage is NOT saved between tests. This is a problem for currentUser info
   })
+
+  beforeEach(() => {
+    // We need to restore the state before each test so we have the currentUser
+    cy.restoreLocalStorage();
+  });
+ 
+  // // We don't need to do this as we only need the current User but I'm keeping it here as a code sample
+  // afterEach(() => {
+  //   cy.saveLocalStorage();
+  // });
 
   it('Check the logged in display info', function() {
     cy.get('[data-cy=userDisplayName]').should('have.text', 'LocalTester Chartrand')
@@ -43,11 +55,19 @@ describe('Club setup', function() {
     cy.contains('Confirmation required of the Privacy Policy').should('have.text', 'Confirmation required of the Privacy Policy')
     cy.contains('Confirmation required of the Data Retention Policy').should('have.text', 'Confirmation required of the Data Retention Policy')
     cy.get('[data-cy=step5]').should('have.class', 'v-stepper__step--active')
+  })
 
-    cy.get('[data-cy=checkAcceptCookies]').click()
-    cy.get('[data-cy=checkConfirmPrivacyPolicy]').click()
-    cy.get('[data-cy=checkConfirmDataRetencyPolicy]').click()
+  it('Section - Privacy and Data Retention - check them all', function() {
+    cy.get('[data-cy=checkAcceptCookies]').parent().click()
+    cy.get('[data-cy=checkConfirmPrivacyPolicy]').parent().click()
+    cy.get('[data-cy=checkConfirmDataRetencyPolicy]').parent().click()
     cy.get('[data-cy=clubSetupForward5]').click()
     cy.get('[data-cy=step5]').should('have.class', 'v-stepper__step--complete')
   })
+
+  it('Section - Confirmation', function() {
+    cy.get('[data-cy=confirmationMsgClubName]').should('have.text', 'My test coding club')
+    cy.get('[data-cy=createClub]').click()
+  })
+
 })

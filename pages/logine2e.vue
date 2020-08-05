@@ -19,7 +19,6 @@ export default {
   layout: 'minimal',
 
   async mounted() {
-    console.log(location.hostname)
     if (location.hostname !== 'localhost') {
       this.$router.push('/login')
     }

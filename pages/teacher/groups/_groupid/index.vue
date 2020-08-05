@@ -23,7 +23,7 @@
       <v-row v-if="!showEditName">
         <v-col>
           <v-row>
-            <div class="ml-3 headline">
+            <div class="ml-3 headline" data-cy="groupName">
               {{ groupName }}
             </div>
             <v-btn
@@ -35,7 +35,11 @@
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-row>
-          <div v-if="groupDescription" class="subtitle-1">
+          <div
+            v-if="groupDescription"
+            class="subtitle-1"
+            data-cy="groupDescription"
+          >
             {{ groupDescription }}
           </div>
         </v-col>

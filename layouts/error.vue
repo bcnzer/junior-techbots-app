@@ -23,6 +23,11 @@
           </div>
         </v-row>
         <v-row>
+          <div class="mt-3 mx-auto">
+            {{ errorDetail }}
+          </div>
+        </v-row>
+        <v-row>
           <NuxtLink class="mt-3 mx-auto" to="/">
             Home page
           </NuxtLink>
@@ -52,6 +57,14 @@ export default {
     return {
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred'
+    }
+  },
+  computed: {
+    errorDetail() {
+      if (location.hostname === 'localhost') {
+        return this.error
+      }
+      return ''
     }
   }
 }

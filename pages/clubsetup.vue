@@ -176,7 +176,12 @@
               ></v-text-field>
             </v-form>
 
-            <v-btn @click="goForwardStep" color="primary">Continue</v-btn>
+            <v-btn
+              @click="goForwardStep"
+              color="primary"
+              data-cy="clubSetupForward4"
+              >Continue</v-btn
+            >
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
@@ -243,7 +248,12 @@
               </v-form>
             </div>
 
-            <v-btn @click="goForwardStep" color="primary">Continue</v-btn>
+            <v-btn
+              @click="goForwardStep"
+              color="primary"
+              data-cy="clubSetupForward5"
+              >Continue</v-btn
+            >
             <v-btn @click="goBackStep" text>back</v-btn>
           </v-stepper-content>
 
@@ -252,7 +262,7 @@
           <v-stepper-content step="6">
             <div class="mb-5">
               Are you sure you want to go ahead and create
-              <b>{{ clubName }}</b
+              <b data-cy="confirmationMsgClubName">{{ clubName }}</b
               >?
             </div>
             <v-btn
@@ -260,6 +270,7 @@
               :loading="saving"
               :disabled="saving"
               color="primary"
+              data-cy="createClub"
               >Create Club</v-btn
             >
             <v-btn @click="goBackStep" :disabled="saving" text>back</v-btn>
@@ -341,12 +352,17 @@ export default {
     async createClub() {
       this.saving = true
 
+      localStorage.anonymousLogin = 'Hi ben'
+      console.log('point 1')
+      console.log(localStorage.anonymousLogin)
       const currentUserUid = JSON.parse(localStorage.currentUser).uid
+      console.log(currentUserUid)
       let teacherRecord = await firestore
         .collection('teachers')
         .where('uid', '==', currentUserUid)
         .get()
 
+      console.log('point 2')
       if (teacherRecord.docs.length > 0) {
         // They exist already so get their record
         this.teacherRecordId = teacherRecord.docs[0].id
@@ -363,6 +379,7 @@ export default {
         teacherRecord = newTeacherRecord
       }
 
+      console.log('point 3')
       // Create the club
       const entryId = uuidv4().substring(0, 8)
       const currentDateTime = new Date()
