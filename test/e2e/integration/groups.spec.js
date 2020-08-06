@@ -1,14 +1,17 @@
 describe('Club setup', function() {
   before(() => {
-    cy.visit('/logine2e')
-    cy.wait(1000) // Two waits as there are two network requests
-    cy.wait(1000)
-    cy.visit('/clubsetup')
+    // cy.visit('/teacher')
   })
 
-  it('Check the logged in display info', function() {
-    cy.get('[data-cy=userDisplayName]').should('have.text', 'LocalTester Chartrand')
-    cy.get('[data-cy=userEmail]').should('have.text', 'mytestemail@gmail.com')
-    cy.get('[data-cy=clubSetupForward1]').click()
+  beforeEach(() => {
+    // We need to restore the state before each test so we have the currentUser
+    // cy.restoreLocalStorage();
+  });
+
+  it('Username and password check', function() {
+    const username = Cypress.env('username')
+    cy.log(username)
+    const password = Cypress.env('password')
+    cy.log(password)
   })
 })

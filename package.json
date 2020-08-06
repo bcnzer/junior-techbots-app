@@ -49,7 +49,7 @@
     "babel-jest": "^24.1.0",
     "concurrently": "^5.2.0",
     "core-js": "3",
-    "cypress": "4.11.0",
+    "cypress": "4.12.1",
     "cypress-localstorage-commands": "^1.2.1",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^4.1.0",
