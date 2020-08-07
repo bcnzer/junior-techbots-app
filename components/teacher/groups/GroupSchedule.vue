@@ -4,7 +4,11 @@
       <v-btn @click="scheduleLesson()" v-if="showScheduleBtn" class="primary"
         >Schedule a Lesson</v-btn
       >
-      <div v-if="lessons.length <= 0" class="body-1 mt-4 mb-2">
+      <div
+        v-if="lessons.length <= 0"
+        class="body-1 mt-4 mb-2"
+        data-cy="noLessonText"
+      >
         Go ahead and schedule some lessons 😊
       </div>
       <v-data-table

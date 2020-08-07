@@ -27,7 +27,7 @@ describe('Club setup', function() {
     cy.get('[data-cy=clubInfoName]').type(' ').clear()
     cy.contains('Club name is required').should('have.text', 'Club name is required')
 
-    cy.get('[data-cy=clubInfoName]').type('My test coding club')
+    cy.get('[data-cy=clubInfoName]').type('My e2e test coding club')
     cy.get('[data-cy=clubSetupForward2]').click()
   })
 
@@ -66,7 +66,7 @@ describe('Club setup', function() {
   })
 
   it('Section - Confirmation', function() {
-    cy.get('[data-cy=confirmationMsgClubName]').should('have.text', 'My test coding club')
+    cy.get('[data-cy=confirmationMsgClubName]').should('have.text', 'My e2e test coding club')
     cy.get('[data-cy=createClub]').click()
   })
 
