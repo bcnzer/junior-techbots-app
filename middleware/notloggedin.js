@@ -2,7 +2,8 @@ export default function({ store, redirect, route }) {
   if (
     !localStorage.currentUser &&
     route.name !== 'login' &&
-    route.name !== 'logine2e' &&
+    route.name !== 'logine2eanonymous' &&
+    route.name !== 'logine2eemail' &&
     route.name !== 'clubsetup' &&
     route.name !== 'student-entry-id'
   ) {

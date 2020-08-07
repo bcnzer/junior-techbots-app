@@ -1,8 +1,8 @@
 describe('Club setup', function() {
   before(() => {
-    cy.visit('/logine2e')
-    cy.wait(1000) // Two waits as there are two network requests
-    cy.wait(1000)
+    cy.visit('/logine2eanonymous')
+    cy.wait(2000) // Two waits as there are two network requests
+    cy.wait(2000)
     cy.visit('/clubsetup')
     cy.saveLocalStorage() // Really important to note that localStorage is NOT saved between tests. This is a problem for currentUser info
   })
