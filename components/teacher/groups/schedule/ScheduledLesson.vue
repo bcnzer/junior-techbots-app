@@ -10,10 +10,13 @@
       <v-form ref="scheduleLessonForm" lazy-validation>
         <v-row v-if="!selectedLesson" style="min-height: 205px">
           <v-col>
-            <div class="headline mb-4">Schedule a Lesson</div>
+            <div class="headline mb-4" data-cy="titleScheduleLesson">
+              Schedule a Lesson
+            </div>
             <v-btn
               @click="showLessonDialog"
               :loading="selectLessonLoading"
+              data-cy="selectLessonButton"
               class="info"
               >Select a Lesson</v-btn
             >

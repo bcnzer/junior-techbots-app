@@ -1,7 +1,11 @@
 <template>
   <v-row class="fill-height mt-2 ml-1">
     <v-col>
-      <v-btn @click="scheduleLesson()" v-if="showScheduleBtn" class="primary"
+      <v-btn
+        @click="scheduleLesson()"
+        v-if="showScheduleBtn"
+        class="primary"
+        data-cy="scheduleLessonButton"
         >Schedule a Lesson</v-btn
       >
       <div
