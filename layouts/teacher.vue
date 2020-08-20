@@ -67,7 +67,10 @@
 
     <!-- top menu of the app -->
     <v-app-bar fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon
+        @click.stop="drawer = !drawer"
+        data-cy="hamburgerButton"
+      />
       <v-toolbar-title v-text="clubName" data-cy="clubName" />
       <v-spacer />
       <v-btn v-if="showWarning" depressed small color="warning"

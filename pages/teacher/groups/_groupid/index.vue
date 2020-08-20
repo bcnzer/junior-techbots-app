@@ -82,7 +82,7 @@
           <v-card :disabled="showEditName">
             <v-tabs v-model="tab">
               <v-tab key="schedule">{{ lessonScheduleTabHeader }}</v-tab>
-              <v-tab key="completedLessons">{{
+              <v-tab key="completedLessons" data-cy="completedLessonsTab">{{
                 completedScheduleTabHeader
               }}</v-tab>
               <v-tab key="students">{{ studentsTabHeader }}</v-tab>
