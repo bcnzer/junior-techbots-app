@@ -121,7 +121,7 @@
 
 <script>
 // import { firestore, storage } from '@/services/fireinit.js'
-import { firestore } from '@/services/fireinit.js'
+import { firestore, storage } from '@/services/fireinit.js'
 import ConfirmationDialog from '~/components/ConfirmationDialog'
 
 export default {
@@ -140,15 +140,15 @@ export default {
 
   data() {
     return {
-      name: null,
-      description: null,
-      url: null,
       clubId: null,
       defaultCategories: [],
       showDeleteConfirmationDialog: false,
-      furtherResources: null,
-      messageForParents: null,
+      name: null,
+      description: null,
+      url: null,
       allAchievements: [],
+      messageForParents: null,
+      furtherResources: null,
       achievements: [],
       urlRule: [(v) => !v || /.+@.+\..+/.test(v) || 'E-mail must be valid'],
       category: null,
@@ -166,10 +166,35 @@ export default {
     }
   },
 
-  created() {
+  async created() {
     this.clubId = JSON.parse(localStorage.club).id
+    //  this.defaultCategories = "TODO"
+    // TODO - figure out achievements
 
     if (this.scheduledLessonId) {
+      const lesson = await firestore
+        .collection('clubs')
+        .doc(this.clubId)
+        .collection('lessons')
+        .doc(this.$route.params.id)
+        .get()
+
+      const lessonData = lesson.data()
+      this.name = lessonData.name
+      this.description = lessonData.description
+      this.url = lessonData.url
+      this.category = lessonData.category
+      // TODO - achievements
+      this.messageForParents = lessonData.messageForParents
+      this.furtherResources = lessonData.furtherResources
+
+      // Load the picture, if there is one
+      this.imageSrc = await storage
+        .ref(`lessons/${lesson.id}/screenshot_256x192.png`)
+        .getDownloadURL()
+      this.imageSrcLarge = await storage
+        .ref(`lessons/${lesson.id}/screenshot.png`)
+        .getDownloadURL()
     }
 
     this.loading = false
