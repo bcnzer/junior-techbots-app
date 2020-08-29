@@ -11,7 +11,7 @@
       <div class="text-center mr-3">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" color="primary" dark>
+            <v-btn v-on="on" color="primary" dark data-cy="addLessonButton">
               Add Lesson
             </v-btn>
           </template>
@@ -32,7 +32,9 @@
       <v-col cols="12" xs="12" class="mx-auto">
         <v-card>
           <v-card-title>
-            Lessons
+            <div data-cy="lessonPageTitle">
+              Lessons
+            </div>
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"

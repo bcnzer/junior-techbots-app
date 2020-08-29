@@ -25,6 +25,7 @@
             v-for="(item, i) in items"
             :key="i"
             :to="item.to"
+            :data-cy="item.datacy"
             clipped="true"
             router
             exact
@@ -103,22 +104,26 @@ export default {
         {
           icon: 'mdi-account-multiple',
           title: 'Groups',
-          to: '/teacher/groups'
+          to: '/teacher/groups',
+          datacy: 'menuGroup'
         },
         {
           icon: 'mdi-library',
           title: 'Lessons',
-          to: '/teacher/lessons'
+          to: '/teacher/lessons',
+          datacy: 'menuLessons'
         },
         {
           icon: 'mdi-school',
           title: 'Students',
-          to: '/teacher/students'
+          to: '/teacher/students',
+          datacy: 'menuStudents'
         },
         {
           icon: 'mdi-star',
           title: 'Achievements',
-          to: '/teacher/achievements'
+          to: '/teacher/achievements',
+          datacy: 'menuAchievements'
         }
       ],
       miniVariant: false,
