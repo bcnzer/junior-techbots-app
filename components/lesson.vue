@@ -168,7 +168,7 @@ export default {
 
   async created() {
     this.clubId = JSON.parse(localStorage.club).id
-    //  this.defaultCategories = "TODO"
+    // this.defaultCategories = "TODO"
     // TODO - figure out achievements
 
     if (this.scheduledLessonId) {
@@ -180,6 +180,7 @@ export default {
         .get()
 
       const lessonData = lesson.data()
+      this.currentLessonId = lesson.id
       this.name = lessonData.name
       this.description = lessonData.description
       this.url = lessonData.url
