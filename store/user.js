@@ -20,14 +20,14 @@ export const mutations = {
         emailVerified: newUser.emailVerified
       }
 
-      if (localStorage.anonymousLogin) {
-        // Anonymous login does not have the following information, which we need elsewhere such as the
-        // club setup and the main screen, so I always bung in the same details
-        userToSave.displayName = 'LocalTester Chartrand'
-        userToSave.email = 'mytestemail@gmail.com'
-        userToSave.photoURL =
-          'https://lh3.googleusercontent.com/a-/AOh14Ghd0zqWpSJxEJOPcyZ2BLdyuInhvfWsLbA_O67-'
-      }
+      // if (localStorage.anonymousLogin) {
+      //   // Anonymous login does not have the following information, which we need elsewhere such as the
+      //   // club setup and the main screen, so I always bung in the same details
+      //   userToSave.displayName = 'LocalTester Chartrand'
+      //   userToSave.email = 'mytestemail@gmail.com'
+      //   userToSave.photoURL =
+      //     'https://lh3.googleusercontent.com/a-/AOh14Ghd0zqWpSJxEJOPcyZ2BLdyuInhvfWsLbA_O67-'
+      // }
       localStorage.currentUser = JSON.stringify(userToSave)
       state.currentUserId = newUser.uid
     }

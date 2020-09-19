@@ -19,7 +19,7 @@
         ></v-switch>
         <div class="body-1">
           Link to entry form:
-          <a :href="entryFormUrl">{{ entryFormUrl }}</a>
+          <a :href="entryFormUrl" target="_blank">{{ entryFormUrl }}</a>
           <v-btn @click="copyLink()" icon class="ml-3">
             <v-icon>mdi-content-copy</v-icon>
           </v-btn>
