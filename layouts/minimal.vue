@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
       <v-container>
         <v-alert v-if="showWarning" type="warning">
           You are using a test environment. All usage is being recorded in
@@ -8,7 +8,7 @@
         </v-alert>
         <nuxt />
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
