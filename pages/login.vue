@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 // import { authui } from '@/services/fireinit.js'
 
 export default {
