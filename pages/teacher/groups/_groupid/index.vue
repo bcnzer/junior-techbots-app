@@ -37,7 +37,7 @@
           </v-row>
           <div
             v-if="groupDescription"
-            class="subtitle-1"
+            class="my-3 subtitle-1"
             data-cy="groupDescription"
           >
             {{ groupDescription }}

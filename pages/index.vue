@@ -108,7 +108,17 @@ export default {
 
       this.$router.push('/teacher')
     } else if (this.studentClubCount === 1 && this.teacherClubCount === 0) {
-      // TODO
+      // They're only in one club so go straight to it
+      const onlyStudentClubResponse = await firestore
+        .collection('clubs')
+        .doc(studentClubs.clubs[0])
+        .get()
+
+      const onlyStudentClub = onlyStudentClubResponse.data()
+      localStorage.club = JSON.stringify({
+        id: onlyStudentClubResponse.id,
+        name: onlyStudentClub.name
+      })
     } else {
       // TODO - need to handle multiple connections
     }

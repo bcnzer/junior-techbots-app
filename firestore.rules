@@ -22,6 +22,7 @@ service cloud.firestore {
     }
     
   	match /clubs/{club_id}/{anyClubGroup=**} {
+    	allow read: if uidCheck() && club_id in get(/databases/$(database)/documents/students/$(request.auth.uid)).data.clubs;
     	allow read, write: if uidCheck() && request.auth.uid in get(/databases/$(database)/documents/clubs/$(club_id)).data.teachers;
     	allow create: if uidCheck()
     }
