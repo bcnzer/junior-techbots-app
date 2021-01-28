@@ -361,6 +361,19 @@ export default {
             : firebase.firestore.FieldValue.arrayRemove(clubId)
         })
 
+      console.log(this.joinRequests[index])
+      await firestore
+        .collection('user_claims')
+        .doc(this.joinRequests[index].uid)
+        .set(
+          {
+            inClubAsStudent: approve
+              ? firebase.firestore.FieldValue.arrayUnion(clubId)
+              : firebase.firestore.FieldValue.arrayRemove(clubId)
+          },
+          { merge: true }
+        )
+
       // Delete the entry once done
       await firestore
         .collection('submittedentries')
@@ -449,6 +462,18 @@ export default {
             JSON.parse(localStorage.club).id
           )
         })
+
+      await firestore
+        .collection('user_claims')
+        .doc(student.uid)
+        .set(
+          {
+            inClubAsStudent: firebase.firestore.FieldValue.arrayRemove(
+              JSON.parse(localStorage.club).id
+            )
+          },
+          { merge: true }
+        )
     },
 
     async inviteStudent() {

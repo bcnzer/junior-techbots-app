@@ -144,6 +144,18 @@ export default {
           clubs: firebase.firestore.FieldValue.arrayUnion(newClub.id)
         })
 
+      await firestore
+        .collection('user_claims')
+        .doc(currentUserUid)
+        .set(
+          {
+            inClubAsTeacher: firebase.firestore.FieldValue.arrayUnion(
+              newClub.id
+            )
+          },
+          { merge: true }
+        )
+
       localStorage.org = JSON.stringify({
         id: newClub.id,
         name: this.clubName,

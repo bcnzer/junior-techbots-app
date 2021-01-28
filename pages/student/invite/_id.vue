@@ -116,7 +116,6 @@ export default {
       this.waitingYes = true
 
       const userInfo = JSON.parse(localStorage.currentUser)
-      console.log(userInfo)
 
       await firestore
         .collection('students')
@@ -127,6 +126,18 @@ export default {
           displayName: userInfo.displayName,
           uid: userInfo.uid
         })
+
+      await firestore
+        .collection('user_claims')
+        .doc(userInfo.uid)
+        .set(
+          {
+            inClubAsStudent: firebase.firestore.FieldValue.arrayUnion(
+              this.invite.clubId
+            )
+          },
+          { merge: true }
+        )
 
       await firestore
         .collection('students')
