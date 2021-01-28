@@ -16,15 +16,23 @@ service cloud.firestore {
     	allow create: if uidCheck()
     }
     
+  	match /user_claims/{claim_id} {
+    	allow read, write: if uidCheck()
+    }
+    
   	match /students/{student_id}/invites/{invite_id} {
     	allow read, write: if uidCheck() // && request.auth.uid == resource.data.uid
     	allow create: if uidCheck()
     }
     
   	match /clubs/{club_id}/{anyClubGroup=**} {
-    	allow read: if uidCheck() && club_id in get(/databases/$(database)/documents/students/$(request.auth.uid)).data.clubs;
     	allow read, write: if uidCheck() && request.auth.uid in get(/databases/$(database)/documents/clubs/$(club_id)).data.teachers;
     	allow create: if uidCheck()
+    }
+    
+  	match /clubs/{club_id} {
+    	allow read: if uidCheck() && (club_id in request.auth.token.inClubAsStudent || club_id in request.auth.token.inClubAsTeacher);
+    	allow write: if uidCheck() && request.auth.uid in get(/databases/$(database)/documents/clubs/$(club_id)).data.teachers;
     }
     
   	match /publiclessons/{publiclesson_id} {
