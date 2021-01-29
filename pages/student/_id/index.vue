@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  layout: 'minimal',
+  layout: 'student',
 
   head() {
     return { title: 'Student' }
