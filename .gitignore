@@ -95,6 +95,3 @@ sw.*
 # Cypress videos and screenshots
 /test/e2e/screenshots
 /test/e2e/videos
-
-# Firebase save data... maybe I'll commit it one day
-/firebase-emulator-data
