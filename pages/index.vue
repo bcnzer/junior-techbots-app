@@ -92,6 +92,8 @@ export default {
       teacherClubs = teacherRecord.docs[0].data()
       this.teacherClubCount = teacherClubs.clubs.length
     }
+    console.log(this.studentClubCount)
+    console.log(this.teacherClubCount)
 
     if (this.studentClubCount === 0 && this.teacherClubCount === 1) {
       // They're only in one club so forward them
@@ -123,7 +125,10 @@ export default {
       console.log(onlyStudentClub.id)
       this.$router.push(`/student/${onlyStudentClub.id}`)
     } else {
-      // TODO - need to handle multiple connections
+      // TODO - need to handle multiple clubs
+      console.log(
+        'TODO - need to build a screen to allow you to pick one of the clubs you want to log into'
+      )
     }
 
     this.loading = false

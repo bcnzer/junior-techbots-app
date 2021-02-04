@@ -1,6 +1,13 @@
 <template>
   <v-layout column justify-center align-center>
     <v-flex xs12>
+      <v-tabs>
+        <v-tab>Current Project</v-tab>
+        <v-tab>Previous Projects</v-tab>
+        <v-tab>Achievements</v-tab>
+      </v-tabs>
+    </v-flex>
+    <v-flex xs12>
       <div class="text-center my-5">
         <v-img src="../../bot-hi.png" width="256"></v-img>
       </div>
