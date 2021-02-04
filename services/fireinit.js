@@ -44,6 +44,7 @@ export const perf = firebase.performance()
 export const storage = firebase.storage()
 if (location.hostname === 'localhost') {
   firestore.useEmulator('localhost', 8080)
+  firestore.settings({ experimentalForceLongPolling: true }) // See: https://stackoverflow.com/questions/59336720/cant-use-cypress-to-test-app-using-using-firestore-local-emulator
   auth.useEmulator('http://localhost:9099/')
 }
 export default firebase

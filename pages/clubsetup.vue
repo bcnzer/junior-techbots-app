@@ -352,17 +352,14 @@ export default {
     async createClub() {
       this.saving = true
 
-      localStorage.anonymousLogin = 'Hi ben'
-      console.log('point 1')
-      console.log(localStorage.anonymousLogin)
       const currentUserUid = JSON.parse(localStorage.currentUser).uid
       console.log(currentUserUid)
       let teacherRecord = await firestore
         .collection('teachers')
         .where('uid', '==', currentUserUid)
         .get()
+      console.log(teacherRecord)
 
-      console.log('point 2')
       if (teacherRecord.docs.length > 0) {
         // They exist already so get their record
         this.teacherRecordId = teacherRecord.docs[0].id
@@ -379,7 +376,6 @@ export default {
         teacherRecord = newTeacherRecord
       }
 
-      console.log('point 3')
       // Create the club
       const entryId = uuidv4().substring(0, 8)
       const currentDateTime = new Date()

@@ -120,7 +120,6 @@ export default {
         name: onlyStudentClub.name
       })
 
-      console.log(onlyStudentClub.id)
       this.$router.push(`/student/${onlyStudentClub.id}`)
     } else {
       // TODO - need to handle multiple connections

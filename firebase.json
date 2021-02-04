@@ -1,7 +1,6 @@
 {
   "hosting": [
     {
-      "target": "default",
       "site": "app-junior-techbots",
       "public": "dist",
       "ignore": [
@@ -17,7 +16,6 @@
       ]
     },
     {
-      "target": "staging",
       "site": "junior-techbots-staging",
       "public": "dist",
       "ignore": [

@@ -1,8 +1,7 @@
 describe('Club setup', function() {
   before(() => {
     cy.visit('/logine2eanonymous')
-    cy.wait(2000) // Two waits as there are two network requests
-    cy.wait(2000)
+    cy.wait(500)
     cy.visit('/clubsetup')
     cy.saveLocalStorage() // Really important to note that localStorage is NOT saved between tests. This is a problem for currentUser info
   })
@@ -18,8 +17,9 @@ describe('Club setup', function() {
   // });
 
   it('Check the logged in display info', function() {
-    cy.get('[data-cy=userDisplayName]').should('have.text', 'LocalTester Chartrand')
-    cy.get('[data-cy=userEmail]').should('have.text', 'mytestemail@gmail.com')
+    cy.wait(1000)
+    cy.get('[data-cy=userDisplayName]').should('have.text', 'LocalHost Chartrand')
+    cy.get('[data-cy=userEmail]').should('have.text', 'benchartrand+localhost@gmail.com')
     cy.get('[data-cy=clubSetupForward1]').click()
   })
 
@@ -70,22 +70,22 @@ describe('Club setup', function() {
     cy.get('[data-cy=createClub]').click()
   })
 
-  it('GROUPS - check default Groups page', function() {
-    // We finally landed in the teachers/groups page
-    cy.url({timeout: 3000}).should('contain', '/teacher/groups/')
-    cy.get('[data-cy=clubName]', {timeout: 5000}).should('have.text', 'My e2e test coding club')
-    cy.get('[data-cy=groupName]', {timeout: 50000}).should('contains.text', 'Years 5-8')
-    cy.get('[data-cy=noLessonText]').should('contains.text', 'Go ahead and schedule some lessons 😊')
-    cy.wait(1000)
-    // cy.get('[data-cy=scheduleLessonButton]').click()
-    // cy.url({timeout: 3000}).should('include', '/schedule/add')
-  })
+  // it('GROUPS - check default Groups page', function() {
+  //   // We finally landed in the teachers/groups page
+  //   cy.url({timeout: 10000}).should('contain', '/teacher/groups/')
+  //   cy.get('[data-cy=clubName]', {timeout: 5000}).should('have.text', 'My e2e test coding club')
+  //   cy.get('[data-cy=groupName]', {timeout: 50000}).should('contains.text', 'Years 5-8')
+  //   cy.get('[data-cy=noLessonText]').should('contains.text', 'Go ahead and schedule some lessons 😊')
+  //   cy.wait(1000)
+  //   // cy.get('[data-cy=scheduleLessonButton]').click()
+  //   // cy.url({timeout: 3000}).should('include', '/schedule/add')
+  // })
 
-  it('LESSONS - add some lessons', function () {
-    cy.get('[data-cy=hamburgerButton]').click()
-    cy.get('[data-cy=menuLessons]').click()
-    cy.get('[data-cy=lessonPageTitle]').should('have', 'Lessons')
-    cy.get('[data-cy=addLessonButton]').click()
-  })
+  // it('LESSONS - add some lessons', function () {
+  //   cy.get('[data-cy=hamburgerButton]').click()
+  //   cy.get('[data-cy=menuLessons]').click()
+  //   cy.get('[data-cy=lessonPageTitle]').should('have', 'Lessons')
+  //   cy.get('[data-cy=addLessonButton]').click()
+  // })
 
 })
